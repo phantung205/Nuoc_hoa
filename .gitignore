@@ -1,0 +1,104 @@
+# ================================
+# Maven
+# ================================
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# ================================
+# Spring Boot
+# ================================
+HELP.md
+
+# ================================
+# IntelliJ IDEA
+# ================================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ================================
+# Eclipse / STS
+# ================================
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache
+.apt_generated/
+.factorypath
+
+# ================================
+# NetBeans
+# ================================
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ================================
+# VS Code
+# ================================
+.vscode/
+
+# ================================
+# Build
+# ================================
+build/
+.gradle/
+
+# ================================
+# OS generated files
+# ================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ================================
+# Logs
+# ================================
+*.log
+logs/
+
+# ================================
+# Environment & Secrets
+# ================================
+.env
+.env.*
+*.pem
+*.key
+
+# ================================
+# Database local
+# ================================
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+
+# ================================
+# User uploads
+# ================================
+/uploads/
+/static/uploads/
+src/main/resources/static/uploads/
+
+# ================================
+# Product images generated/uploaded dynamically
+# ================================
+src/main/resources/static/images/products/*
+!src/main/resources/static/images/products/.gitkeep
+
+# ================================
+# Temporary files
+# ================================
+*.tmp
+*.bak
+*.swp
+*.swo
