@@ -36,8 +36,8 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
+    @Column(name = "status", length = 20)
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -54,12 +54,13 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    // Cập nhật lại Getter / Setter
+    public String getStatus() {
+        return status;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 

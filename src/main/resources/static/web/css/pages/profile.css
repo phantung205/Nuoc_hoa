@@ -1,0 +1,117 @@
+/** {*/
+/*    box-sizing: border-box;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+/*body {*/
+/*    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+/*    background-color: #f8f9fa;*/
+/*    color: #333;*/
+/*}*/
+
+/*header {*/
+/*    background-color: #111827;*/
+/*    color: white;*/
+/*    padding: 15px 30px;*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*}*/
+/*header a {*/
+/*    color: white;*/
+/*    text-decoration: none;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*.container {*/
+/*    max-width: 650px;*/
+/*    margin: 40px auto;*/
+/*    background: #ffffff;*/
+/*    border-radius: 12px;*/
+/*    padding: 30px;*/
+/*    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);*/
+/*}*/
+/*.title {*/
+/*    text-align: center;*/
+/*    margin-bottom: 25px;*/
+/*    font-size: 24px;*/
+/*    color: #111827;*/
+/*}*/
+
+/*.avatar-container {*/
+/*    text-align: center;*/
+/*    margin-bottom: 25px;*/
+/*}*/
+/*.avatar-img {*/
+/*    width: 110px;*/
+/*    height: 110px;*/
+/*    border-radius: 50%;*/
+/*    object-fit: cover;*/
+/*    border: 3px solid #e91e63;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+/*.loyalty-badge {*/
+/*    display: inline-block;*/
+/*    background-color: #f59e0b;*/
+/*    color: white;*/
+/*    padding: 4px 12px;*/
+/*    border-radius: 20px;*/
+/*    font-size: 13px;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*.alert-success {*/
+/*    background-color: #d1fae5;*/
+/*    color: #065f46;*/
+/*    padding: 12px;*/
+/*    border-radius: 6px;*/
+/*    margin-bottom: 20px;*/
+/*    text-align: center;*/
+/*    font-weight: 500;*/
+/*}*/
+
+/*.form-group {*/
+/*    margin-bottom: 18px;*/
+/*}*/
+/*label {*/
+/*    font-size: 14px;*/
+/*    font-weight: 600;*/
+/*    color: #374151;*/
+/*    display: block;*/
+/*    margin-bottom: 6px;*/
+/*}*/
+
+/*input[type="text"], input[type="email"], input[type="date"], input[type="file"], select {*/
+/*    width: 100%;*/
+/*    padding: 10px 14px;*/
+/*    border: 1px solid #d1d5db;*/
+/*    border-radius: 6px;*/
+/*    font-size: 15px;*/
+/*    outline: none;*/
+/*    transition: border-color 0.2s;*/
+/*}*/
+/*input[type="text"]:focus, input[type="date"]:focus, select:focus {*/
+/*    border-color: #e91e63;*/
+/*}*/
+/*input[readonly] {*/
+/*    background-color: #f3f4f6;*/
+/*    color: #6b7280;*/
+/*    cursor: not-allowed;*/
+/*}*/
+
+/*.btn-submit {*/
+/*    background-color: #e91e63;*/
+/*    color: white;*/
+/*    font-size: 16px;*/
+/*    font-weight: bold;*/
+/*    border: none;*/
+/*    border-radius: 6px;*/
+/*    padding: 12px;*/
+/*    width: 100%;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.2s;*/
+/*    margin-top: 10px;*/
+/*}*/
+/*.btn-submit:hover {*/
+/*    background-color: #d81b60;*/
+/*}*/

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký tài khoản - NuocHoa</title>
+    <link rel="stylesheet" th:href="@{/auth/css/register.css}">
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align: center;">Tạo Tài Khoản</h2>
+
+    <div th:if="${errorMessage}" class="error-box" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/auth/register}" th:object="${registerRequest}" method="post">
+        <div class="form-group">
+            <label>Tên đăng nhập:</label>
+            <input type="text" th:field="*{username}">
+            <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" th:field="*{email}">
+            <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Mật khẩu:</label>
+            <input type="password" th:field="*{password}">
+            <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Xác nhận mật khẩu:</label>
+            <input type="password" th:field="*{confirmPassword}">
+            <div class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+        </div>
+
+        <button type="submit">Đăng ký</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 15px;">
+        Đã có tài khoản? <a th:href="@{/auth/login}">Đăng nhập</a>
+    </p>
+</div>
+
+</body>
+</html>

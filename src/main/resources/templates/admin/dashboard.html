@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Nước Hoa Shop</title>
+    <link rel="stylesheet" th:href="@{/admin/css/dashboard.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🌸 Admin Panel</h2>
+    <a href="/admin/dashboard" class="active">📊 Trang Chủ</a>
+    <a href="/admin/users">👥 Quản Lý Tài Khoản</a>
+    <a href="/">🌐 Xem Trang Web</a>
+    <a href="/auth/logout" style="margin-top: 50px; color: #ef4444;">🚪 Đăng Xuất</a>
+</div>
+
+<div class="main">
+    <div class="header">
+        <h1>Tổng Quan Hệ Thống</h1>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <h3>TỔNG SỐ TÀI KHỎAN</h3>
+            <div class="number" th:text="${totalUsers}">0</div>
+            <a href="/admin/users" class="btn-link">Quản lý người dùng &rarr;</a>
+        </div>
+
+        <div class="card">
+            <h3>SẢN PHẨM</h3>
+            <div class="number">--</div>
+            <span style="font-size: 13px; color: #9ca3af;">Tính năng đang phát triển</span>
+        </div>
+
+        <div class="card">
+            <h3>ĐƠN HÀNG</h3>
+            <div class="number">--</div>
+            <span style="font-size: 13px; color: #9ca3af;">Tính năng đang phát triển</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

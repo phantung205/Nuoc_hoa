@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Tài Khoản Mới</title>
+    <link rel="stylesheet" th:href="@{/admin/css/user/add.css}">
+</head>
+<body>
+
+<div class="card">
+    <h2>Thêm Tài Khoản Mới</h2>
+
+    <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/admin/users/add}" th:object="${userRequest}" method="post">
+        <div class="form-group">
+            <label>Tên Đăng Nhập:</label>
+            <input type="text" th:field="*{username}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Mật Khẩu:</label>
+            <input type="password" th:field="*{password}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Quyền Mạng:</label>
+            <select th:field="*{role}">
+                <option value="USER">USER</option>
+                <option value="ADMIN">ADMIN</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Trạng Thái:</label>
+            <select th:field="*{status}">
+                <option value="ACTIVE">HOẠT ĐỘNG</option>
+                <option value="LOCKED">KHÓA</option>
+                <option value="UNVERIFIED">CHỜ XÁC THỰC</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn">Thêm Người Dùng</button>
+        <a href="/admin/users" style="display:block; text-align:center; margin-top:15px; text-decoration:none; color:#6b7280;">Hủy bỏ</a>
+    </form>
+</div>
+
+</body>
+</html>

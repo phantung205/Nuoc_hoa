@@ -1,0 +1,17 @@
+<div th:fragment="chat-widget">
+    <!-- Nút bóng chat nổi -->
+    <button id="chat-toggle-btn" onclick="toggleChat()">💬</button>
+
+    <!-- Khung cửa sổ chat -->
+    <div id="chat-popup" class="chat-container">
+        <div class="chat-header">
+            <span>🌸 Tư vấn Nước hoa AI</span>
+            <button onclick="toggleChat()">✕</button>
+        </div>
+        <div id="chat-logs" class="chat-logs"></div>
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Hỏi về nước hoa..." onkeypress="if(event.key==='Enter') sendMessage()" />
+            <button onclick="sendMessage()">Gửi</button>
+        </div>
+    </div>
+</div>

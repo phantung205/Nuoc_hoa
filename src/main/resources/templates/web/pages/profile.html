@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Cá Nhân - Nước Hoa Shop</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/profile.css}">
+</head>
+<body>
+
+<header>
+    <a th:href="@{/}" style="font-size: 20px;">🌸 Nước Hoa Shop</a>
+    <a th:href="@{/}" style="font-size: 14px; font-weight: normal;">&larr; Trang Chủ</a>
+</header>
+
+<div class="container">
+    <h2 class="title">Cập Nhật Thông Tin Cá Nhân</h2>
+
+    <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
+
+    <div class="avatar-container">
+        <img class="avatar-img"
+             th:src="${userProfile.avatarUrl != null && !userProfile.avatarUrl.isEmpty() ? userProfile.avatarUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+             alt="Avatar">
+        <div>
+            <span class="loyalty-badge" th:text="'Điểm tích lũy: ' + ${userProfile.loyaltyPoints} + ' pt'">Điểm tích lũy: 0 pt</span>
+        </div>
+    </div>
+
+    <form th:action="@{/profile/update}" th:object="${profileRequest}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Tên đăng nhập</label>
+            <input type="text" th:value="${user.username}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Email liên hệ</label>
+            <input type="email" th:value="${user.email}" readonly>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" th:field="*{fullName}" placeholder="Nhập họ và tên...">
+        </div>
+
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="text" th:field="*{phone}" placeholder="Nhập số điện thoại...">
+        </div>
+
+        <div class="form-group">
+            <label>Giới tính</label>
+            <select th:field="*{gender}">
+                <option value="">-- Chọn giới tính --</option>
+                <option value="NAM">Nam</option>
+                <option value="NU">Nữ</option>
+                <option value="KHAC">Khác</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Ngày sinh</label>
+            <input type="date" th:field="*{dateOfBirth}">
+        </div>
+
+        <div class="form-group">
+            <label>Tải ảnh đại diện mới</label>
+            <input type="file" name="avatarFile" accept="image/png, image/jpeg, image/jpg, image/webp">
+        </div>
+
+        <button type="submit" class="btn-submit">Lưu Thay Đổi</button>
+    </form>
+</div>
+
+</body>
+</html>
