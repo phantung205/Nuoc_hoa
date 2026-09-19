@@ -1,68 +1,77 @@
 package com.perfumes.nuochoa.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-
-
+/**
+ * Bảng "users" – tài khoản đăng nhập của người dùng.
+ *
+ * Mỗi User liên kết tới:
+ *   - Role       : phân quyền (USER hoặc ADMIN)
+ *   - UserProfile: thông tin cá nhân (họ tên, ảnh, ngày sinh...)
+ *   - Cart       : giỏ hàng, được tạo tự động khi đăng ký
+ */
 @Entity
 @Table(name = "users")
 public class User {
+
+    // ===================== FIELDS =====================
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password_hash")
+    /**
+     * Mật khẩu đã mã hóa bằng BCrypt.
+     * Không bao giờ lưu mật khẩu dạng plain text.
+     */
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    /**
+     * Trạng thái tài khoản:
+     *   UNVERIFIED – mới đăng ký, chưa xác thực email
+     *   ACTIVE     – đang hoạt động bình thường
+     *   LOCKED     – bị Admin khóa tạm thời
+     */
+    @Column(name = "status", length = 20, nullable = false)
+    private String status;
 
-    @Column(name = "created_at")
+    /** Quyền hạn của tài khoản (USER hoặc ADMIN). */
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
+    /** Thời điểm tạo tài khoản – tự động gán, không thay đổi sau đó. */
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    /** Thời điểm cập nhật tài khoản gần nhất – tự động cập nhật. */
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "status", length = 20)
-    private String status;
+    // ===================== JPA LIFECYCLE =====================
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
+    /** Tự động gán thời gian khi tạo bản ghi lần đầu. */
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    /** Tự động cập nhật thời gian mỗi khi bản ghi được sửa. */
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Cập nhật lại Getter / Setter
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
+    // ===================== GETTERS & SETTERS =====================
 
     public Long getId() {
         return id;
@@ -96,6 +105,22 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -110,13 +135,5 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

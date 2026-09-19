@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -20,67 +22,89 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final CustomAuthenticationFailureHandler failureHandler;
 
-    // Inject cả userDetailsService và failureHandler mới tạo
     public SecurityConfig(CustomUserDetailsService userDetailsService,
                           CustomAuthenticationFailureHandler failureHandler) {
         this.userDetailsService = userDetailsService;
         this.failureHandler = failureHandler;
     }
 
-    // Thuật toán mã hóa mật khẩu BCrypt
+
+    /** Thuật toán mã hóa mật khẩu BCrypt – đây là chuẩn hiện tại cho Spring Security. */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provider xác thực: kết nối UserDetailsService (load user từ DB)
+     * với PasswordEncoder (so sánh mật khẩu).
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
+    /** AuthenticationManager dùng để thực hiện xác thực thủ công nếu cần. */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Tắt CSRF cho API Chatbot để JavaScript gửi POST request thành công
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chat/**"))
+            // Tắt CSRF chỉ cho API chatbot (để JavaScript fetch/POST hoạt động không cần CSRF token)
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chat/**"))
 
-                .authenticationProvider(authenticationProvider())
-                .authorizeHttpRequests(auth -> auth
-                        // 2. Công khai các thư mục chứa file tĩnh & thư mục upload ảnh
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**", "/admin/css/**", "/admin/js/**", "/web/**", "/common/**").permitAll()
+            .authenticationProvider(authenticationProvider())
 
-                        // 3. THÊM "/api/chat/**" VÀO ĐÂY để ai cũng có thể nhắn tin với AI
-                        .requestMatchers("/", "/home", "/products/**", "/categories/**", "/brands/**", "/api/chat/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+            // Cấu hình phân quyền đường dẫn
+            .authorizeHttpRequests(auth -> auth
+                // File tĩnh và ảnh upload: ai cũng truy cập được
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**",
+                                 "/admin/css/**", "/admin/js/**", "/web/**", "/common/**","/error/**").permitAll()
 
-                        // 4. Phân quyền đường dẫn Admin
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                // Trang công khai: trang chủ, sản phẩm, chatbot, đăng ký/đăng nhập
+                .requestMatchers("/", "/home", "/products/**", "/categories/**",
+                                 "/brands/**", "/api/chat/**", "/auth/**").permitAll()
 
-                        // 5. Các chức năng cần đăng nhập (Giỏ hàng, Thanh toán, Hồ sơ)
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/auth/login")                  // Trang hiển thị form Đăng nhập
-                        .loginProcessingUrl("/auth/login-process") // URL nhận dữ liệu submit từ form
-                        .defaultSuccessUrl("/", true)              // Đăng nhập thành công chuyển về Trang chủ
-                        .failureHandler(failureHandler)            // Sử dụng Failure Handler xử lý tài khoản UNVERIFIED
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")                 // URL kích hoạt Đăng xuất
-                        .logoutSuccessUrl("/auth/login?logout=true")// Đăng xuất xong chuyển về trang Login
-                        .invalidateHttpSession(true)               // Hủy hoàn toàn Session phía Server
-                        .deleteCookies("JSESSIONID")               // Xóa Cookie đăng nhập ở trình duyệt
-                        .clearAuthentication(true)
-                        .permitAll()
-                );
+                // Trang Admin: chỉ tài khoản có quyền ADMIN
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                // Tất cả còn lại (giỏ hàng, thanh toán, hồ sơ...): phải đăng nhập
+                .anyRequest().authenticated()
+            )
+
+            // Cấu hình form đăng nhập
+            .formLogin(form -> form
+                .loginPage("/auth/login")                   // Trang hiển thị form đăng nhập
+                .loginProcessingUrl("/auth/login-process")  // URL nhận dữ liệu submit từ form
+                .defaultSuccessUrl("/", true)               // Đăng nhập thành công → về trang chủ
+                .failureHandler(failureHandler)             // Handler xử lý lỗi đăng nhập tùy chỉnh
+                .permitAll()
+            )
+
+            // cấu hình rememberme
+            .rememberMe(remember -> remember
+                    .key("NuocHoaSecretKey_Dk93ns81")           // Khóa bí mật dùng để mã hóa token (bạn có thể đổi chuỗi này)
+                    .rememberMeParameter("remember-me")         // Tên của checkbox trong form HTML (phải khớp với tên thẻ input)
+                    .tokenValiditySeconds(7 * 24 * 60 * 60)     // Thời gian sống của cookie (7 ngày tính bằng giây)
+                    .userDetailsService(userDetailsService)     // Cần thiết để Spring load lại User sau khi tắt trình duyệt
+            )
+
+            // Cấu hình đăng xuất
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")                      // URL kích hoạt đăng xuất
+                .logoutSuccessUrl("/auth/login?logout=true")    // Sau khi đăng xuất → về trang login
+                .invalidateHttpSession(true)                    // Hủy session phía server
+                .deleteCookies("JSESSIONID", "remember-me") // Xóa cookie,remember-me phiên ở trình duyệt
+                .clearAuthentication(true)
+                .permitAll()
+            );
 
         return http.build();
     }

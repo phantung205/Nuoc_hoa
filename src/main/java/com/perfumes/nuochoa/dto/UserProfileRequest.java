@@ -1,7 +1,8 @@
 package com.perfumes.nuochoa.dto;
 
-import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
+
 
 public class UserProfileRequest {
 
@@ -16,7 +17,7 @@ public class UserProfileRequest {
 
     private String gender;
 
-    // Getter & Setter
+
     public String getFullName() {
         return fullName;
     }

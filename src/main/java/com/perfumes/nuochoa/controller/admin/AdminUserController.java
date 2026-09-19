@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 @RequestMapping("/admin/users")
 public class AdminUserController {
@@ -19,14 +20,14 @@ public class AdminUserController {
         this.userService = userService;
     }
 
-    // 1. Danh sách người dùng
+
     @GetMapping
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "admin/pages/user/list";
     }
 
-    // 2. Giao diện Thêm mới
+
     @GetMapping("/add")
     public String showAddForm(Model model) {
         UserAdminRequest userRequest = new UserAdminRequest();
@@ -36,10 +37,10 @@ public class AdminUserController {
         return "admin/pages/user/add";
     }
 
-    // 3. Xử lý Thêm mới
     @PostMapping("/add")
     public String processAddUser(@Valid @ModelAttribute("userRequest") UserAdminRequest userRequest,
-                                 BindingResult bindingResult, Model model) {
+                                 BindingResult bindingResult,
+                                 Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/pages/user/add";
         }
@@ -52,17 +53,17 @@ public class AdminUserController {
         }
     }
 
-    // 4. Giao diện Chỉnh sửa
+
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model) {
         User user = userService.getUserById(id);
 
+        // Chuyển dữ liệu từ entity User sang DTO để hiển thị trên form
         UserAdminRequest userRequest = new UserAdminRequest();
         userRequest.setId(user.getId());
         userRequest.setUsername(user.getUsername());
         userRequest.setEmail(user.getEmail());
         userRequest.setStatus(user.getStatus());
-
         if (user.getRole() != null) {
             userRequest.setRole(user.getRole().getName());
         }
@@ -71,11 +72,11 @@ public class AdminUserController {
         return "admin/pages/user/edit";
     }
 
-    // 5. Xử lý Chỉnh sửa
     @PostMapping("/edit/{id}")
-    public String processEditUser(@PathVariable("id") Long id,
+    public String processEditUser(@PathVariable Long id,
                                   @Valid @ModelAttribute("userRequest") UserAdminRequest userRequest,
-                                  BindingResult bindingResult, Model model) {
+                                  BindingResult bindingResult,
+                                  Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/pages/user/edit";
         }
@@ -88,16 +89,15 @@ public class AdminUserController {
         }
     }
 
-    // 6. Nhanh: Khóa / Mở khóa tài khoản
     @PostMapping("/toggle-status/{id}")
-    public String toggleUserStatus(@PathVariable("id") Long id) {
+    public String toggleUserStatus(@PathVariable Long id) {
         userService.toggleUserStatus(id);
         return "redirect:/admin/users?success=updated";
     }
 
-    // 7. Xử lý Xóa
+
     @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
+    public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/users?success=deleted";
     }

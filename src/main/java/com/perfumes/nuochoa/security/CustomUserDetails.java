@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
@@ -20,9 +21,11 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
+        String roleName = "ROLE_" + user.getRole().getName(); // VD: "ROLE_USER", "ROLE_ADMIN"
+        return List.of(new SimpleGrantedAuthority(roleName));
     }
 
     @Override
@@ -35,6 +38,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getUsername();
     }
 
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -42,8 +46,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        // Tài khoản không bị khóa nếu status KHÔNG PHẢI là INACTIVE
-        return user.getStatus() != null && !"INACTIVE".equalsIgnoreCase(user.getStatus());
+        return !"LOCKED".equalsIgnoreCase(user.getStatus());
     }
 
     @Override
@@ -53,7 +56,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        // Tài khoản cho phép đăng nhập chỉ khi status LÀ ACTIVE
-        return user.getStatus() != null && "ACTIVE".equalsIgnoreCase(user.getStatus());
+        return "ACTIVE".equalsIgnoreCase(user.getStatus());
     }
 }

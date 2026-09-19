@@ -13,7 +13,9 @@
     <a href="/admin/dashboard" class="active">📊 Trang Chủ</a>
     <a href="/admin/users">👥 Quản Lý Tài Khoản</a>
     <a href="/">🌐 Xem Trang Web</a>
-    <a href="/auth/logout" style="margin-top: 50px; color: #ef4444;">🚪 Đăng Xuất</a>
+    <form th:action="@{/auth/logout}" method="post" style="display: inline;">
+        <button type="submit" class="btn-logout">Đăng xuất</button>
+    </form>
 </div>
 
 <div class="main">

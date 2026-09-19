@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Truy cập bị từ chối - NuocHoa</title>
+    <link rel="stylesheet" th:href="@{/error/css/403.css}">
+</head>
+<body>
+<div class="error-container">
+    <h1>403</h1>
+    <h2>Truy cập bị từ chối!</h2>
+    <p>Xin lỗi, bạn không có quyền truy cập vào trang này. Khu vực này chỉ dành cho Quản trị viên (Admin).</p>
+    <a th:href="@{/}" class="btn-home">Quay lại Trang chủ</a>
+</div>
+</body>
+</html>

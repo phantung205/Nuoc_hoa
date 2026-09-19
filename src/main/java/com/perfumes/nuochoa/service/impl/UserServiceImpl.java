@@ -47,107 +47,47 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     @Override
     @Transactional
     public void registerUser(RegisterRequest registerRequest) {
+        // 1. Kiểm tra mật khẩu xác nhận
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
             throw new IllegalArgumentException("Mật khẩu xác nhận không khớp");
         }
 
+        // 2. Kiểm tra trùng lặp
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
             throw new IllegalArgumentException("Tên đăng nhập đã tồn tại trên hệ thống");
         }
-
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new IllegalArgumentException("Email đã được sử dụng");
         }
 
+        // 3. Tạo User mới với trạng thái UNVERIFIED (chưa xác thực OTP)
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Lỗi hệ thống: Không tìm thấy quyền USER"));
 
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setEmail(registerRequest.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setStatus("UNVERIFIED");
-        user.setRole(userRole);
+        User newUser = new User();
+        newUser.setUsername(registerRequest.getUsername());
+        newUser.setEmail(registerRequest.getEmail());
+        newUser.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
+        newUser.setStatus("UNVERIFIED");
+        newUser.setRole(userRole);
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(newUser);
 
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUser(savedUser);
-        userProfile.setLoyaltyPoints(0);
-        userProfileRepository.save(userProfile);
+        // 4. Tạo Profile rỗng – loyaltyPoints mặc định = 0
+        UserProfile profile = new UserProfile();
+        profile.setUser(savedUser);
+        userProfileRepository.save(profile);
 
+        // 5. Tạo Cart rỗng để người dùng có thể thêm sản phẩm ngay sau khi đăng nhập
         Cart cart = new Cart();
         cart.setUser(savedUser);
         cartRepository.save(cart);
     }
 
-    @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng: " + username));
-    }
-
-    @Override
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
-    public UserProfile getUserProfileByUserId(Long userId) {
-        return userProfileRepository.findById(userId)
-                .orElseGet(() -> {
-                    User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new RuntimeException("Không tìm thấy User"));
-                    UserProfile newProfile = new UserProfile();
-                    newProfile.setUser(user);
-                    newProfile.setLoyaltyPoints(0);
-                    return userProfileRepository.save(newProfile);
-                });
-    }
-
-    @Override
-    @Transactional
-    public void updateUserProfile(Long userId, UserProfileRequest profileRequest, MultipartFile avatarFile) {
-        UserProfile profile = getUserProfileByUserId(userId);
-
-        profile.setFullName(profileRequest.getFullName());
-        profile.setPhone(profileRequest.getPhone());
-        profile.setDateOfBirth(profileRequest.getDateOfBirth());
-        profile.setGender(profileRequest.getGender());
-
-        if (avatarFile != null && !avatarFile.isEmpty()) {
-            String fileName = saveAvatarFile(avatarFile);
-            profile.setAvatarUrl("/uploads/avatars/" + fileName);
-        }
-
-        userProfileRepository.save(profile);
-    }
-
-    private String saveAvatarFile(MultipartFile file) {
-        try {
-            String uploadDir = "uploads/avatars/";
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir + fileName);
-
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
-        } catch (IOException e) {
-            throw new RuntimeException("Không thể lưu file ảnh!", e);
-        }
-    }
 
     @Override
     @Transactional
@@ -157,6 +97,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus("ACTIVE");
         userRepository.save(user);
     }
+
 
     @Override
     public User findByUsernameOrEmail(String identifier) {
@@ -174,21 +115,103 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public UserProfile getUserProfileByUserId(Long userId) {
+        return userProfileRepository.findById(userId)
+                .orElseGet(() -> createEmptyProfileForUser(userId));
+    }
+
+    /** Tạo UserProfile rỗng cho User chưa có Profile. */
+    private UserProfile createEmptyProfileForUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy User với ID: " + userId));
+
+        UserProfile newProfile = new UserProfile();
+        newProfile.setUser(user);
+        return userProfileRepository.save(newProfile);
     }
 
     @Override
     @Transactional
+    public void updateUserProfile(Long userId, UserProfileRequest profileRequest, MultipartFile avatarFile) {
+        UserProfile profile = getUserProfileByUserId(userId);
+
+        // Cập nhật các thông tin cơ bản từ form
+        profile.setFullName(profileRequest.getFullName());
+        profile.setPhone(profileRequest.getPhone());
+        profile.setDateOfBirth(profileRequest.getDateOfBirth());
+        profile.setGender(profileRequest.getGender());
+
+        // Nếu người dùng có chọn ảnh mới thì lưu ảnh và cập nhật đường dẫn
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String savedFileName = saveAvatarFile(avatarFile);
+            profile.setAvatarUrl("/uploads/avatars/" + savedFileName);
+        }
+
+        userProfileRepository.save(profile);
+    }
+
+    private String saveAvatarFile(MultipartFile file) {
+        try {
+            String uploadDir = "uploads/avatars/";
+
+            // Tạo thư mục nếu chưa tồn tại
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            // Tạo tên file duy nhất: UUID + tên gốc (để tránh ghi đè file khác)
+            String uniqueFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path targetPath = Paths.get(uploadDir + uniqueFileName);
+
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            return uniqueFileName;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Không thể lưu file ảnh đại diện!", e);
+        }
+    }
+
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng: " + username));
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+
+    @Override
+    public long countAllUsers() {
+        return userRepository.count();
+    }
+
+
+    @Override
+    @Transactional
     public void toggleUserStatus(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng!"));
+        User user = getUserById(userId);
 
         if ("ACTIVE".equalsIgnoreCase(user.getStatus())) {
             user.setStatus("LOCKED");
         } else if ("LOCKED".equalsIgnoreCase(user.getStatus())) {
             user.setStatus("ACTIVE");
         }
+
         userRepository.save(user);
     }
 
@@ -197,6 +220,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản với ID: " + id));
     }
+
 
     @Override
     @Transactional
@@ -208,18 +232,21 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Email đã được sử dụng!");
         }
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setStatus(request.getStatus() != null ? request.getStatus() : "ACTIVE");
+        // Lấy role: dùng role được chọn, nếu không chọn thì mặc định là USER
+        String roleName = (request.getRole() != null) ? request.getRole() : "USER";
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy quyền hệ thống: " + roleName));
 
-        Role role = roleRepository.findByName(request.getRole() != null ? request.getRole() : "USER")
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy quyền hệ thống!"));
-        user.setRole(role); // Sửa từ setRoles(Set.of(role)) -> setRole(role)
+        User newUser = new User();
+        newUser.setUsername(request.getUsername());
+        newUser.setEmail(request.getEmail());
+        newUser.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        newUser.setStatus((request.getStatus() != null) ? request.getStatus() : "ACTIVE");
+        newUser.setRole(role);
 
-        userRepository.save(user);
+        userRepository.save(newUser);
     }
+
 
     @Override
     @Transactional
@@ -229,13 +256,15 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setStatus(request.getStatus());
 
-        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+        // Chỉ đổi mật khẩu nếu Admin nhập mật khẩu mới
+        boolean hasNewPassword = request.getPassword() != null && !request.getPassword().trim().isEmpty();
+        if (hasNewPassword) {
             user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         }
 
         Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy quyền!"));
-        user.setRole(role); // Sửa từ setRoles(Set.of(role)) -> setRole(role)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy quyền: " + request.getRole()));
+        user.setRole(role);
 
         userRepository.save(user);
     }

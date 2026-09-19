@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+
 @Component
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
@@ -30,23 +31,37 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     }
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        // Đúng mật khẩu nhưng tài khoản đang ở trạng thái UNVERIFIED
+    public void onAuthenticationFailure(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException, ServletException {
+
+        // Spring Security ném DisabledException khi isEnabled() = false (tức là status UNVERIFIED)
         if (exception instanceof DisabledException) {
-            String username = request.getParameter("username");
-            User user = userRepository.findByUsername(username).orElse(null);
-
-            if (user != null && "UNVERIFIED".equalsIgnoreCase(user.getStatus())) {
-                String otp = otpService.generateOtp(user.getEmail());
-                emailService.sendOtpEmail(user.getEmail(), otp);
-
-                request.getSession().setAttribute("pendingEmail", user.getEmail());
-                getRedirectStrategy().sendRedirect(request, response, "/auth/verify-otp?unverified=true");
-                return;
-            }
+            handleUnverifiedAccount(request, response);
+            return;
         }
 
-        // Nhập sai tên đăng nhập hoặc sai mật khẩu thông thường
+        // Các lỗi khác: sai username hoặc sai mật khẩu
         getRedirectStrategy().sendRedirect(request, response, "/auth/login?error=true");
+    }
+
+
+    private void handleUnverifiedAccount(HttpServletRequest request,
+                                         HttpServletResponse response) throws IOException {
+        String username = request.getParameter("username");
+        User user = userRepository.findByUsername(username).orElse(null);
+
+        // Chỉ xử lý nếu tìm thấy user và user đang UNVERIFIED
+        if (user != null && "UNVERIFIED".equalsIgnoreCase(user.getStatus())) {
+            String newOtp = otpService.generateOtp(user.getEmail());
+            emailService.sendOtpEmail(user.getEmail(), newOtp);
+
+            // Lưu email vào session để trang verify-otp biết cần xác thực cho ai
+            request.getSession().setAttribute("pendingEmail", user.getEmail());
+            getRedirectStrategy().sendRedirect(request, response, "/auth/verify-otp?unverified=true");
+        } else {
+            // Trường hợp bất thường: không tìm thấy user nhưng vẫn bị DisabledException
+            getRedirectStrategy().sendRedirect(request, response, "/auth/login?error=true");
+        }
     }
 }

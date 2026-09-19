@@ -1,29 +1,35 @@
 package com.perfumes.nuochoa.entity;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "carts")
 public class Cart {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "created_at")
+
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getter & Setter
+
     public Long getId() {
         return id;
     }

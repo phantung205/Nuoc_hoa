@@ -9,9 +9,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+
 public interface UserService {
 
     void registerUser(RegisterRequest registerRequest);
+
+    void enableUser(String email);
+
+    User findByUsernameOrEmail(String identifier);
+
+    void updatePassword(String email, String newPassword);
+
+    UserProfile getUserProfileByUserId(Long userId);
+
+    void updateUserProfile(Long userId, UserProfileRequest profileRequest, MultipartFile avatarFile);
+
 
     User findByUsername(String username);
 
@@ -19,21 +31,17 @@ public interface UserService {
 
     boolean existsByEmail(String email);
 
-    UserProfile getUserProfileByUserId(Long userId);
-
-    void updateUserProfile(Long userId, UserProfileRequest profileRequest, MultipartFile avatarFile);
-
-
-    void enableUser(String email);
-
-    User findByUsernameOrEmail(String identifier);
-    void updatePassword(String email, String newPassword);
-
     List<User> getAllUsers();
+
+    long countAllUsers();
+
     void toggleUserStatus(Long userId);
 
     User getUserById(Long id);
+
     void createUserByAdmin(UserAdminRequest request);
+
     void updateUserByAdmin(Long id, UserAdminRequest request);
+
     void deleteUser(Long id);
 }

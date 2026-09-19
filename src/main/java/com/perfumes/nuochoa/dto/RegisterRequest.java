@@ -4,10 +4,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+
 public class RegisterRequest {
 
     @NotBlank(message = "Tên đăng nhập không được để trống")
-    @Size(min = 4, max = 50, message = "Tên đăng nhập phải từ 4 đến 50 ký tự")
+    @Size(min = 6, max = 50, message = "Tên đăng nhập phải từ 4 đến 50 ký tự")
     private String username;
 
     @NotBlank(message = "Email không được để trống")
@@ -21,7 +22,7 @@ public class RegisterRequest {
     @NotBlank(message = "Xác nhận mật khẩu không được để trống")
     private String confirmPassword;
 
-    // Getter & Setter
+
     public String getUsername() {
         return username;
     }

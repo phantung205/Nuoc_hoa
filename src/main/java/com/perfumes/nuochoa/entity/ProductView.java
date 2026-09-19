@@ -1,36 +1,38 @@
 package com.perfumes.nuochoa.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
+/**
+ * Bảng "product_views" – lịch sử xem sản phẩm của người dùng.
+ *
+ * Dùng để gợi ý sản phẩm "Xem gần đây" hoặc phân tích xu hướng sản phẩm phổ biến.
+ */
 @Entity
 @Table(name = "product_views")
 public class ProductView {
+
+    // ===================== FIELDS =====================
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Thời điểm người dùng xem sản phẩm này. */
     @Column(name = "viewed_at")
     private LocalDateTime viewedAt;
 
-    // Liên kết tới bảng User qua khóa ngoại user_id
+    /** Người dùng đã xem sản phẩm. */
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Liên kết tới bảng Product qua khóa ngoại product_id
+    /** Sản phẩm được xem. */
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    // ===================== GETTERS & SETTERS =====================
 
     public Long getId() {
         return id;

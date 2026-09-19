@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- Đoạn fragment có tên là "sidebar". Bất kỳ trang nào cũng có thể gọi đoạn này ra dùng. -->
+    <div th:fragment="sidebar(activeMenu)" class="sidebar">
+        
+        <div class="sidebar-brand">
+            <h2>L'AURÉAL</h2>
+            <span style="font-size: 12px; opacity: 0.7; letter-spacing: 1px;">MANAGEMENT</span>
+        </div>
+        
+        <div class="sidebar-menu">
+            <!-- Dùng class = 'active' nếu biến activeMenu truyền vào trùng khớp -->
+            <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">📊 Bảng điều khiển</a>
+            <a th:href="@{/admin/users}" th:classappend="${activeMenu == 'users' ? 'active' : ''}">👥 Quản lý Tài khoản</a>
+            <a th:href="@{/admin/products}" th:classappend="${activeMenu == 'products' ? 'active' : ''}">💎 Quản lý Sản phẩm</a>
+            <a th:href="@{/admin/orders}" th:classappend="${activeMenu == 'orders' ? 'active' : ''}">📦 Quản lý Đơn hàng</a>
+            <a th:href="@{/}">🌐 Xem Trang Web</a>
+        </div>
+        
+        <div class="sidebar-logout">
+            <!-- Đăng xuất phải dùng FORM POST trong Spring Security để chống lỗi CSRF -->
+            <form th:action="@{/auth/logout}" method="post">
+                <button type="submit">🚪 Đăng Xuất</button>
+            </form>
+        </div>
+        
+    </div>
+
+</body>
+</html>

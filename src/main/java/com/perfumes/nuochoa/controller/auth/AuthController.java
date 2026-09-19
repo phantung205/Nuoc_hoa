@@ -26,7 +26,6 @@ public class AuthController {
         this.emailService = emailService;
     }
 
-    // ================= 1. LUỒNG ĐĂNG KÝ TÀI KHỎAN =================
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
@@ -39,14 +38,17 @@ public class AuthController {
                                   BindingResult bindingResult,
                                   Model model,
                                   HttpSession session) {
+        // @Valid kiểm tra các ràng buộc trong RegisterRequest (@NotBlank, @Email...)
         if (bindingResult.hasErrors()) {
             return "auth/register";
         }
-
         try {
             userService.registerUser(registerRequest);
+
+            // Lưu email vào session để trang verify-otp biết cần xác thực cho ai
             session.setAttribute("pendingEmail", registerRequest.getEmail());
 
+            // Tạo OTP và gửi email xác thực
             String otp = otpService.generateOtp(registerRequest.getEmail());
             emailService.sendOtpEmail(registerRequest.getEmail(), otp);
 
@@ -60,16 +62,20 @@ public class AuthController {
 
     @GetMapping("/verify-otp")
     public String showVerifyOtpForm(@RequestParam(value = "unverified", required = false) String unverified,
-                                    HttpSession session, Model model) {
+                                    HttpSession session,
+                                    Model model) {
         String email = (String) session.getAttribute("pendingEmail");
         if (email == null) {
             return "redirect:/auth/register";
         }
+
+        // Tham số "unverified" xuất hiện khi user cố đăng nhập với tài khoản chưa xác thực
         if (unverified != null) {
-            model.addAttribute("errorMessage", "Tài khoản của bạn chưa được xác thực! Mã OTP mới đã được gửi tới email.");
+            model.addAttribute("errorMessage", "Tài khoản chưa được xác thực! Mã OTP mới đã được gửi tới email.");
         }
+
         model.addAttribute("email", email);
-        model.addAttribute("isResetPassword", false);
+        model.addAttribute("isResetPassword", false); // Template dùng flag này để phân biệt 2 luồng
         return "auth/verify-otp";
     }
 
@@ -82,9 +88,8 @@ public class AuthController {
             return "redirect:/auth/register";
         }
 
-        boolean isValid = otpService.validateOtp(email, otp);
-        if (isValid) {
-            userService.enableUser(email);
+        if (otpService.validateOtp(email, otp)) {
+            userService.enableUser(email); // Chuyển status UNVERIFIED → ACTIVE
             session.removeAttribute("pendingEmail");
             return "redirect:/auth/login?registered=true";
         } else {
@@ -111,7 +116,6 @@ public class AuthController {
         return "auth/verify-otp";
     }
 
-    // ================= 2. LUỒNG QUÊN MẬT KHẨU =================
 
     @GetMapping("/forgot-password")
     public String showForgotPasswordForm() {
@@ -125,18 +129,20 @@ public class AuthController {
         try {
             User user = userService.findByUsernameOrEmail(identifier);
 
+            // Gửi OTP tới email của tài khoản tìm được
             String otp = otpService.generateOtp(user.getEmail());
             emailService.sendOtpEmail(user.getEmail(), otp);
 
             session.setAttribute("resetEmail", user.getEmail());
             return "redirect:/auth/verify-reset-otp";
+
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "auth/forgot-password";
         }
     }
 
-    // Hiển thị giao diện OTP Quên Mật Khẩu (dùng chung file auth/verify-otp)
+
     @GetMapping("/verify-reset-otp")
     public String showVerifyResetOtpForm(HttpSession session, Model model) {
         String email = (String) session.getAttribute("resetEmail");
@@ -145,11 +151,11 @@ public class AuthController {
         }
 
         model.addAttribute("email", email);
-        model.addAttribute("isResetPassword", true);
+        model.addAttribute("isResetPassword", true); // Flag để template hiển thị đúng nội dung
         return "auth/verify-otp";
     }
 
-    // Xác nhận OTP Quên Mật Khẩu
+
     @PostMapping("/verify-reset-otp")
     public String processVerifyResetOtp(@RequestParam("otp") String otp,
                                         HttpSession session,
@@ -160,6 +166,7 @@ public class AuthController {
         }
 
         if (otpService.validateOtp(email, otp)) {
+            // Đặt cờ "được phép đặt lại mật khẩu" vào session
             session.setAttribute("canResetPassword", true);
             return "redirect:/auth/reset-password";
         } else {
@@ -170,7 +177,7 @@ public class AuthController {
         }
     }
 
-    // Gửi lại OTP trong luồng Quên Mật Khẩu
+
     @PostMapping("/resend-reset-otp")
     public String resendResetOtp(HttpSession session, Model model) {
         String email = (String) session.getAttribute("resetEmail");
@@ -180,20 +187,21 @@ public class AuthController {
 
         String newOtp = otpService.generateOtp(email);
         emailService.sendOtpEmail(email, newOtp);
-
         model.addAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
         model.addAttribute("email", email);
         model.addAttribute("isResetPassword", true);
         return "auth/verify-otp";
     }
 
+
     @GetMapping("/reset-password")
     public String showResetPasswordForm(HttpSession session) {
         Boolean canReset = (Boolean) session.getAttribute("canResetPassword");
+
+        // Chặn truy cập trực tiếp URL mà không qua bước xác thực OTP
         if (canReset == null || !canReset) {
             return "redirect:/auth/forgot-password";
         }
-
         return "auth/reset-password";
     }
 
@@ -214,13 +222,12 @@ public class AuthController {
 
         userService.updatePassword(email, password);
 
+        // Dọn dẹp session sau khi hoàn tất luồng quên mật khẩu
         session.removeAttribute("resetEmail");
         session.removeAttribute("canResetPassword");
 
         return "redirect:/auth/login?resetSuccess=true";
     }
-
-    // ================= 3. TRANG ĐĂNG NHẬP =================
 
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "registered", required = false) String registered,
