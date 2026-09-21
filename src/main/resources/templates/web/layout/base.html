@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="main-layout(title, content)">
+    <head>
+        <meta charset="UTF-8">
+        <!-- Tiêu đề sẽ thay đổi linh hoạt theo từng trang -->
+        <title th:replace="${title}">Tên Mặc Định</title>
+
+        <!-- CSS dùng chung cho toàn bộ web -->
+        <link rel="stylesheet" th:href="@{/common/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/web/css/fragments/chat.css}">
+        <link rel="stylesheet" th:href="@{/web/css/fragments/header.css}">
+        <link rel="stylesheet" th:href="@{/web/css/fragments/footer.css}">
+
+        <link rel="stylesheet" th:href="@{/web/css/index.css}">
+    </head>
+    <body>
+
+        <!-- 1. Nhúng Header từ thư mục fragments -->
+        <div th:replace="~{web/fragments/header :: main-header}"></div>
+
+        <!-- 2. Phần nội dung chính (sẽ được các trang khác truyền vào đây) -->
+        <main th:replace="${content}">
+            Nội dung trang sẽ hiển thị ở đây
+        </main>
+
+        <!-- 3. Các thành phần chung khác (Footer, Chat Box) -->
+        <div th:replace="~{web/fragments/chat-box :: chat-widget}"></div>
+        <div th:replace="~{web/fragments/footer :: main-footer}"></div>
+
+
+        <!-- JS dùng chung -->
+        <script th:src="@{/web/js/fragments/chat.js}"></script>
+        <script th:src="@{/common/js/bootstrap.bundle.min.js}"></script>
+
+    </body>
+</html>
