@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:fragment="main-layout(title, content)">
+      th:fragment="main-layout(title, extraCss, extraJs, content)">
     <head>
         <meta charset="UTF-8">
         <!-- Tiêu đề sẽ thay đổi linh hoạt theo từng trang -->
@@ -9,11 +9,13 @@
 
         <!-- CSS dùng chung cho toàn bộ web -->
         <link rel="stylesheet" th:href="@{/common/css/bootstrap.min.css}">
+        <link rel="stylesheet" th:href="@{/common/css/bootstrap-icons.css}">
         <link rel="stylesheet" th:href="@{/web/css/fragments/chat.css}">
         <link rel="stylesheet" th:href="@{/web/css/fragments/header.css}">
         <link rel="stylesheet" th:href="@{/web/css/fragments/footer.css}">
 
-        <link rel="stylesheet" th:href="@{/web/css/index.css}">
+        <!-- css riêng -->
+        <th:block th:if="${extraCss != null}" th:replace="${extraCss}"></th:block>
     </head>
     <body>
 
@@ -29,10 +31,11 @@
         <div th:replace="~{web/fragments/chat-box :: chat-widget}"></div>
         <div th:replace="~{web/fragments/footer :: main-footer}"></div>
 
-
         <!-- JS dùng chung -->
-        <script th:src="@{/web/js/fragments/chat.js}"></script>
         <script th:src="@{/common/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/web/js/fragments/chat.js}"></script>
 
+        <!-- js riêng -->
+        <th:block th:if="${extraJs != null}" th:replace="${extraJs}"></th:block>
     </body>
 </html>

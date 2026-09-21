@@ -1,27 +1,183 @@
 <!DOCTYPE html>
-<!-- Gọi base layout và truyền tham số -->
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::section})}">
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link},~{}, ~{::section})}">
 <head>
-    <!-- Trở thành tham số 'title' trong base.html -->
     <title>Nước Hoa Store - Trang Chủ</title>
+    <link rel="stylesheet" th:href="@{/web/css/index.css}">
 </head>
 <body>
 
-<!-- Toàn bộ thẻ <section> này sẽ trở thành tham số 'content' và nhúng vào thẻ <main> trong base.html -->
-<section>
-    <div class="container">
-        <div class="welcome-card">
-            <h1>Chào mừng đến với Cửa Hàng Nước Hoa</h1>
-
-            <div sec:authorize="isAnonymous()">
-                <p>Vui lòng đăng nhập hoặc đăng ký tài khoản để bắt đầu trải nghiệm mua sắm!</p>
+<section class="home-section">
+    <!-- Hero Slider (Carousel) -->
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="4000">
+                <img th:src="@{/web/images/anh_slide1.jpg}" class="d-block w-100" alt="Slide 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 class="gold-text">Tinh Hoa Phái Đẹp</h5>
+                    <p>Khám phá những bộ sưu tập nước hoa nữ cao cấp nhất.</p>
+                    <a href="#" class="btn btn-gold mt-3">Khám Phá Ngay</a>
+                </div>
             </div>
+            <div class="carousel-item" data-bs-interval="4000">
+                <img th:src="@{/web/images/anh_slide2.jpg}" class="d-block w-100" alt="Slide 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 class="gold-text">Đẳng Cấp Phái Mạnh</h5>
+                    <p>Hương thơm nam tính, mạnh mẽ và đầy cuốn hút.</p>
+                    <a href="#" class="btn btn-gold mt-3">Mua Sắm Cho Nam</a>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="4000">
+                <img th:src="@{/web/images/anh_slide3.jpg}" class="d-block w-100" alt="Slide 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 class="gold-text">Phiên Bản Giới Hạn</h5>
+                    <p>Sở hữu ngay những tuyệt tác hương thơm hiếm có.</p>
+                    <a href="#" class="btn btn-gold mt-3">Xem Chi Tiết</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
 
-            <div sec:authorize="isAuthenticated()">
-                <p>Bạn đã đăng nhập thành công vào hệ thống!</p>
-                <p>Session của bạn đang hoạt động bình thường.</p>
+    <!-- Category Section -->
+    <div class="container mt-5 pt-4">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="category-card position-relative overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1523293115678-d2906231c518?q=80&w=800&h=500&fit=crop" class="w-100" alt="For Her">
+                    <div class="category-overlay d-flex flex-column justify-content-center align-items-center text-center">
+                        <h2 class="elegant-title text-white">Dành Cho Nữ</h2>
+                        <a href="#" class="btn btn-outline-light mt-3 px-4">Xem Bộ Sưu Tập</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="category-card position-relative overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1590736704728-f4730bb30770?q=80&w=800&h=500&fit=crop" class="w-100" alt="For Him">
+                    <div class="category-overlay d-flex flex-column justify-content-center align-items-center text-center">
+                        <h2 class="elegant-title text-white">Dành Cho Nam</h2>
+                        <a href="#" class="btn btn-outline-light mt-3 px-4">Xem Bộ Sưu Tập</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Products Area -->
+    <div class="container mt-5 pt-5 mb-5">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="elegant-title fw-bold">Sản Phẩm Nổi Bật</h2>
+                <div class="decorative-line mx-auto"></div>
+                <p class="text-muted mt-3">Những mùi hương được yêu thích nhất trong tháng</p>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card product-card border-0 shadow-sm h-100">
+                    <div class="position-relative">
+                        <span class="badge bg-dark position-absolute top-0 start-0 m-2 px-2 py-1">BÁN CHẠY</span>
+                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title mb-1">Chanel N°5</h5>
+                        <p class="card-text text-muted small mb-2">Hương hoa cỏ phương đông</p>
+                        <p class="price gold-text fw-bold mb-3 mt-auto">3.500.000 ₫</p>
+                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card product-card border-0 shadow-sm h-100">
+                    <img src="https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title mb-1">Dior Sauvage</h5>
+                        <p class="card-text text-muted small mb-2">Hương nam tính, mạnh mẽ</p>
+                        <p class="price gold-text fw-bold mb-3 mt-auto">3.200.000 ₫</p>
+                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card product-card border-0 shadow-sm h-100">
+                    <div class="position-relative">
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1">MỚI</span>
+                        <img src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title mb-1">Tom Ford Orchid</h5>
+                        <p class="card-text text-muted small mb-2">Hương hoa cỏ phương đông</p>
+                        <p class="price gold-text fw-bold mb-3 mt-auto">4.100.000 ₫</p>
+                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card product-card border-0 shadow-sm h-100">
+                    <img src="https://images.unsplash.com/photo-1523293115678-d2906231c518?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title mb-1">Gucci Bloom</h5>
+                        <p class="card-text text-muted small mb-2">Hương hoa nhài, huệ trắng</p>
+                        <p class="price gold-text fw-bold mb-3 mt-auto">3.800.000 ₫</p>
+                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 text-center mt-4">
+                <a href="/products" class="btn btn-gold px-5 py-2">Xem Tất Cả Sản Phẩm <i class="bi bi-arrow-right ms-2"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand Story Section -->
+    <div class="bg-black text-light py-5 mt-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <img th:src="@{/web/images/cauchuyen.jpg}" class="img-fluid rounded shadow" alt="Brand Story">
+                </div>
+                <div class="col-md-6 px-md-5">
+                    <h2 class="elegant-title gold-text mb-4">Câu Chuyện L'AURÉAL</h2>
+                    <p class="lead fw-light mb-4" style="line-height: 1.8;">"Mỗi giọt hương là một câu chuyện, một cảm xúc và một kỷ niệm không thể xóa nhòa."</p>
+                    <p class="text-white mb-4" style="line-height: 1.8;">Được thành lập với niềm đam mê bất tận về thế giới mùi hương, L'AURÉAL tự hào là điểm đến đẳng cấp cho những ai tìm kiếm sự tinh tế. Chúng tôi cam kết mang đến 100% sản phẩm chính hãng từ các thương hiệu danh tiếng nhất toàn cầu.</p>
+                    <a href="#" class="btn btn-outline-light px-4 py-2">Tìm Hiểu Thêm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter / Login prompt -->
+    <div class="container my-5 py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div sec:authorize="isAnonymous()" class="p-5 bg-light rounded shadow-sm border-top border-gold border-3">
+                    <i class="bi bi-envelope-paper gold-text display-4 mb-3 d-block"></i>
+                    <h3 class="elegant-title mb-3">Tham Gia Thành Viên L'AURÉAL</h3>
+                    <p class="text-muted mb-4">Đăng ký ngay để nhận thông tin về các bộ sưu tập mới và ưu đãi đặc quyền lên tới 20% cho đơn hàng đầu tiên.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="/login" class="btn btn-dark px-5">Đăng Nhập</a>
+                        <a href="/register" class="btn btn-gold px-5">Đăng Ký</a>
+                    </div>
+                </div>
+                
+                <div sec:authorize="isAuthenticated()" class="p-5 bg-light rounded shadow-sm border-top border-gold border-3">
+                    <i class="bi bi-stars gold-text display-4 mb-3 d-block"></i>
+                    <h3 class="elegant-title mb-3">Chào mừng trở lại!</h3>
+                    <p class="text-muted mb-4">Khám phá các ưu đãi đặc biệt dành riêng cho thành viên VIP của L'AURÉAL ngày hôm nay.</p>
+                    <a href="/profile" class="btn btn-dark px-5">Vào Trang Cá Nhân</a>
+                </div>
             </div>
         </div>
     </div>

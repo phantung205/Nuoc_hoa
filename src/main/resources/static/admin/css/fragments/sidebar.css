@@ -1,0 +1,36 @@
+/* Adjust main content since sidebar is fixed */
+.main {
+    margin-left: 280px;
+}
+
+.bg-black {
+    background-color: #111 !important;
+}
+
+.bg-gold {
+    background-color: #D4AF37 !important;
+}
+
+.gold-text {
+    color: #D4AF37 !important;
+}
+
+.hover-bg-dark:hover {
+    background-color: rgba(255,255,255,0.05);
+    color: #D4AF37 !important;
+}
+
+.btn-outline-gold {
+    color: #D4AF37;
+    border: 1px solid #D4AF37;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background-color: #D4AF37;
+    color: #111;
+}
+
+.elegant-title {
+    font-family: 'Playfair Display', serif;
+}

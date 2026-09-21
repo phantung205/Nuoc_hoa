@@ -1,17 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- Định nghĩa mảnh ghép tên là 'main-footer' -->
-<footer th:fragment="main-footer">
+<footer th:fragment="main-footer" class="bg-black text-light py-5 mt-5 border-top border-gold">
     <div class="container">
-        <div class="footer-content">
-            <h3>🌸 Nước Hoa Shop</h3>
-            <p>Địa chỉ: Số 1, Đường ABC, Quận XYZ, TP. Hà Nội</p>
-            <p>Điện thoại: 0123.456.789 | Email: contact@nuochoashop.com</p>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <h3 class="elegant-title gold-text mb-4">2T&C</h3>
+                <p class="text-light opacity-75 mb-4">Khám phá thế giới hương thơm đầy quyến rũ và tinh tế. Chúng tôi mang đến những dòng nước hoa cao cấp nhất từ các thương hiệu hàng đầu thế giới.</p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-light fs-5 hover-gold"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-light fs-5 hover-gold"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-light fs-5 hover-gold"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6">
+                <h5 class="gold-text mb-3 fw-bold">Khám Phá</h5>
+                <ul class="list-unstyled footer-links">
+                    <li class="mb-2"><a href="#">Nước hoa Nam</a></li>
+                    <li class="mb-2"><a href="#">Nước hoa Nữ</a></li>
+                    <li class="mb-2"><a href="#">Bán chạy nhất</a></li>
+                    <li class="mb-2"><a href="#">Hàng mới về</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h5 class="gold-text mb-3 fw-bold">Chăm Sóc Khách Hàng</h5>
+                <ul class="list-unstyled footer-links">
+                    <li class="mb-2"><a href="#">Chính sách đổi trả</a></li>
+                    <li class="mb-2"><a href="#">Chính sách bảo mật</a></li>
+                    <li class="mb-2"><a href="#">Câu hỏi thường gặp</a></li>
+                    <li class="mb-2"><a href="#">Hướng dẫn mua hàng</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h5 class="gold-text mb-3 fw-bold">Liên Hệ</h5>
+                <ul class="list-unstyled text-light opacity-75">
+                    <li class="mb-2"><i class="bi bi-geo-alt-fill gold-text me-2"></i> Số 1, Đường ABC, Quận XYZ, TP. Hà Nội</li>
+                    <li class="mb-2"><i class="bi bi-telephone-fill gold-text me-2"></i> 0123.456.789</li>
+                    <li class="mb-2"><i class="bi bi-envelope-fill gold-text me-2"></i> contact@laureal.com</li>
+                </ul>
+            </div>
         </div>
-        <hr>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Nước Hoa Shop. Tất cả các quyền được bảo lưu.</p>
+        
+        <hr class="border-secondary mt-5 mb-4">
+        
+        <div class="text-center text-light opacity-75">
+            <p class="mb-0">&copy; 2024 L'AURÉAL Perfume Shop. Tất cả các quyền được bảo lưu.</p>
         </div>
     </div>
 </footer>

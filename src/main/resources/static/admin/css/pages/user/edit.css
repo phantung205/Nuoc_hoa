@@ -1,8 +1,25 @@
-/*body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; }*/
-/*.card { background: white; max-width: 500px; margin: 30px auto; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }*/
-/*.form-group { margin-bottom: 15px; }*/
-/*label { display: block; margin-bottom: 5px; font-weight: bold; }*/
-/*input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }*/
-/*.btn { width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }*/
-/*.alert-error { background: #fee2e2; color: #dc2626; padding: 10px; border-radius: 4px; margin-bottom: 15px; }*/
-/*.note { font-size: 12px; color: #6b7280; }*/
+/* Custom CSS for Edit User in Admin */
+.dashboard-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 35px 40px;
+    border-top: 5px solid #111;
+}
+.gold-accent {
+    color: #D4AF37;
+}
+.form-label {
+    font-size: 0.95rem;
+    color: #333;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+.btn-primary {
+    transition: all 0.3s;
+}
+.btn-primary:hover {
+    background-color: #b5952f !important;
+    border-color: #b5952f !important;
+}

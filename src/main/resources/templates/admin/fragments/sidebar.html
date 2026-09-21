@@ -1,32 +1,54 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-
-    <!-- Đoạn fragment có tên là "sidebar". Bất kỳ trang nào cũng có thể gọi đoạn này ra dùng. -->
-    <div th:fragment="sidebar(activeMenu)" class="sidebar">
-        
-        <div class="sidebar-brand">
-            <h2>L'AURÉAL</h2>
-            <span style="font-size: 12px; opacity: 0.7; letter-spacing: 1px;">MANAGEMENT</span>
-        </div>
-        
-        <div class="sidebar-menu">
-            <!-- Dùng class = 'active' nếu biến activeMenu truyền vào trùng khớp -->
-            <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">📊 Bảng điều khiển</a>
-            <a th:href="@{/admin/users}" th:classappend="${activeMenu == 'users' ? 'active' : ''}">👥 Quản lý Tài khoản</a>
-            <a th:href="@{/admin/products}" th:classappend="${activeMenu == 'products' ? 'active' : ''}">💎 Quản lý Sản phẩm</a>
-            <a th:href="@{/admin/orders}" th:classappend="${activeMenu == 'orders' ? 'active' : ''}">📦 Quản lý Đơn hàng</a>
-            <a th:href="@{/}">🌐 Xem Trang Web</a>
-        </div>
-        
-        <div class="sidebar-logout">
-            <!-- Đăng xuất phải dùng FORM POST trong Spring Security để chống lỗi CSRF -->
-            <form th:action="@{/auth/logout}" method="post">
-                <button type="submit">🚪 Đăng Xuất</button>
-            </form>
-        </div>
-        
+<div th:fragment="sidebar(activeMenu)" class="sidebar bg-black text-light d-flex flex-column" style="width: 280px; min-height: 100vh; position: fixed;">
+    <div class="sidebar-brand p-4 text-center border-bottom border-secondary">
+        <h2 class="elegant-title gold-text mb-0 fs-3"><i class="bi bi-droplet-fill me-2"></i>2T&C</h2>
+        <span style="font-size: 11px; letter-spacing: 2px; color: #d4af37; opacity: 0.85; font-weight: 500;">MANAGEMENT</span>
     </div>
+    
+    <div class="sidebar-menu flex-grow-1 p-3 mt-3">
+        <div class="mb-2 ps-3" style="font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: #adb5bd;">MENU CHÍNH</div>
+        <ul class="nav flex-column gap-2">
+            <li class="nav-item">
+                <a th:href="@{/admin/dashboard}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'dashboard' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-grid-1x2-fill me-2"></i> Tổng Quan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/users}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'users' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-people-fill me-2"></i> Tài Khoản
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/products}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'products' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-box-seam-fill me-2"></i> Sản Phẩm
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/orders}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'orders' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-cart-check-fill me-2"></i> Đơn Hàng
+                </a>
+            </li>
+        </ul>
 
+        <div class="mb-2 ps-3 mt-4" style="font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: #adb5bd;">CỬA HÀNG</div>
+        <ul class="nav flex-column gap-2">
+            <li class="nav-item">
+                <a th:href="@{/}" class="nav-link text-light rounded px-3 py-2 hover-bg-dark" target="_blank">
+                    <i class="bi bi-globe me-2"></i> Xem Website
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="sidebar-logout p-3 border-top border-secondary">
+        <form th:action="@{/auth/logout}" method="post">
+            <button type="submit" class="btn btn-outline-gold w-100 rounded">
+                <i class="bi bi-box-arrow-right me-2"></i> Đăng Xuất
+            </button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

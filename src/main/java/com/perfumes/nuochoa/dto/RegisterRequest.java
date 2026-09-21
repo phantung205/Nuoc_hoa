@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public class RegisterRequest {
 
     @NotBlank(message = "Tên đăng nhập không được để trống")
-    @Size(min = 6, max = 50, message = "Tên đăng nhập phải từ 4 đến 50 ký tự")
+    @Size(min = 6, max = 50, message = "Tên đăng nhập phải từ 6 đến 50 ký tự")
     private String username;
 
     @NotBlank(message = "Email không được để trống")

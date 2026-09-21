@@ -1,0 +1,22 @@
+.border-gold {
+    border-color: #D4AF37 !important;
+}
+
+.footer-links a {
+    color: #a3a3a3;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #D4AF37;
+    padding-left: 5px;
+}
+
+.hover-gold {
+    transition: color 0.3s ease;
+}
+
+.hover-gold:hover {
+    color: #D4AF37 !important;
+}

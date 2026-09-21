@@ -1,18 +1,20 @@
 <!-- File: web/fragments/chat-box.html -->
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="chat-widget">
     <!-- Nút bóng chat nổi -->
-    <button id="chat-toggle-btn" onclick="toggleChat()">💬</button>
+    <button id="chat-toggle-btn" onclick="toggleChat()">
+        <i class="bi bi-chat-right-dots-fill"></i>
+    </button>
 
     <!-- Khung cửa sổ chat -->
     <div id="chat-popup" class="chat-container">
         <div class="chat-header">
-            <span>🌸 Tư vấn Nước hoa AI</span>
-            <button onclick="toggleChat()">✕</button>
+            <span><i class="bi bi-stars me-2"></i> 2T&C AI</span>
+            <button class="close-btn" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
         </div>
         <div id="chat-logs" class="chat-logs"></div>
         <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="Hỏi về nước hoa..." onkeypress="if(event.key==='Enter') sendMessage()" />
-            <button onclick="sendMessage()">Gửi</button>
+            <input type="text" id="user-input" placeholder="Bạn cần tìm nước hoa gì?..." onkeypress="if(event.key==='Enter') sendMessage()" />
+            <button class="send-btn" onclick="sendMessage()"><i class="bi bi-send-fill"></i></button>
         </div>
     </div>
 </div>

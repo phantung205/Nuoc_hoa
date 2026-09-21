@@ -1,49 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{}, ~{}, ~{::section})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Đăng ký tài khoản - NuocHoa</title>
-    <link rel="stylesheet" th:href="@{/auth/css/register.css}">
+    <title>Đăng ký tài khoản - L'AURÉAL</title>
 </head>
 <body>
 
-<div class="card">
-    <h2 style="text-align: center;">Tạo Tài Khoản</h2>
+<section class="auth-section py-5 bg-light" style="min-height: 80vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="elegant-title gold-text mb-2">Tạo Tài Khoản</h2>
+                            <p class="text-muted">Gia nhập cộng đồng thượng lưu của L'AURÉAL</p>
+                        </div>
 
-    <div th:if="${errorMessage}" class="error-box" th:text="${errorMessage}"></div>
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
 
-    <form th:action="@{/auth/register}" th:object="${registerRequest}" method="post">
-        <div class="form-group">
-            <label>Tên đăng nhập:</label>
-            <input type="text" th:field="*{username}">
-            <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                        <form th:action="@{/auth/register}" th:object="${registerRequest}" method="post">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Tên đăng nhập" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">
+                                <label for="username">Tên đăng nhập</label>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Email" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                                <label for="email">Địa chỉ Email</label>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Mật khẩu" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                                <label for="password">Mật khẩu</label>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}" placeholder="Xác nhận mật khẩu" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''">
+                                <label for="confirmPassword">Xác nhận mật khẩu</label>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-gold w-100 py-3 mb-4 rounded-pill fw-bold">ĐĂNG KÝ NGAY</button>
+                            
+                            <div class="text-center text-muted">
+                                Đã có tài khoản? <a th:href="@{/auth/login}" class="text-decoration-none text-dark fw-bold border-bottom border-dark pb-1">Đăng nhập</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label>Email:</label>
-            <input type="email" th:field="*{email}">
-            <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-        </div>
-
-        <div class="form-group">
-            <label>Mật khẩu:</label>
-            <input type="password" th:field="*{password}">
-            <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-        </div>
-
-        <div class="form-group">
-            <label>Xác nhận mật khẩu:</label>
-            <input type="password" th:field="*{confirmPassword}">
-            <div class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
-        </div>
-
-        <button type="submit">Đăng ký</button>
-    </form>
-
-    <p style="text-align: center; margin-top: 15px;">
-        Đã có tài khoản? <a th:href="@{/auth/login}">Đăng nhập</a>
-    </p>
-</div>
+    </div>
+</section>
 
 </body>
 </html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="admin-layout(title, activeMenu, content, extraCss, extraJs)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">Admin Panel</title>
+
+    <!-- CSS dùng chung cho toàn bộ khu vực Admin -->
+    <link rel="stylesheet" th:href="@{/common/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/common/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/fragments/sidebar.css}">
+
+
+    <!-- css riêng -->
+    <th:block th:if="${extraCss != null}" th:replace="${extraCss}"></th:block>
+
+</head>
+    <body>
+
+        <!-- 1. Nhúng Sidebar và truyền biến activeMenu vào để highlight menu -->
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${activeMenu})}"></div>
+
+        <!-- 2. Vùng chứa nội dung chính của trang (đã giữ lại class="main" làm khung bao ngoài) -->
+        <div class="main">
+            <div th:replace="${content}">
+                Nội dung admin sẽ hiển thị ở đây
+            </div>
+        </div>
+
+        <!-- JS dùng chung -->
+        <script th:src="@{/common/js/bootstrap.bundle.min.js}"></script>
+
+        <!-- js riêng -->
+        <th:block th:if="${extraJs != null}" th:replace="${extraJs}"></th:block>
+
+    </body>
+</html>
