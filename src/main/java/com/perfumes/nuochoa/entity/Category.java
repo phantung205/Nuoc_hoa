@@ -2,11 +2,9 @@ package com.perfumes.nuochoa.entity;
 
 import jakarta.persistence.*;
 
-
 @Entity
 @Table(name = "categories")
 public class Category {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +13,8 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "is_active")
+    private Boolean isActive = true;
 
     public Long getId() {
         return id;
@@ -30,5 +30,13 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 }

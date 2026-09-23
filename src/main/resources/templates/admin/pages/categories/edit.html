@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'categories', ~{::div.admin-content}, ~{::link}, ~{})}">
+<head>
+    <title>Cập Nhật Danh Mục - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/categories/edit.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Cập Nhật Danh Mục</h2>
+            <p class="text-muted mb-0">Chỉnh sửa thông tin danh mục: <span th:text="${category.name}" class="fw-bold text-dark"></span></p>
+        </div>
+        <a href="/admin/categories" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+    </div>
+
+    <div class="dashboard-card shadow-sm mx-auto" style="max-width: 600px;">
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/categories/edit/{id}(id=${category.id})}" th:object="${category}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tên Danh Mục <span class="text-danger">*</span></label>
+                <input type="text" class="form-control bg-light" th:field="*{name}" required>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="categoryActive" th:field="*{isActive}">
+                    <label class="form-check-label fw-bold" for="categoryActive">Kích hoạt (Hiển thị)</label>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin/categories" class="btn btn-light px-4">Hủy Bỏ</a>
+                <button type="submit" class="btn btn-primary px-4" style="background-color: #D4AF37; border-color: #D4AF37; color: #111; font-weight: bold;"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

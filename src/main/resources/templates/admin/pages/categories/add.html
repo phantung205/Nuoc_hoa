@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'categories', ~{::div.admin-content}, ~{::link}, ~{})}">
+<head>
+    <title>Thêm Danh Mục Mới - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/categories/add.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Thêm Mới Danh Mục</h2>
+            <p class="text-muted mb-0">Tạo danh mục sản phẩm mới</p>
+        </div>
+        <a href="/admin/categories" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+    </div>
+
+    <div class="dashboard-card shadow-sm mx-auto" style="max-width: 600px;">
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/categories/add}" th:object="${category}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tên Danh Mục <span class="text-danger">*</span></label>
+                <input type="text" class="form-control bg-light" th:field="*{name}" required placeholder="Nhập tên danh mục...">
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="categoryActive" th:field="*{isActive}">
+                    <label class="form-check-label fw-bold" for="categoryActive">Kích hoạt (Hiển thị)</label>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin/categories" class="btn btn-light px-4">Hủy Bỏ</a>
+                <button type="submit" class="btn btn-dark px-4"><i class="bi bi-save me-1"></i> Tạo Danh Mục</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'bands', ~{::div.admin-content}, ~{::link}, ~{})}">
+<head>
+    <title>Quản Lý Thương Hiệu - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/bands/list.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Quản Lý Thương Hiệu</h2>
+            <p class="text-muted mb-0">Danh sách các thương hiệu nước hoa</p>
+        </div>
+        <a href="/admin/brands/add" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Thêm Thương Hiệu</a>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${param.success != null}" class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:if="${param.success[0] == 'created'}">Tạo mới thương hiệu thành công!</span>
+        <span th:if="${param.success[0] == 'updated'}">Cập nhật thương hiệu thành công!</span>
+        <span th:if="${param.success[0] == 'deleted'}">Xóa thương hiệu thành công!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="dashboard-card shadow-sm p-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Logo</th>
+                    <th>Tên Thương Hiệu</th>
+                    <th>Xuất Xứ</th>
+                    <th>Trạng Thái</th>
+                    <th class="text-end pe-4">Hành Động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${brands}">
+                    <td class="ps-4 fw-bold text-muted" th:text="${'#' + b.id}">#1</td>
+                    <td>
+                        <img th:if="${b.logo != null && !b.logo.isEmpty()}" th:src="${b.logo}" alt="Logo" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: contain;">
+                        <span th:unless="${b.logo != null && !b.logo.isEmpty()}" class="text-muted fst-italic">Không có</span>
+                    </td>
+                    <td class="fw-semibold" th:text="${b.name}">Brand Name</td>
+                    <td th:text="${b.originCountry}">Quốc gia</td>
+                    <td>
+                        <a th:href="@{/admin/brands/toggle/{id}(id=${b.id})}" class="text-decoration-none">
+                            <span th:if="${b.isActive}" class="badge bg-success bg-opacity-75"><i class="bi bi-check-circle me-1"></i>Đang hiện</span>
+                            <span th:unless="${b.isActive}" class="badge bg-secondary bg-opacity-75"><i class="bi bi-eye-slash-fill me-1"></i>Đang ẩn</span>
+                        </a>
+                    </td>
+                    <td class="text-end pe-4">
+                        <a th:href="@{/admin/brands/edit/{id}(id=${b.id})}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a th:href="@{/admin/brands/delete/{id}(id=${b.id})}"
+                           class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa thương hiệu này? Hành động này không thể hoàn tác.')">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(brands)}">
+                    <td colspan="6" class="text-center py-5 text-muted">Không có dữ liệu thương hiệu.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

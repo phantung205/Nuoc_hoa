@@ -9,7 +9,8 @@
 <body>
 
 <section class="home-section">
-    <!-- Hero Slider (Carousel) -->
+
+    <!-- 1. Hero Slider (Giữ nguyên Banner mặc định ban đầu) -->
     <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -52,31 +53,41 @@
         </button>
     </div>
 
-    <!-- Category Section -->
-    <div class="container mt-5 pt-4">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="category-card position-relative overflow-hidden shadow-sm">
-                    <img src="https://images.unsplash.com/photo-1523293115678-d2906231c518?q=80&w=800&h=500&fit=crop" class="w-100" alt="For Her">
-                    <div class="category-overlay d-flex flex-column justify-content-center align-items-center text-center">
-                        <h2 class="elegant-title text-white">Dành Cho Nữ</h2>
-                        <a href="#" class="btn btn-outline-light mt-3 px-4">Xem Bộ Sưu Tập</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="category-card position-relative overflow-hidden shadow-sm">
-                    <img src="https://images.unsplash.com/photo-1590736704728-f4730bb30770?q=80&w=800&h=500&fit=crop" class="w-100" alt="For Him">
-                    <div class="category-overlay d-flex flex-column justify-content-center align-items-center text-center">
-                        <h2 class="elegant-title text-white">Dành Cho Nam</h2>
-                        <a href="#" class="btn btn-outline-light mt-3 px-4">Xem Bộ Sưu Tập</a>
-                    </div>
+    <!-- 2. Category Section (Dữ liệu lấy ĐỘNG từ DB) -->
+    <div class="container mt-5 pt-4" th:if="${categories != null and !categories.empty}">
+        <div class="row text-center mb-4">
+            <h2 class="elegant-title fw-bold">Danh Mục Mùi Hương</h2>
+            <div class="decorative-line mx-auto"></div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div th:each="cat : ${categories}" class="col-md-4 col-sm-6">
+                <div class="category-card position-relative overflow-hidden shadow-sm rounded border border-secondary bg-black p-4 text-center">
+                    <h3 class="elegant-title text-white mb-3" th:text="${cat.name}">Tên Danh Mục</h3>
+                    <a th:href="@{/categories/{id}(id=${cat.id})}" class="btn btn-outline-light btn-sm px-4">Xem Bộ Sưu Tập</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Featured Products Area -->
+    <!-- 3. Brand Section (Dữ liệu lấy ĐỘNG từ DB) -->
+    <div class="container mt-5 pt-4" th:if="${brands != null and !brands.empty}">
+        <div class="row text-center mb-4">
+            <h2 class="elegant-title fw-bold">Thương Hiệu Nổi Bật</h2>
+            <div class="decorative-line mx-auto"></div>
+        </div>
+        <div class="row g-4 align-items-center justify-content-center">
+            <div th:each="brand : ${brands}" class="col-6 col-md-2 text-center">
+                <a th:href="@{/brands/{id}(id=${brand.id})}" class="text-decoration-none">
+                    <div class="p-3 bg-light rounded shadow-sm">
+                        <img th:if="${brand.logo != null and !brand.logo.empty}" th:src="${brand.logo}" th:alt="${brand.name}" class="img-fluid" style="max-height: 50px;">
+                        <span th:if="${brand.logo == null or brand.logo.empty}" class="fw-bold text-dark d-block py-2" th:text="${brand.name}">Tên Brand</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Featured Products Area (Mẫu sản phẩm tĩnh) -->
     <div class="container mt-5 pt-5 mb-5">
         <div class="row">
             <div class="col-12 text-center mb-5">
@@ -134,14 +145,14 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 text-center mt-4">
-                <a href="/products" class="btn btn-gold px-5 py-2">Xem Tất Cả Sản Phẩm <i class="bi bi-arrow-right ms-2"></i></a>
+                <a th:href="@{/products}" class="btn btn-gold px-5 py-2">Xem Tất Cả Sản Phẩm <i class="bi bi-arrow-right ms-2"></i></a>
             </div>
         </div>
     </div>
 
-    <!-- Brand Story Section -->
+    <!-- 5. Brand Story Section -->
     <div class="bg-black text-light py-5 mt-5">
         <div class="container py-5">
             <div class="row align-items-center">
@@ -149,34 +160,34 @@
                     <img th:src="@{/web/images/cauchuyen.jpg}" class="img-fluid rounded shadow" alt="Brand Story">
                 </div>
                 <div class="col-md-6 px-md-5">
-                    <h2 class="elegant-title gold-text mb-4">Câu Chuyện L'AURÉAL</h2>
+                    <h2 class="elegant-title gold-text mb-4">Câu Chuyện 2T&C</h2>
                     <p class="lead fw-light mb-4" style="line-height: 1.8;">"Mỗi giọt hương là một câu chuyện, một cảm xúc và một kỷ niệm không thể xóa nhòa."</p>
-                    <p class="text-white mb-4" style="line-height: 1.8;">Được thành lập với niềm đam mê bất tận về thế giới mùi hương, L'AURÉAL tự hào là điểm đến đẳng cấp cho những ai tìm kiếm sự tinh tế. Chúng tôi cam kết mang đến 100% sản phẩm chính hãng từ các thương hiệu danh tiếng nhất toàn cầu.</p>
+                    <p class="text-white mb-4" style="line-height: 1.8;">Được thành lập với niềm đam mê bất tận về thế giới mùi hương, 2T&C tự hào là điểm đến đẳng cấp cho những ai tìm kiếm sự tinh tế. Chúng tôi cam kết mang đến 100% sản phẩm chính hãng từ các thương hiệu danh tiếng nhất toàn cầu.</p>
                     <a href="#" class="btn btn-outline-light px-4 py-2">Tìm Hiểu Thêm</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Newsletter / Login prompt -->
+    <!-- 6. Newsletter / Login prompt -->
     <div class="container my-5 py-5 text-center">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div sec:authorize="isAnonymous()" class="p-5 bg-light rounded shadow-sm border-top border-gold border-3">
                     <i class="bi bi-envelope-paper gold-text display-4 mb-3 d-block"></i>
-                    <h3 class="elegant-title mb-3">Tham Gia Thành Viên L'AURÉAL</h3>
+                    <h3 class="elegant-title mb-3">Tham Gia Thành Viên 2T&C</h3>
                     <p class="text-muted mb-4">Đăng ký ngay để nhận thông tin về các bộ sưu tập mới và ưu đãi đặc quyền lên tới 20% cho đơn hàng đầu tiên.</p>
                     <div class="d-flex justify-content-center gap-3">
-                        <a href="/login" class="btn btn-dark px-5">Đăng Nhập</a>
-                        <a href="/register" class="btn btn-gold px-5">Đăng Ký</a>
+                        <a th:href="@{/auth/login}" class="btn btn-dark px-5">Đăng Nhập</a>
+                        <a th:href="@{/auth/register}" class="btn btn-gold px-5">Đăng Ký</a>
                     </div>
                 </div>
-                
+
                 <div sec:authorize="isAuthenticated()" class="p-5 bg-light rounded shadow-sm border-top border-gold border-3">
                     <i class="bi bi-stars gold-text display-4 mb-3 d-block"></i>
                     <h3 class="elegant-title mb-3">Chào mừng trở lại!</h3>
-                    <p class="text-muted mb-4">Khám phá các ưu đãi đặc biệt dành riêng cho thành viên VIP của L'AURÉAL ngày hôm nay.</p>
-                    <a href="/profile" class="btn btn-dark px-5">Vào Trang Cá Nhân</a>
+                    <p class="text-muted mb-4">Khám phá các ưu đãi đặc biệt dành riêng cho thành viên VIP của 2T&C ngày hôm nay.</p>
+                    <a th:href="@{/profile}" class="btn btn-dark px-5">Vào Trang Cá Nhân</a>
                 </div>
             </div>
         </div>

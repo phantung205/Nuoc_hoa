@@ -7,30 +7,37 @@
         <a class="navbar-brand elegant-title gold-text fw-bold fs-3" th:href="@{/}">
             <i class="bi bi-droplet-fill me-2"></i>2T&C
         </a>
-        
+
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-uppercase fw-semibold" style="letter-spacing: 1px;">
                 <li class="nav-item">
-                    <a class="nav-link px-4" th:href="@{/}">Trang chủ</a>
+                    <a class="nav-link px-3" th:href="@{/}">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-4" th:href="@{/products}">Bộ Sưu Tập</a>
+                    <a class="nav-link px-3" th:href="@{/products}">Bộ Sưu Tập</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link px-4" href="#">Nam</a>
+
+                <!-- Danh mục lấy động từ Controller -->
+                <li class="nav-item dropdown" th:if="${categories != null and !categories.empty}">
+                    <a class="nav-link dropdown-toggle px-3" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Danh Mục
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark bg-black border-gold" aria-labelledby="categoryDropdown">
+                        <li th:each="cat : ${categories}">
+                            <a class="dropdown-item" th:href="@{/categories/{id}(id=${cat.id})}" th:text="${cat.name}">Tên Danh Mục</a>
+                        </li>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link px-4" href="#">Nữ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-4" href="#">Về Chúng Tôi</a>
+                    <a class="nav-link px-3" href="#">Về Chúng Tôi</a>
                 </li>
             </ul>
-            
+
             <div class="d-flex align-items-center auth-section">
                 <div sec:authorize="isAnonymous()">
                     <a th:href="@{/auth/login}" class="btn btn-link text-white text-decoration-none px-3">Đăng nhập</a>
