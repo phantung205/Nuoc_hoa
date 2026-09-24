@@ -39,12 +39,17 @@
             </ul>
 
             <div class="d-flex align-items-center auth-section">
+                <!-- Giỏ hàng chung (nếu click khi chưa đăng nhập, Spring Security sẽ tự chuyển hướng về login) -->
+                <a th:href="@{/cart}" class="btn btn-link text-white text-decoration-none px-3 position-relative" title="Giỏ Hàng">
+                    <i class="bi bi-cart3 fs-5"></i>
+                </a>
+
                 <div sec:authorize="isAnonymous()">
                     <a th:href="@{/auth/login}" class="btn btn-link text-white text-decoration-none px-3">Đăng nhập</a>
                     <a th:href="@{/auth/register}" class="btn btn-gold btn-sm rounded-pill px-4">Đăng ký</a>
                 </div>
 
-                <div sec:authorize="isAuthenticated()" class="dropdown">
+                <div sec:authorize="isAuthenticated()" class="dropdown ms-2">
                     <button class="btn btn-link text-white text-decoration-none dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle me-1"></i>
                         <span sec:authentication="name"></span>

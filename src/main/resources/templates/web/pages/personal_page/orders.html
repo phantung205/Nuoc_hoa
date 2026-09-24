@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Đơn Hàng Của Tôi - 2T&C</title>
+    
+    <link rel="stylesheet" th:href="@{/web/css/pages/orders.css}">
+</head>
+<body>
+
+<section class="profile-section py-5 bg-light">
+    <div class="container mt-5 pt-3">
+        <div class="row">
+            
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-person-circle text-secondary" style="font-size: 4rem;"></i>
+                            <h5 class="fw-bold mt-2" th:text="${#authentication.name}">Username</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a th:href="@{/profile}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-person me-2"></i> Hồ Sơ Cá Nhân
+                            </a>
+                            <a th:href="@{/profile/addresses}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-geo-alt me-2"></i> Sổ Địa Chỉ
+                            </a>
+                            <a th:href="@{/orders}" class="list-group-item list-group-item-action py-3 border-0 fw-bold gold-text active bg-transparent">
+                                <i class="bi bi-bag-check me-2"></i> Đơn Hàng Của Tôi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-9">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <!-- Profile Header -->
+                    <div class="bg-black text-light p-5 text-center position-relative">
+                        <div class="position-absolute top-0 start-0 w-100 h-100" th:style="'background: url(' + @{/web/images/anh_slide1.jpg} + ') center/cover; opacity: 0.2;'"></div>
+                        <div class="position-relative z-index-1">
+                            <img th:src="${#strings.isEmpty(userProfile.avatarUrl)} ? @{/web/images/profilebase.png} : ${userProfile.avatarUrl}"
+                                 alt="Avatar" class="rounded-circle border border-3 border-gold shadow mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            <h3 class="elegant-title gold-text mb-1" th:text="${userProfile.fullName != null && !userProfile.fullName.isEmpty() ? userProfile.fullName : user.username}">User Name</h3>
+                            <p class="mb-0 text-light opacity-75" th:text="${user.email}">user@email.com</p>
+                            <div class="mt-3">
+                                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                                    <i class="bi bi-star-fill me-1"></i> Điểm tích lũy: <span th:text="${userProfile.loyaltyPoints}">0</span> pt
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-5">
+                        <h4 class="fw-bold mb-4 pb-3 border-bottom">Đơn Hàng Của Tôi</h4>
+
+                        <!-- Alerts -->
+                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${successMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Orders List -->
+                        <div th:if="${orders == null || orders.empty}" class="text-center py-5 text-muted">
+                            <i class="bi bi-box-seam fs-1 d-block mb-3"></i>
+                            <p>Bạn chưa có đơn hàng nào.</p>
+                            <a th:href="@{/products}" class="btn btn-gold rounded-pill px-4 mt-2">Mua Sắm Ngay</a>
+                        </div>
+
+                        <div th:if="${orders != null && !orders.empty}">
+                            <div class="card mb-4 border rounded-3 shadow-sm" th:each="order : ${orders}">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                                    <div>
+                                        <span class="fw-bold me-3">Mã đơn: #<span th:text="${order.id}"></span></span>
+                                        <small class="text-muted"><i class="bi bi-clock me-1"></i> <span th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">01/01/2026</span></small>
+                                    </div>
+                                    <span class="badge bg-primary px-3 py-2 rounded-pill" th:if="${order.status == 'PENDING'}">Chờ xử lý</span>
+                                    <span class="badge bg-info px-3 py-2 rounded-pill" th:if="${order.status == 'PROCESSING'}">Đang xử lý</span>
+                                    <span class="badge bg-warning px-3 py-2 rounded-pill text-dark" th:if="${order.status == 'SHIPPED'}">Đang giao hàng</span>
+                                    <span class="badge bg-success px-3 py-2 rounded-pill" th:if="${order.status == 'DELIVERED'}">Thành công</span>
+                                    <span class="badge bg-danger px-3 py-2 rounded-pill" th:if="${order.status == 'CANCELLED'}">Đã hủy</span>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-8 border-end">
+                                            <h6 class="fw-bold mb-3">Thông tin nhận hàng:</h6>
+                                            <p class="mb-1"><span class="text-muted me-2">Người nhận:</span> <span th:text="${order.shippingAddress != null ? order.shippingAddress.receiverName : 'Khách vãng lai'}"></span></p>
+                                            <p class="mb-1"><span class="text-muted me-2">Điện thoại:</span> <span th:text="${order.shippingAddress != null ? order.shippingAddress.phoneNumber : ''}"></span></p>
+                                            <p class="mb-1"><span class="text-muted me-2">Địa chỉ:</span> <span th:text="${order.shippingAddress != null ? order.shippingAddress.receiverAddress : ''}"></span></p>
+                                        </div>
+                                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                            <h6 class="fw-bold mb-3">Thanh toán:</h6>
+                                            <p class="mb-1"><span class="text-muted me-2">Hình thức:</span> <span class="fw-semibold" th:text="${order.payments}"></span></p>
+                                            <p class="mb-1"><span class="text-muted me-2">Tổng tiền:</span> <span class="fw-bold gold-text fs-5" th:text="${#numbers.formatDecimal(order.finalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span></p>
+                                            <p class="mb-1 mt-2" th:if="${order.status == 'DELIVERED'}">
+                                                <span class="text-muted me-2">Điểm thưởng:</span> 
+                                                <span class="badge bg-warning text-dark"><i class="bi bi-star-fill me-1"></i>+<span th:text="${T(java.lang.Math).floor(order.finalAmount / 10000).intValue()}"></span> pt</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+</script>
+</body>
+</html>

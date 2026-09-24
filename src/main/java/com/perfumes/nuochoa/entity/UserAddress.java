@@ -34,6 +34,10 @@ public class UserAddress {
     @Column(columnDefinition = "TEXT")
     private String note;
 
+    /** Loại địa chỉ: Nhà riêng, Công ty... */
+    @Column(name = "address_type")
+    private String addressType;
+
     /** true = địa chỉ mặc định; false = địa chỉ phụ. */
     @Column(name = "is_default")
     private Boolean isDefault;
@@ -82,6 +86,14 @@ public class UserAddress {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getAddressType() {
+        return addressType;
+    }
+
+    public void setAddressType(String addressType) {
+        this.addressType = addressType;
     }
 
     public Boolean getIsDefault() {

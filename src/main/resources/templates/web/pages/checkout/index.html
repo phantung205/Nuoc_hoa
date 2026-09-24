@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Thanh Toán - L'AURÉAL</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/checkout.css}">
+</head>
+<body>
+
+<section class="checkout-section py-5 bg-light">
+    <div class="container my-5 pt-3">
+        <form th:action="@{/checkout/process}" method="post" id="checkoutForm">
+            <div class="row">
+                <!-- Thông tin giao hàng -->
+                <div class="col-lg-7 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-geo-alt-fill text-gold me-2"></i>Thông Tin Giao Hàng</h5>
+                            
+                            <!-- Chọn địa chỉ đã có -->
+                            <div th:if="${addresses != null && !addresses.empty}" class="mb-4">
+                                <label class="form-label text-muted small fw-bold">Chọn địa chỉ đã lưu:</label>
+                                <div class="list-group">
+                                    <label class="list-group-item list-group-item-action p-3" th:each="addr : ${addresses}" style="cursor: pointer;">
+                                        <div class="d-flex align-items-center">
+                                            <input class="form-check-input address-radio me-3 mt-0 fs-5" type="radio" name="addressId" th:value="${addr.id}" th:checked="${addr.isDefault}">
+                                            <div>
+                                                <span class="fw-bold d-block" th:text="${addr.receiverName} + ' - ' + ${addr.phoneNumber}">Tên - SĐT</span>
+                                                <small class="text-muted d-block" th:text="${addr.receiverAddress}">Địa chỉ</small>
+                                                <span class="badge bg-secondary mt-1" th:text="${addr.addressType}">Nhà</span>
+                                                <span class="badge bg-warning text-dark mt-1" th:if="${addr.isDefault}"><i class="bi bi-star-fill me-1"></i>Mặc định</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    
+                                    <label class="list-group-item list-group-item-action p-3" style="cursor: pointer;">
+                                        <div class="d-flex align-items-center">
+                                            <input class="form-check-input address-radio me-3 mt-0 fs-5" type="radio" name="addressId" value="" th:checked="${addresses == null || addresses.empty}">
+                                            <span class="fw-bold">Giao đến địa chỉ khác</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Form nhập địa chỉ mới -->
+                            <div id="newAddressForm" th:classappend="${addresses != null && !addresses.empty} ? 'd-none' : ''">
+                                <div th:if="${addresses != null && !addresses.empty}" class="border-top pt-3 mt-2">
+                                    <h6 class="fw-bold mb-3">Nhập địa chỉ mới</h6>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold">Họ và tên người nhận <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="receiverName" id="receiverName" th:required="${addresses == null || addresses.empty}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-bold">Số điện thoại <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" pattern="[0-9]{10,11}" th:required="${addresses == null || addresses.empty}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-bold">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="receiverAddress" id="receiverAddress" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố..." th:required="${addresses == null || addresses.empty}">
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <div class="form-check bg-light p-3 rounded border">
+                                            <input class="form-check-input ms-1" type="checkbox" name="saveAddress" value="true" id="saveAddress" checked>
+                                            <label class="form-check-label ms-2 fw-bold" for="saveAddress">
+                                                Lưu địa chỉ này vào sổ địa chỉ để sử dụng cho lần sau
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Ghi chú chung (Luôn hiển thị) -->
+                            <div class="mt-4 pt-4 border-top">
+                                <label class="form-label text-muted small fw-bold">Ghi chú đơn hàng (Tùy chọn)</label>
+                                <textarea class="form-control bg-light" name="note" rows="2" placeholder="Ví dụ: Giao giờ hành chính, gọi điện trước khi đến..."></textarea>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-wallet2 text-gold me-2"></i>Phương Thức Thanh Toán</h5>
+                            <div class="form-check border rounded p-3 mb-2 shadow-sm">
+                                <input class="form-check-input ms-1 mt-2" type="radio" name="paymentMethod" id="paymentCOD" value="COD" checked>
+                                <label class="form-check-label ms-2 d-flex align-items-center" for="paymentCOD">
+                                    <i class="bi bi-cash-stack text-success fs-3 me-3"></i>
+                                    <div>
+                                        <span class="fw-bold d-block">Thanh toán khi nhận hàng (COD)</span>
+                                        <small class="text-muted">Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng tới.</small>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="form-check border rounded p-3 shadow-sm opacity-50">
+                                <input class="form-check-input ms-1 mt-2" type="radio" name="paymentMethod" id="paymentVNPay" value="VNPAY" disabled>
+                                <label class="form-check-label ms-2 d-flex align-items-center" for="paymentVNPay">
+                                    <i class="bi bi-credit-card-2-front text-primary fs-3 me-3"></i>
+                                    <div>
+                                        <span class="fw-bold d-block">Thanh toán VNPay (Đang bảo trì)</span>
+                                        <small class="text-muted">Cổng thanh toán đang được nâng cấp.</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đơn hàng -->
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 position-sticky" style="top: 100px;">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold border-bottom pb-3 mb-4">Đơn Hàng Của Bạn</h5>
+                            
+                            <div class="checkout-items mb-4" style="max-height: 350px; overflow-y: auto; padding-right: 10px;">
+                                <div class="d-flex align-items-center mb-3 pb-3 border-bottom" th:each="item : ${cartItems}">
+                                    <img th:src="${item.imageUrl}" class="rounded border shadow-sm me-3 bg-white" style="width: 60px; height: 60px; object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1 fs-6" th:text="${item.productName}">Tên sản phẩm</h6>
+                                        <small class="text-muted d-block mb-1">Phân loại: <span th:text="${item.volume} + 'ml'"></span></small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-semibold gold-text" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</span>
+                                            <span class="badge bg-secondary rounded-pill">x<span th:text="${item.quantity}">1</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Điểm tích lũy -->
+                            <div class="bg-warning bg-opacity-10 border border-warning rounded p-3 mb-4" th:if="${userProfile != null && userProfile.loyaltyPoints != null && userProfile.loyaltyPoints >= 100}">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-dark"><i class="bi bi-star-fill text-warning me-2"></i>Điểm tích lũy của bạn:</span>
+                                    <span class="badge bg-warning text-dark fs-6" th:text="${userProfile.loyaltyPoints} + ' pt'">0 pt</span>
+                                </div>
+                                <small class="text-muted d-block mb-2">Cứ 100 điểm sẽ được giảm 10.000 ₫.</small>
+                                
+                                <div class="input-group input-group-sm mb-1">
+                                    <span class="input-group-text bg-white">Sử dụng điểm</span>
+                                    <input type="number" class="form-control" th:disabled="${userProfile.loyaltyPoints == null || userProfile.loyaltyPoints < 100}" name="pointsToUse" id="pointsToUse" 
+                                           value="0" min="0" th:max="${userProfile.loyaltyPoints}" step="100">
+                                    <button class="btn btn-outline-warning text-dark fw-bold" type="button" id="btnMaxPoints" th:disabled="${userProfile.loyaltyPoints == null || userProfile.loyaltyPoints < 100}">Tối đa</button>
+                                </div>
+                                <small class="text-danger d-none" id="pointsError">Số điểm phải là bội số của 100.</small>
+                            </div>
+                            
+                            <div class="bg-light rounded p-3 mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Tạm tính:</span>
+                                    <span class="fw-semibold" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Phí vận chuyển:</span>
+                                    <span class="fw-semibold text-success">Miễn phí</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 text-danger d-none" id="discountRow">
+                                    <span>Giảm giá (Điểm):</span>
+                                    <span class="fw-semibold" id="discountDisplay">-0 ₫</span>
+                                </div>
+                                <div class="d-flex justify-content-between pt-2 mt-2 border-top">
+                                    <span class="fw-bold fs-5">Tổng cộng:</span>
+                                    <span class="fw-bold fs-4 gold-text" id="finalTotalDisplay" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" id="baseTotalAmount" th:value="${totalAmount}">
+                            <input type="hidden" id="maxPointsValue" th:value="${userProfile != null && userProfile.loyaltyPoints != null ? userProfile.loyaltyPoints : 0}">
+                            
+                            <button type="submit" class="btn btn-gold w-100 py-3 fw-bold rounded-pill text-uppercase shadow-sm" id="btnSubmitOrder">
+                                <i class="bi bi-check-circle me-2"></i> Hoàn Tất Đặt Hàng
+                            </button>
+                            <a th:href="@{/cart}" class="btn btn-link text-muted w-100 mt-2 text-decoration-none">
+                                <i class="bi bi-arrow-left me-1"></i> Quay lại giỏ hàng
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Xử lý ẩn/hiện form địa chỉ
+        const radios = document.querySelectorAll('.address-radio');
+        const formDiv = document.getElementById('newAddressForm');
+        const requiredInputs = formDiv.querySelectorAll('input[required]');
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === '') {
+                    // Chọn "Địa chỉ khác" -> Hiện form
+                    formDiv.classList.remove('d-none');
+                    requiredInputs.forEach(input => input.setAttribute('required', 'required'));
+                } else {
+                    // Chọn địa chỉ có sẵn -> Ẩn form
+                    formDiv.classList.add('d-none');
+                    requiredInputs.forEach(input => input.removeAttribute('required'));
+                }
+            });
+        });
+        
+        const checkedRadio = document.querySelector('.address-radio:checked');
+        if (checkedRadio && checkedRadio.value !== '') {
+            requiredInputs.forEach(input => input.removeAttribute('required'));
+        }
+        
+        // Xử lý điểm tích lũy
+        const pointsInput = document.getElementById('pointsToUse');
+        const btnMaxPoints = document.getElementById('btnMaxPoints');
+        const pointsError = document.getElementById('pointsError');
+        const discountRow = document.getElementById('discountRow');
+        const discountDisplay = document.getElementById('discountDisplay');
+        const finalTotalDisplay = document.getElementById('finalTotalDisplay');
+        const btnSubmitOrder = document.getElementById('btnSubmitOrder');
+        
+        const baseTotalAmount = parseFloat(document.getElementById('baseTotalAmount').value);
+        const maxPointsValue = parseInt(document.getElementById('maxPointsValue').value) || 0;
+        
+        function formatMoney(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ₫';
+        }
+        
+        function updatePointsLogic() {
+            if (!pointsInput) return;
+            
+            let points = parseInt(pointsInput.value) || 0;
+            
+            // Validate points
+            if (points < 0) points = 0;
+            if (points > maxPointsValue) points = maxPointsValue;
+            
+            // Calculate max usable points that don't exceed order total
+            const maxPointsForThisOrder = Math.floor(baseTotalAmount / 10000) * 100;
+            if (points > maxPointsForThisOrder) {
+                points = maxPointsForThisOrder;
+            }
+            
+            if (points % 100 !== 0 && points !== 0) {
+                pointsError.classList.remove('d-none');
+                btnSubmitOrder.disabled = true;
+            } else {
+                pointsError.classList.add('d-none');
+                btnSubmitOrder.disabled = false;
+                
+                // Update displays
+                const discount = (points / 100) * 10000;
+                const finalTotal = baseTotalAmount - discount;
+                
+                if (discount > 0) {
+                    discountRow.classList.remove('d-none');
+                    discountDisplay.textContent = '-' + formatMoney(discount);
+                } else {
+                    discountRow.classList.add('d-none');
+                }
+                
+                finalTotalDisplay.textContent = formatMoney(finalTotal);
+            }
+        }
+        
+        if (pointsInput) {
+            pointsInput.addEventListener('input', updatePointsLogic);
+            
+            btnMaxPoints.addEventListener('click', function() {
+                // Find max points (multiple of 100)
+                let maxUsable = Math.floor(maxPointsValue / 100) * 100;
+                let maxPointsForThisOrder = Math.floor(baseTotalAmount / 10000) * 100;
+                
+                let targetPoints = Math.min(maxUsable, maxPointsForThisOrder);
+                pointsInput.value = targetPoints;
+                updatePointsLogic();
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

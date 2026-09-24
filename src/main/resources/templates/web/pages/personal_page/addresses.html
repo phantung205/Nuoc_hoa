@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Sổ Địa Chỉ - 2T&C</title>
+    
+    <link rel="stylesheet" th:href="@{/web/css/pages/addresses.css}">
+</head>
+<body>
+
+<section class="profile-section py-5 bg-light">
+    <div class="container mt-5 pt-3">
+        <div class="row">
+            
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-person-circle text-secondary" style="font-size: 4rem;"></i>
+                            <h5 class="fw-bold mt-2" th:text="${#authentication.name}">Username</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a th:href="@{/profile}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-person me-2"></i> Hồ Sơ Cá Nhân
+                            </a>
+                            <a th:href="@{/profile/addresses}" class="list-group-item list-group-item-action py-3 border-0 fw-bold gold-text active bg-transparent">
+                                <i class="bi bi-geo-alt me-2"></i> Sổ Địa Chỉ
+                            </a>
+                            <a th:href="@{/orders}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-bag-check me-2"></i> Đơn Hàng Của Tôi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-9">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <!-- Profile Header -->
+                    <div class="bg-black text-light p-5 text-center position-relative">
+                        <div class="position-absolute top-0 start-0 w-100 h-100" th:style="'background: url(' + @{/web/images/anh_slide1.jpg} + ') center/cover; opacity: 0.2;'"></div>
+                        <div class="position-relative z-index-1">
+                            <img th:src="${#strings.isEmpty(userProfile.avatarUrl)} ? @{/web/images/profilebase.png} : ${userProfile.avatarUrl}"
+                                 alt="Avatar" class="rounded-circle border border-3 border-gold shadow mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            <h3 class="elegant-title gold-text mb-1" th:text="${userProfile.fullName != null && !userProfile.fullName.isEmpty() ? userProfile.fullName : user.username}">User Name</h3>
+                            <p class="mb-0 text-light opacity-75" th:text="${user.email}">user@email.com</p>
+                            <div class="mt-3">
+                                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                                    <i class="bi bi-star-fill me-1"></i> Điểm tích lũy: <span th:text="${userProfile.loyaltyPoints}">0</span> pt
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                            <h4 class="fw-bold m-0">Sổ Địa Chỉ</h4>
+                            <button type="button" class="btn btn-gold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                <i class="bi bi-plus-lg me-1"></i> Thêm Địa Chỉ Mới
+                            </button>
+                        </div>
+
+                        <!-- Alerts -->
+                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${successMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Address List -->
+                        <div th:if="${addresses == null || addresses.empty}" class="text-center py-5 text-muted">
+                            <i class="bi bi-map fs-1 d-block mb-3"></i>
+                            <p>Bạn chưa có địa chỉ nào được lưu.</p>
+                        </div>
+
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            <div class="col" th:each="addr : ${addresses}">
+                                <div class="card h-100 border rounded-3 position-relative" th:classappend="${addr.isDefault} ? 'border-warning shadow-sm' : ''">
+                                    <span th:if="${addr.isDefault}" class="position-absolute top-0 end-0 badge bg-warning text-dark m-3"><i class="bi bi-star-fill me-1"></i> Mặc định</span>
+                                    
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <h6 class="fw-bold m-0 me-2" th:text="${addr.receiverName}">Họ Tên</h6>
+                                            <span class="badge bg-secondary" th:text="${addr.addressType}">Nhà riêng</span>
+                                        </div>
+                                        <p class="text-muted mb-2"><i class="bi bi-telephone me-2"></i> <span th:text="${addr.phoneNumber}">0123456789</span></p>
+                                        <p class="text-muted mb-3"><i class="bi bi-geo-alt me-2"></i> <span th:text="${addr.receiverAddress}">Địa chỉ</span></p>
+                                        
+                                        <div class="d-flex gap-2 border-top pt-3 mt-3">
+                                            <form th:if="${!addr.isDefault}" th:action="@{/profile/addresses/set-default/{id}(id=${addr.id})}" method="post">
+                                                <button type="submit" class="btn btn-sm btn-outline-dark">Đặt mặc định</button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" th:data-bs-target="'#editAddressModal' + ${addr.id}">Sửa</button>
+                                            
+                                            <form th:action="@{/profile/addresses/delete/{id}(id=${addr.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa địa chỉ này?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Modal -->
+                                <div class="modal fade" th:id="'editAddressModal' + ${addr.id}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">Cập Nhật Địa Chỉ</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form th:action="@{/profile/addresses/update/{id}(id=${addr.id})}" method="post">
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label text-muted small">Họ và tên người nhận <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" name="receiverName" th:value="${addr.receiverName}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label text-muted small">Số điện thoại <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" name="phoneNumber" th:value="${addr.phoneNumber}" required pattern="[0-9]{10}">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label text-muted small">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                                                        <textarea class="form-control" name="receiverAddress" rows="2" required th:text="${addr.receiverAddress}"></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label text-muted small">Loại địa chỉ</label>
+                                                        <select class="form-select" name="addressType">
+                                                            <option value="Nhà riêng" th:selected="${addr.addressType == 'Nhà riêng'}">Nhà riêng</option>
+                                                            <option value="Công ty" th:selected="${addr.addressType == 'Công ty'}">Công ty</option>
+                                                            <option value="Khác" th:selected="${addr.addressType == 'Khác'}">Khác</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-check mt-3" th:if="${!addr.isDefault}">
+                                                        <input class="form-check-input" type="checkbox" name="isDefault" value="true" id="'flexCheckDefault' + ${addr.id}">
+                                                        <label class="form-check-label" th:for="'flexCheckDefault' + ${addr.id}">
+                                                            Đặt làm địa chỉ mặc định
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer border-0">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-dark">Lưu Thay Đổi</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Edit Modal -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Thêm Địa Chỉ Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/profile/addresses/add}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Họ và tên người nhận <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="receiverName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="phoneNumber" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="receiverAddress" rows="2" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Loại địa chỉ</label>
+                        <select class="form-select" name="addressType">
+                            <option value="Nhà riêng">Nhà riêng</option>
+                            <option value="Công ty">Công ty</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" name="isDefault" value="true" id="isDefaultCheck">
+                        <label class="form-check-label" for="isDefaultCheck">
+                            Đặt làm địa chỉ mặc định
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-dark">Lưu Địa Chỉ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Script -->
+<script>
+</script>
+</body>
+</html>

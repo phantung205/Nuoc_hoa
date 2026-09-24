@@ -1,7 +1,7 @@
 package com.perfumes.nuochoa.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+
 
 
 @Entity
@@ -16,7 +16,7 @@ public class OrderDetail {
     private Integer quantity;
 
     @Column(name = "unit_price")
-    private BigDecimal unitPrice;
+    private Double unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
@@ -43,11 +43,11 @@ public class OrderDetail {
         this.quantity = quantity;
     }
 
-    public BigDecimal getUnitPrice() {
+    public Double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
+    public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
     }
 

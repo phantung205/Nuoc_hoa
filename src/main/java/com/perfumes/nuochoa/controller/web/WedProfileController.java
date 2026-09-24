@@ -20,11 +20,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 @RequestMapping("/profile")
-public class ProfileController {
+public class WedProfileController {
 
     private final UserService userService;
 
-    public ProfileController(UserService userService) {
+    public WedProfileController(UserService userService) {
         this.userService = userService;
     }
 
@@ -49,7 +49,7 @@ public class ProfileController {
         model.addAttribute("userProfile", profile);
         model.addAttribute("user", currentUser.getUser());
 
-        return "web/pages/profile";
+        return "web/pages/personal_page/profile";
     }
 
     /**

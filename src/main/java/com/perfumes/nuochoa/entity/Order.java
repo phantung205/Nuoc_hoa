@@ -1,7 +1,6 @@
 package com.perfumes.nuochoa.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -15,18 +14,21 @@ public class Order {
     private Long id;
 
     @Column(name = "total_amount")
-    private BigDecimal totalAmount;
+    private Double totalAmount;
 
     @Column(name = "discount_amount")
-    private BigDecimal discountAmount;
+    private Double discountAmount;
 
     @Column(name = "final_amount")
-    private BigDecimal finalAmount;
+    private Double finalAmount;
 
 
     private String status;
 
     private String payments;
+
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -43,6 +45,11 @@ public class Order {
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
 
+        @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,27 +58,27 @@ public class Order {
         this.id = id;
     }
 
-    public BigDecimal getTotalAmount() {
+    public Double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public BigDecimal getDiscountAmount() {
+    public Double getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(BigDecimal discountAmount) {
+    public void setDiscountAmount(Double discountAmount) {
         this.discountAmount = discountAmount;
     }
 
-    public BigDecimal getFinalAmount() {
+    public Double getFinalAmount() {
         return finalAmount;
     }
 
-    public void setFinalAmount(BigDecimal finalAmount) {
+    public void setFinalAmount(Double finalAmount) {
         this.finalAmount = finalAmount;
     }
 
@@ -82,6 +89,10 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getNote() { return note; }
+
+    public void setNote(String note) { this.note = note; }
 
     public String getPayments() {
         return payments;

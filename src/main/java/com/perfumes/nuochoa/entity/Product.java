@@ -1,7 +1,6 @@
 package com.perfumes.nuochoa.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
@@ -19,7 +18,7 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private BigDecimal discount;
+    private Double discount;
 
 
     @Column(name = "is_active")
@@ -58,11 +57,11 @@ public class Product {
         this.description = description;
     }
 
-    public BigDecimal getDiscount() {
+    public Double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(BigDecimal discount) {
+    public void setDiscount(Double discount) {
         this.discount = discount;
     }
 

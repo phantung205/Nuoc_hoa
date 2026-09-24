@@ -1,7 +1,6 @@
 package com.perfumes.nuochoa.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 
 /**
  * Bảng "product_variants" – các biến thể của một sản phẩm nước hoa.
@@ -23,16 +22,16 @@ public class ProductVariant {
     private String sku;
 
     /** Dung tích (đơn vị: ml). VD: 50.00, 100.00. */
-    private BigDecimal volume;
+    private Double volume;
 
     /**
      * Nồng độ hương (Concentration).
      * VD: 1 = EDT (Eau de Toilette), 2 = EDP (Eau de Parfum), 3 = Parfum.
      */
-    private BigDecimal concentration;
+    private Double concentration;
 
     /** Giá bán của biến thể này (đơn vị: VND). */
-    private BigDecimal price;
+    private Double price;
 
     /** Số lượng tồn kho hiện tại. */
     private Integer stock;
@@ -60,27 +59,27 @@ public class ProductVariant {
         this.sku = sku;
     }
 
-    public BigDecimal getVolume() {
+    public Double getVolume() {
         return volume;
     }
 
-    public void setVolume(BigDecimal volume) {
+    public void setVolume(Double volume) {
         this.volume = volume;
     }
 
-    public BigDecimal getConcentration() {
+    public Double getConcentration() {
         return concentration;
     }
 
-    public void setConcentration(BigDecimal concentration) {
+    public void setConcentration(Double concentration) {
         this.concentration = concentration;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

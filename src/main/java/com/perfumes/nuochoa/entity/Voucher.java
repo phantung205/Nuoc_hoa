@@ -1,7 +1,7 @@
 package com.perfumes.nuochoa.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 
 /**
@@ -37,15 +37,15 @@ public class Voucher {
 
     /** Giá trị giảm: nếu PERCENT thì là %, nếu FIXED thì là số tiền VND. */
     @Column(name = "discount_value", nullable = false)
-    private BigDecimal discountValue;
+    private Double discountValue;
 
     /** Giá trị đơn hàng tối thiểu để áp dụng voucher này. */
     @Column(name = "min_order_value")
-    private BigDecimal minOrderValue;
+    private Double minOrderValue;
 
     /** Số tiền giảm tối đa khi dùng PERCENT (null = không giới hạn). */
     @Column(name = "max_discount_amount")
-    private BigDecimal maxDiscountAmount;
+    private Double maxDiscountAmount;
 
     /** Tổng số lượt được phép sử dụng. */
     @Column(name = "usage_limit")
@@ -91,27 +91,27 @@ public class Voucher {
         this.discountType = discountType;
     }
 
-    public BigDecimal getDiscountValue() {
+    public Double getDiscountValue() {
         return discountValue;
     }
 
-    public void setDiscountValue(BigDecimal discountValue) {
+    public void setDiscountValue(Double discountValue) {
         this.discountValue = discountValue;
     }
 
-    public BigDecimal getMinOrderValue() {
+    public Double getMinOrderValue() {
         return minOrderValue;
     }
 
-    public void setMinOrderValue(BigDecimal minOrderValue) {
+    public void setMinOrderValue(Double minOrderValue) {
         this.minOrderValue = minOrderValue;
     }
 
-    public BigDecimal getMaxDiscountAmount() {
+    public Double getMaxDiscountAmount() {
         return maxDiscountAmount;
     }
 
-    public void setMaxDiscountAmount(BigDecimal maxDiscountAmount) {
+    public void setMaxDiscountAmount(Double maxDiscountAmount) {
         this.maxDiscountAmount = maxDiscountAmount;
     }
 

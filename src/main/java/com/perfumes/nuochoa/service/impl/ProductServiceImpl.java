@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
+
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         product.setName(requestDTO.getName());
         product.setDescription(requestDTO.getDescription());
-        product.setDiscount(requestDTO.getDiscount() != null ? requestDTO.getDiscount() : BigDecimal.ZERO);
+        product.setDiscount(requestDTO.getDiscount() != null ? requestDTO.getDiscount() : 0.0);
         product.setIsActive(requestDTO.getIsActive() != null ? requestDTO.getIsActive() : true);
 
         if (requestDTO.getBrandId() != null) {
@@ -181,7 +181,7 @@ public class ProductServiceImpl implements ProductService {
 
         product.setName(requestDTO.getName());
         product.setDescription(requestDTO.getDescription());
-        product.setDiscount(requestDTO.getDiscount() != null ? requestDTO.getDiscount() : BigDecimal.ZERO);
+        product.setDiscount(requestDTO.getDiscount() != null ? requestDTO.getDiscount() : 0.0);
         product.setIsActive(requestDTO.getIsActive() != null ? requestDTO.getIsActive() : true);
 
         if (requestDTO.getBrandId() != null) {
@@ -353,8 +353,8 @@ public class ProductServiceImpl implements ProductService {
         dto.setMinPrice(variants.stream()
                 .map(ProductVariant::getPrice)
                 .filter(Objects::nonNull)
-                .min(BigDecimal::compareTo)
-                .orElse(BigDecimal.ZERO));
+                .min(Double::compareTo)
+                .orElse(0.0));
 
         // Lấy danh sách ảnh
         List<ProductImage> images = imageRepository.findByProductId(product.getId());

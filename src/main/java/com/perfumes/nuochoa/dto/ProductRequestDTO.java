@@ -1,7 +1,7 @@
 package com.perfumes.nuochoa.dto;
 
 import org.springframework.web.multipart.MultipartFile;
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +9,7 @@ public class ProductRequestDTO {
     private Long id;
     private String name;
     private String description;
-    private BigDecimal discount;
+    private Double discount;
     private Boolean isActive = true;
     private Long brandId;
     private Long categoryId;
@@ -36,8 +36,8 @@ public class ProductRequestDTO {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public BigDecimal getDiscount() { return discount; }
-    public void setDiscount(BigDecimal discount) { this.discount = discount; }
+    public Double getDiscount() { return discount; }
+    public void setDiscount(Double discount) { this.discount = discount; }
 
     public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }

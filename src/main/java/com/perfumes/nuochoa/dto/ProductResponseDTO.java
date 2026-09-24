@@ -1,20 +1,20 @@
 package com.perfumes.nuochoa.dto;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 
 public class ProductResponseDTO {
     private Long id;
     private String name;
     private String description;
-    private BigDecimal discount;
+    private Double discount;
     private Boolean isActive;
 
     private String brandName;
     private String categoryName;
 
     private String mainImageUrl;            // Ảnh đại diện sản phẩm
-    private BigDecimal minPrice;             // Giá thấp nhất trong các biến thể
+    private Double minPrice;             // Giá thấp nhất trong các biến thể
     private List<ProductVariantDTO> variants;
     private List<String> imageUrls;          // Tất cả ảnh của sản phẩm
 
@@ -28,8 +28,8 @@ public class ProductResponseDTO {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public BigDecimal getDiscount() { return discount; }
-    public void setDiscount(BigDecimal discount) { this.discount = discount; }
+    public Double getDiscount() { return discount; }
+    public void setDiscount(Double discount) { this.discount = discount; }
 
     public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }
@@ -43,8 +43,8 @@ public class ProductResponseDTO {
     public String getMainImageUrl() { return mainImageUrl; }
     public void setMainImageUrl(String mainImageUrl) { this.mainImageUrl = mainImageUrl; }
 
-    public BigDecimal getMinPrice() { return minPrice; }
-    public void setMinPrice(BigDecimal minPrice) { this.minPrice = minPrice; }
+    public Double getMinPrice() { return minPrice; }
+    public void setMinPrice(Double minPrice) { this.minPrice = minPrice; }
 
     public List<ProductVariantDTO> getVariants() { return variants; }
     public void setVariants(List<ProductVariantDTO> variants) { this.variants = variants; }

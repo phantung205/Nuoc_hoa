@@ -1,15 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{}, ~{}, ~{::section})}">
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{}, ~{::section})}">
 <head>
     <title>Hồ Sơ Cá Nhân - 2T&C</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/profile.css}">
 </head>
 <body>
 
 <section class="py-5 bg-light" style="min-height: 80vh;">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 mx-auto">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-person-circle text-secondary" style="font-size: 4rem;"></i>
+                            <h5 class="fw-bold mt-2" th:text="${#authentication.name}">Username</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a th:href="@{/profile}" class="list-group-item list-group-item-action py-3 border-0 fw-bold gold-text active bg-transparent">
+                                <i class="bi bi-person me-2"></i> Hồ Sơ Cá Nhân
+                            </a>
+                            <a th:href="@{/profile/addresses}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-geo-alt me-2"></i> Sổ Địa Chỉ
+                            </a>
+                            <a th:href="@{/orders}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-bag-check me-2"></i> Đơn Hàng Của Tôi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-9">
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                     <!-- Profile Header -->
                     <div class="bg-black text-light p-5 text-center position-relative">
@@ -20,7 +45,7 @@
                             <h3 class="elegant-title gold-text mb-1" th:text="${userProfile.fullName != null && !userProfile.fullName.isEmpty() ? userProfile.fullName : user.username}">User Name</h3>
                             <p class="mb-0 text-light opacity-75" th:text="${user.email}">user@email.com</p>
                             <div class="mt-3">
-                                <span class="badge bg-gold text-dark px-3 py-2 rounded-pill fw-bold">
+                                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
                                     <i class="bi bi-star-fill me-1"></i> Điểm tích lũy: <span th:text="${userProfile.loyaltyPoints}">0</span> pt
                                 </span>
                             </div>
