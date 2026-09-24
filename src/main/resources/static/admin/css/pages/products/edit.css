@@ -1,0 +1,25 @@
+/* Custom CSS for Edit User in Admin */
+.dashboard-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 35px 40px;
+    border-top: 5px solid #111;
+}
+.gold-accent {
+    color: #D4AF37;
+}
+.form-label {
+    font-size: 0.95rem;
+    color: #333;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+.btn-primary {
+    transition: all 0.3s;
+}
+.btn-primary:hover {
+    background-color: #b5952f !important;
+    border-color: #b5952f !important;
+}

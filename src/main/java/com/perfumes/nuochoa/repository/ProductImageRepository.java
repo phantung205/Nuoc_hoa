@@ -1,9 +1,12 @@
 package com.perfumes.nuochoa.repository;
 
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.perfumes.nuochoa.entity.ProductImage;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
-    List<ProductImage> findByProductVariantId(Long variantId);
+    List<ProductImage> findByProductId(Long productId);
 }

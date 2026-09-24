@@ -71,6 +71,10 @@ public class BrandServiceImpl implements BrandService {
         brand.setOriginCountry(brandDetails.getOriginCountry());
         
         if (logoFile != null && !logoFile.isEmpty()) {
+            // Xóa ảnh cũ
+            if (brand.getLogo() != null && !brand.getLogo().isEmpty()) {
+                deleteFile(brand.getLogo());
+            }
             String savedFileName = saveLogoFile(logoFile);
             brand.setLogo("/uploads/brands/" + savedFileName);
         } else if (brandDetails.getLogo() != null) {
@@ -105,6 +109,17 @@ public class BrandServiceImpl implements BrandService {
         }
     }
 
+    private void deleteFile(String fileUrl) {
+        try {
+            if (fileUrl != null && fileUrl.startsWith("/")) {
+                java.nio.file.Path path = java.nio.file.Paths.get(fileUrl.substring(1));
+                java.nio.file.Files.deleteIfExists(path);
+            }
+        } catch (java.io.IOException e) {
+            System.err.println("Không thể xóa file: " + fileUrl);
+        }
+    }
+
     @Override
     @Transactional
     public void toggleStatus(Long id) {
@@ -117,6 +132,9 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public void deleteBrand(Long id) {
         Brand brand = getBrandById(id);
+        if (brand.getLogo() != null && !brand.getLogo().isEmpty()) {
+            deleteFile(brand.getLogo());
+        }
         brandRepository.delete(brand);
     }
 }

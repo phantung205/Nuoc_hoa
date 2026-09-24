@@ -2,6 +2,7 @@ package com.perfumes.nuochoa.controller.web;
 
 import com.perfumes.nuochoa.service.BrandService;
 import com.perfumes.nuochoa.service.CategoryService;
+import com.perfumes.nuochoa.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +12,12 @@ public class HomeController {
 
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final ProductService productService;
 
-    public HomeController(CategoryService categoryService, BrandService brandService) {
+    public HomeController(CategoryService categoryService, BrandService brandService, ProductService productService) {
         this.categoryService = categoryService;
         this.brandService = brandService;
+        this.productService = productService;
     }
 
     /** Hiển thị trang chủ với dữ liệu Category và Brand đang hoạt động. */
@@ -22,7 +25,7 @@ public class HomeController {
     public String homePage(Model model) {
         model.addAttribute("categories", categoryService.getActiveCategories());
         model.addAttribute("brands", brandService.getActiveBrands());
-
+        model.addAttribute("products", productService.getAllActiveProducts());
         return "web/index";
     }
 }

@@ -20,8 +20,8 @@ public class ProductImage {
 
 
     @ManyToOne
-    @JoinColumn(name = "variant_id", nullable = false)
-    private ProductVariant productVariant;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
 
     public Long getId() {
@@ -48,11 +48,11 @@ public class ProductImage {
         this.isPrimary = isPrimary;
     }
 
-    public ProductVariant getProductVariant() {
-        return productVariant;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductVariant(ProductVariant productVariant) {
-        this.productVariant = productVariant;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

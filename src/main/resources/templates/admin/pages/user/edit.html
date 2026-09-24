@@ -19,24 +19,72 @@
     <div class="dashboard-card shadow-sm mx-auto" style="max-width: 600px;">
         <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-        <form th:action="@{/admin/users/edit/{id}(id=${userRequest.id})}" th:object="${userRequest}" method="post">
-            <div class="mb-3">
-                <label class="form-label fw-bold text-muted">Tên Đăng Nhập</label>
-                <input type="text" class="form-control bg-secondary bg-opacity-10" th:field="*{username}" readonly>
-                <div class="form-text">Tên đăng nhập không thể thay đổi.</div>
+        <form th:action="@{/admin/users/edit/{id}(id=${userRequest.id})}" th:object="${userRequest}" method="post" enctype="multipart/form-data">
+            
+            <h5 class="fw-bold mb-3 border-bottom pb-2">Thông Tin Đăng Nhập</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-muted">Tên Đăng Nhập</label>
+                    <input type="text" class="form-control bg-secondary bg-opacity-10" th:field="*{username}" readonly>
+                    <div class="form-text">Tên đăng nhập không thể thay đổi.</div>
+                </div>
+                <div class="col-md-6 mt-3 mt-md-0">
+                    <label class="form-label fw-bold">Địa Chỉ Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control bg-light" th:field="*{email}" required>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Địa Chỉ Email <span class="text-danger">*</span></label>
-                <input type="email" class="form-control bg-light" th:field="*{email}" required>
-            </div>
-
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label fw-bold">Mật Khẩu Mới</label>
                 <input type="password" class="form-control bg-light" th:field="*{password}" placeholder="Nhập mật khẩu mới nếu muốn đổi...">
                 <div class="form-text text-warning"><i class="bi bi-info-circle me-1"></i> Để trống nếu không muốn thay đổi mật khẩu.</div>
             </div>
 
+            <h5 class="fw-bold mb-3 border-bottom pb-2 mt-4">Thông Tin Hồ Sơ (Profile)</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Họ và Tên</label>
+                    <input type="text" class="form-control bg-light" th:field="*{fullName}" placeholder="Nguyễn Văn A">
+                </div>
+                <div class="col-md-6 mt-3 mt-md-0">
+                    <label class="form-label fw-bold">Số Điện Thoại</label>
+                    <input type="text" class="form-control bg-light" th:field="*{phone}" placeholder="0987654321">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Ngày Sinh</label>
+                    <input type="date" class="form-control bg-light" th:field="*{dateOfBirth}">
+                </div>
+                <div class="col-md-6 mt-3 mt-md-0">
+                    <label class="form-label fw-bold">Giới Tính</label>
+                    <select class="form-select bg-light" th:field="*{gender}">
+                        <option value="">-- Chọn Giới Tính --</option>
+                        <option value="MALE">Nam</option>
+                        <option value="FEMALE">Nữ</option>
+                        <option value="OTHER">Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Ảnh Đại Diện (Avatar)</label>
+                <div class="d-flex align-items-center gap-3">
+                    <div th:if="*{avatarUrl != null && !avatarUrl.empty}">
+                        <img th:src="*{avatarUrl}" alt="Avatar" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                    </div>
+                    <div th:unless="*{avatarUrl != null && !avatarUrl.empty}" class="bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person text-secondary fs-1"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <input type="file" class="form-control form-control-sm bg-light" name="avatarFile" accept="image/*">
+                        <small class="form-text text-muted">Chọn ảnh mới để thay đổi avatar hiện tại.</small>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3 border-bottom pb-2 mt-4">Phân Quyền & Trạng Thái</h5>
             <div class="row mb-4">
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Vai Trò</label>

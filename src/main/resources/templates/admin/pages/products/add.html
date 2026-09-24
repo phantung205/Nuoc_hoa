@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'products', ~{::div.admin-content}, ~{::link}, ~{::script})}">
+<head>
+    <title>Thêm Sản Phẩm Mới - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/products/add.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Thêm Mới Sản Phẩm</h2>
+            <p class="text-muted mb-0">Tạo sản phẩm nước hoa mới</p>
+        </div>
+        <a href="/admin/products" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+    </div>
+
+    <div class="dashboard-card shadow-sm mx-auto" style="max-width: 800px;">
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/products/add}" th:object="${product}" method="post" enctype="multipart/form-data">
+            
+            <h5 class="fw-bold mb-3 border-bottom pb-2">Thông Tin Chung</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Tên Sản Phẩm <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control bg-light" th:field="*{name}" required placeholder="Nhập tên sản phẩm...">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Giảm Giá (VNĐ)</label>
+                    <input type="number" min="0" class="form-control bg-light" th:field="*{discount}" placeholder="Số tiền giảm...">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Thương Hiệu</label>
+                    <select class="form-select bg-light" th:field="*{brandId}">
+                        <option value="">-- Chọn Thương Hiệu --</option>
+                        <option th:each="b : ${brands}" th:value="${b.id}" th:text="${b.name}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Danh Mục</label>
+                    <select class="form-select bg-light" th:field="*{categoryId}">
+                        <option value="">-- Chọn Danh Mục --</option>
+                        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mô Tả Sản Phẩm</label>
+                <textarea class="form-control bg-light" th:field="*{description}" rows="3" placeholder="Nhập mô tả sản phẩm..."></textarea>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="productActive" th:field="*{isActive}">
+                    <label class="form-check-label fw-bold" for="productActive">Kích hoạt (Hiển thị)</label>
+                </div>
+            </div>
+
+            <!-- PHẦN BIẾN THỂ (VARIANTS) -->
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 mt-5">
+                <h5 class="fw-bold mb-0">Các Lựa Chọn (Biến Thể)</h5>
+                <button type="button" class="btn btn-sm btn-outline-dark" onclick="addVariant()">
+                    <i class="bi bi-plus-circle me-1"></i> Thêm Lựa Chọn
+                </button>
+            </div>
+            
+            <div class="alert alert-info py-2" style="font-size: 0.9em;">
+                <i class="bi bi-info-circle-fill me-1"></i> Bạn phải nhập ít nhất 1 lựa chọn (biến thể) cho sản phẩm!
+            </div>
+
+            <div id="variants-container">
+                <!-- Vòng lặp các variant đã khởi tạo sẵn -->
+                <div class="variant-item border rounded p-3 mb-3 bg-light position-relative" th:each="v, stat : *{variants}">
+                    
+                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" onclick="removeVariant(this)" th:if="${stat.index > 0}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold" style="font-size: 0.85em;">Mã SKU</label>
+                            <input type="text" class="form-control form-control-sm" th:name="'variants[' + ${stat.index} + '].sku'" th:value="${v.sku}" placeholder="Mã SKU...">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold" style="font-size: 0.85em;">Dung tích (ml) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.1" min="0" class="form-control form-control-sm" th:name="'variants[' + ${stat.index} + '].volume'" th:value="${v.volume}" required placeholder="50, 100...">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold" style="font-size: 0.85em;">Nồng Độ</label>
+                            <select class="form-select form-select-sm" th:name="'variants[' + ${stat.index} + '].concentration'">
+                                <option value="1" th:selected="${v.concentration != null && v.concentration.intValue() == 1}">EDT</option>
+                                <option value="2" th:selected="${v.concentration != null && v.concentration.intValue() == 2}">EDP</option>
+                                <option value="3" th:selected="${v.concentration != null && v.concentration.intValue() == 3}">Parfum</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold" style="font-size: 0.85em;">Giá Bán (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" min="0" class="form-control form-control-sm" th:name="'variants[' + ${stat.index} + '].price'" th:value="${v.price}" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold" style="font-size: 0.85em;">Tồn Kho</label>
+                            <input type="number" min="0" class="form-control form-control-sm" th:name="'variants[' + ${stat.index} + '].stock'" th:value="${v.stock}" value="10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHẦN ẢNH SẢN PHẨM -->
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 mt-5">
+                <h5 class="fw-bold mb-0">Ảnh Sản Phẩm</h5>
+                <button type="button" class="btn btn-sm btn-outline-dark" onclick="addImage()">
+                    <i class="bi bi-plus-circle me-1"></i> Thêm Ảnh
+                </button>
+            </div>
+            
+            <div class="alert alert-info py-2" style="font-size: 0.9em;">
+                <i class="bi bi-info-circle-fill me-1"></i> Bắt buộc phải có ít nhất 1 ảnh. Chọn nút tròn để đặt làm ảnh đại diện.
+            </div>
+
+            <div id="images-container">
+                <div class="image-item border rounded p-3 mb-3 bg-light position-relative">
+                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 image-remove-btn" onclick="removeImage(this)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold" style="font-size: 0.85em;">Chọn file ảnh <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control form-control-sm" name="imageFiles" accept="image/*" required>
+                        </div>
+                        <div class="col-md-4 mt-3 mt-md-0">
+                            <div class="form-check mt-md-4">
+                                <input class="form-check-input primary-image-radio" type="radio" name="primaryImageIndex" value="0" checked>
+                                <label class="form-check-label fw-bold text-success">Ảnh Đại Diện</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin/products" class="btn btn-light px-4">Hủy Bỏ</a>
+                <button type="submit" class="btn btn-dark px-4"><i class="bi bi-save me-1"></i> Tạo Sản Phẩm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let variantIndex = document.querySelectorAll('.variant-item').length;
+
+    function addVariant() {
+        const container = document.getElementById('variants-container');
+        
+        const html = `
+            <div class="variant-item border rounded p-3 mb-3 bg-light position-relative">
+                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" onclick="removeVariant(this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label fw-bold" style="font-size: 0.85em;">Mã SKU</label>
+                        <input type="text" class="form-control form-control-sm" name="variants[${variantIndex}].sku" placeholder="Mã SKU...">
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label fw-bold" style="font-size: 0.85em;">Dung tích (ml) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.1" min="0" class="form-control form-control-sm" name="variants[${variantIndex}].volume" required placeholder="50, 100...">
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label fw-bold" style="font-size: 0.85em;">Nồng Độ</label>
+                        <select class="form-select form-select-sm" name="variants[${variantIndex}].concentration">
+                            <option value="1">EDT</option>
+                            <option value="2" selected>EDP</option>
+                            <option value="3">Parfum</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label fw-bold" style="font-size: 0.85em;">Giá Bán (VNĐ) <span class="text-danger">*</span></label>
+                        <input type="number" min="0" class="form-control form-control-sm" name="variants[${variantIndex}].price" required>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label fw-bold" style="font-size: 0.85em;">Tồn Kho</label>
+                        <input type="number" min="0" class="form-control form-control-sm" name="variants[${variantIndex}].stock" value="10">
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', html);
+        variantIndex++;
+    }
+
+    function removeVariant(btn) {
+        btn.closest('.variant-item').remove();
+        
+        // Re-index all variants to avoid gaps that cause Spring MVC to insert null elements
+        const items = document.querySelectorAll('.variant-item');
+        items.forEach((item, index) => {
+            const inputs = item.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if (input.name && input.name.startsWith('variants[')) {
+                    input.name = input.name.replace(/variants\[\d+\]/, `variants[${index}]`);
+                }
+            });
+        });
+        
+        // Update the global variantIndex for the next addition
+        variantIndex = items.length;
+    }
+
+    function updateImageIndices() {
+        const items = document.querySelectorAll('.image-item');
+        const removeBtns = document.querySelectorAll('.image-remove-btn');
+        
+        // Block deletion if only 1 item left
+        if (items.length <= 1) {
+            removeBtns.forEach(btn => btn.style.display = 'none');
+        } else {
+            removeBtns.forEach(btn => btn.style.display = 'block');
+        }
+        
+        // Update radio values sequentially
+        const radios = document.querySelectorAll('.primary-image-radio');
+        radios.forEach((radio, index) => {
+            radio.value = index;
+        });
+
+        // Ensure at least one is checked
+        if (!document.querySelector('.primary-image-radio:checked') && radios.length > 0) {
+            radios[0].checked = true;
+        }
+    }
+
+    function addImage() {
+        const container = document.getElementById('images-container');
+        const html = `
+            <div class="image-item border rounded p-3 mb-3 bg-light position-relative">
+                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 image-remove-btn" onclick="removeImage(this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <label class="form-label fw-bold" style="font-size: 0.85em;">Chọn file ảnh <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control form-control-sm" name="imageFiles" accept="image/*" required>
+                    </div>
+                    <div class="col-md-4 mt-3 mt-md-0">
+                        <div class="form-check mt-md-4">
+                            <input class="form-check-input primary-image-radio" type="radio" name="primaryImageIndex" value="0">
+                            <label class="form-check-label fw-bold text-success">Ảnh Đại Diện</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+        updateImageIndices();
+    }
+
+    function removeImage(btn) {
+        btn.closest('.image-item').remove();
+        updateImageIndices();
+    }
+
+    // Call once on load
+    document.addEventListener("DOMContentLoaded", function() {
+        updateImageIndices();
+    });
+</script>
+
+</body>
+</html>

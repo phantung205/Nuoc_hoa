@@ -40,12 +40,13 @@ public class AdminUserController {
     @PostMapping("/add")
     public String processAddUser(@Valid @ModelAttribute("userRequest") UserAdminRequest userRequest,
                                  BindingResult bindingResult,
+                                 @RequestParam(value = "avatarFile", required = false) org.springframework.web.multipart.MultipartFile avatarFile,
                                  Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/pages/user/add";
         }
         try {
-            userService.createUserByAdmin(userRequest);
+            userService.createUserByAdmin(userRequest, avatarFile);
             return "redirect:/admin/users?success=created";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -68,6 +69,16 @@ public class AdminUserController {
             userRequest.setRole(user.getRole().getName());
         }
 
+        // Lấy profile
+        com.perfumes.nuochoa.entity.UserProfile profile = userService.getUserProfileByUserId(id);
+        if (profile != null) {
+            userRequest.setFullName(profile.getFullName());
+            userRequest.setPhone(profile.getPhone());
+            userRequest.setDateOfBirth(profile.getDateOfBirth());
+            userRequest.setGender(profile.getGender());
+            userRequest.setAvatarUrl(profile.getAvatarUrl());
+        }
+
         model.addAttribute("userRequest", userRequest);
         return "admin/pages/user/edit";
     }
@@ -76,12 +87,13 @@ public class AdminUserController {
     public String processEditUser(@PathVariable Long id,
                                   @Valid @ModelAttribute("userRequest") UserAdminRequest userRequest,
                                   BindingResult bindingResult,
+                                  @RequestParam(value = "avatarFile", required = false) org.springframework.web.multipart.MultipartFile avatarFile,
                                   Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/pages/user/edit";
         }
         try {
-            userService.updateUserByAdmin(id, userRequest);
+            userService.updateUserByAdmin(id, userRequest, avatarFile);
             return "redirect:/admin/users?success=updated";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());

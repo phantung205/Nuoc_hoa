@@ -101,7 +101,7 @@ public class AuthController {
     }
 
     @PostMapping("/resend-otp")
-    public String resendOtp(HttpSession session, Model model) {
+    public String resendOtp(HttpSession session, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         String email = (String) session.getAttribute("pendingEmail");
         if (email == null) {
             return "redirect:/auth/register";
@@ -110,10 +110,8 @@ public class AuthController {
         String newOtp = otpService.generateOtp(email);
         emailService.sendOtpEmail(email, newOtp);
 
-        model.addAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
-        model.addAttribute("email", email);
-        model.addAttribute("isResetPassword", false);
-        return "auth/verify-otp";
+        redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
+        return "redirect:/auth/verify-otp";
     }
 
 
@@ -179,7 +177,7 @@ public class AuthController {
 
 
     @PostMapping("/resend-reset-otp")
-    public String resendResetOtp(HttpSession session, Model model) {
+    public String resendResetOtp(HttpSession session, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         String email = (String) session.getAttribute("resetEmail");
         if (email == null) {
             return "redirect:/auth/forgot-password";
@@ -187,10 +185,8 @@ public class AuthController {
 
         String newOtp = otpService.generateOtp(email);
         emailService.sendOtpEmail(email, newOtp);
-        model.addAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
-        model.addAttribute("email", email);
-        model.addAttribute("isResetPassword", true);
-        return "auth/verify-otp";
+        redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
+        return "redirect:/auth/verify-reset-otp";
     }
 
 

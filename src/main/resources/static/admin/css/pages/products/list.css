@@ -1,0 +1,29 @@
+/* Custom CSS for User List in Admin */
+.dashboard-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #eef0f2;
+}
+.table-hover tbody tr:hover {
+    background-color: #fcfcfc;
+    transition: background-color 0.2s ease-in-out;
+}
+.gold-accent {
+    color: #D4AF37;
+}
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    background-color: #1a1a1a;
+    color: #fff;
+}
+.badge {
+    padding: 0.5em 0.8em;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+.table td {
+    vertical-align: middle;
+}

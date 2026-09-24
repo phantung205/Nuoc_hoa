@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link},~{}, ~{::section})}">
+<head>
+    <title>Tất Cả Sản Phẩm - Nước Hoa Store</title>
+    <link rel="stylesheet" th:href="@{/web/css/products.css}">
+</head>
+<body>
+
+<section class="products-list-section py-5 bg-light">
+    <div class="container mt-5">
+        
+        <div class="row mb-5 text-center">
+            <h2 class="elegant-title fw-bold">Tất Cả Sản Phẩm</h2>
+            <div class="decorative-line mx-auto"></div>
+            <p class="text-muted mt-3">Khám phá bộ sưu tập nước hoa cao cấp từ các thương hiệu hàng đầu thế giới</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6 mb-4" th:each="p : ${products}">
+                <div class="card product-card border-0 shadow-sm h-100">
+                    <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
+                        <div class="position-relative">
+                            <span th:if="${p.discount != null && p.discount > 0}" class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1">GIẢM GIÁ</span>
+                            <img th:src="${p.mainImageUrl != null ? p.mainImageUrl : '/web/images/default-product.jpg'}" class="card-img-top" th:alt="${p.name}" style="height: 280px; object-fit: cover;">
+                        </div>
+                        <div class="card-body text-center d-flex flex-column">
+                            <h5 class="card-title mb-1" th:text="${p.name}">Product Name</h5>
+                            <p class="card-text text-muted small mb-2" th:text="${p.categoryName} + ' - ' + ${p.brandName}">Category - Brand</p>
+                            <p class="price gold-text fw-bold mb-3 mt-auto" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Price</p>
+                            <a th:href="@{/products/{id}(id=${p.id})}" class="btn btn-outline-dark btn-sm w-100">Xem Chi Tiết</a>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center py-5">
+                <h4 class="text-muted">Hiện tại chưa có sản phẩm nào.</h4>
+                <a th:href="@{/}" class="btn btn-gold mt-3">Về Trang Chủ</a>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+</body>
+</html>

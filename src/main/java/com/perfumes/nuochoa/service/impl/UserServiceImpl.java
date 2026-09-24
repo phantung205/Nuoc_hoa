@@ -143,6 +143,11 @@ public class UserServiceImpl implements UserService {
 
         // Nếu người dùng có chọn ảnh mới thì lưu ảnh và cập nhật đường dẫn
         if (avatarFile != null && !avatarFile.isEmpty()) {
+            // Xóa ảnh cũ cứng trên ổ đĩa
+            if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isEmpty()) {
+                deleteFile(profile.getAvatarUrl());
+            }
+
             String savedFileName = saveAvatarFile(avatarFile);
             profile.setAvatarUrl("/uploads/avatars/" + savedFileName);
         }
@@ -168,6 +173,17 @@ public class UserServiceImpl implements UserService {
 
         } catch (IOException e) {
             throw new RuntimeException("Không thể lưu file ảnh đại diện!", e);
+        }
+    }
+
+    private void deleteFile(String fileUrl) {
+        try {
+            if (fileUrl != null && fileUrl.startsWith("/")) {
+                Path path = Paths.get(fileUrl.substring(1)); // Bỏ dấu / ở đầu (vd: /uploads/... -> uploads/...)
+                Files.deleteIfExists(path);
+            }
+        } catch (IOException e) {
+            System.err.println("Không thể xóa file: " + fileUrl);
         }
     }
 
@@ -224,7 +240,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUserByAdmin(UserAdminRequest request) {
+    public void createUserByAdmin(UserAdminRequest request, MultipartFile avatarFile) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại!");
         }
@@ -244,13 +260,33 @@ public class UserServiceImpl implements UserService {
         newUser.setStatus((request.getStatus() != null) ? request.getStatus() : "ACTIVE");
         newUser.setRole(role);
 
-        userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+
+        // Tạo profile
+        UserProfile profile = new UserProfile();
+        profile.setUser(savedUser);
+        profile.setFullName(request.getFullName());
+        profile.setPhone(request.getPhone());
+        profile.setDateOfBirth(request.getDateOfBirth());
+        profile.setGender(request.getGender());
+
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String savedFileName = saveAvatarFile(avatarFile);
+            profile.setAvatarUrl("/uploads/avatars/" + savedFileName);
+        }
+
+        userProfileRepository.save(profile);
+
+        // Tạo cart
+        Cart cart = new Cart();
+        cart.setUser(savedUser);
+        cartRepository.save(cart);
     }
 
 
     @Override
     @Transactional
-    public void updateUserByAdmin(Long id, UserAdminRequest request) {
+    public void updateUserByAdmin(Long id, UserAdminRequest request, MultipartFile avatarFile) {
         User user = getUserById(id);
 
         user.setEmail(request.getEmail());
@@ -267,14 +303,38 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
 
         userRepository.save(user);
+
+        // Lấy và cập nhật profile
+        UserProfile profile = getUserProfileByUserId(id);
+        profile.setFullName(request.getFullName());
+        profile.setPhone(request.getPhone());
+        profile.setDateOfBirth(request.getDateOfBirth());
+        profile.setGender(request.getGender());
+
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isEmpty()) {
+                deleteFile(profile.getAvatarUrl());
+            }
+            String savedFileName = saveAvatarFile(avatarFile);
+            profile.setAvatarUrl("/uploads/avatars/" + savedFileName);
+        }
+
+        userProfileRepository.save(profile);
     }
 
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("Tài khoản không tồn tại!");
-        }
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
+            
+        // Xóa ảnh cứng của User (nếu có)
+        userProfileRepository.findById(id).ifPresent(profile -> {
+            if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isEmpty()) {
+                deleteFile(profile.getAvatarUrl());
+            }
+        });
+        
+        userRepository.delete(user);
     }
 }

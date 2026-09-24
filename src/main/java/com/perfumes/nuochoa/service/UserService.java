@@ -39,9 +39,9 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    void createUserByAdmin(UserAdminRequest request);
+    void createUserByAdmin(UserAdminRequest request, MultipartFile avatarFile);
 
-    void updateUserByAdmin(Long id, UserAdminRequest request);
+    void updateUserByAdmin(Long id, UserAdminRequest request, MultipartFile avatarFile);
 
     void deleteUser(Long id);
 }

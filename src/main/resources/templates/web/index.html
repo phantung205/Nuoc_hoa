@@ -95,54 +95,20 @@
                 <div class="decorative-line mx-auto"></div>
                 <p class="text-muted mt-3">Những mùi hương được yêu thích nhất trong tháng</p>
             </div>
-            <div class="col-md-3 col-sm-6 mb-4">
+            <div class="col-md-3 col-sm-6 mb-4" th:each="p, stat : ${products}" th:if="${stat.index < 8}">
                 <div class="card product-card border-0 shadow-sm h-100">
-                    <div class="position-relative">
-                        <span class="badge bg-dark position-absolute top-0 start-0 m-2 px-2 py-1">BÁN CHẠY</span>
-                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="card-title mb-1">Chanel N°5</h5>
-                        <p class="card-text text-muted small mb-2">Hương hoa cỏ phương đông</p>
-                        <p class="price gold-text fw-bold mb-3 mt-auto">3.500.000 ₫</p>
-                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card product-card border-0 shadow-sm h-100">
-                    <img src="https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="card-title mb-1">Dior Sauvage</h5>
-                        <p class="card-text text-muted small mb-2">Hương nam tính, mạnh mẽ</p>
-                        <p class="price gold-text fw-bold mb-3 mt-auto">3.200.000 ₫</p>
-                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card product-card border-0 shadow-sm h-100">
-                    <div class="position-relative">
-                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1">MỚI</span>
-                        <img src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="card-title mb-1">Tom Ford Orchid</h5>
-                        <p class="card-text text-muted small mb-2">Hương hoa cỏ phương đông</p>
-                        <p class="price gold-text fw-bold mb-3 mt-auto">4.100.000 ₫</p>
-                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card product-card border-0 shadow-sm h-100">
-                    <img src="https://images.unsplash.com/photo-1523293115678-d2906231c518?q=80&w=400&h=400&fit=crop" class="card-img-top" alt="Product">
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="card-title mb-1">Gucci Bloom</h5>
-                        <p class="card-text text-muted small mb-2">Hương hoa nhài, huệ trắng</p>
-                        <p class="price gold-text fw-bold mb-3 mt-auto">3.800.000 ₫</p>
-                        <a href="#" class="btn btn-outline-dark btn-sm w-100">Thêm Vào Giỏ</a>
-                    </div>
+                    <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
+                        <div class="position-relative">
+                            <span th:if="${p.discount != null && p.discount > 0}" class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1">GIẢM GIÁ</span>
+                            <img th:src="${p.mainImageUrl != null ? p.mainImageUrl : '/web/images/default-product.jpg'}" class="card-img-top" th:alt="${p.name}" style="height: 250px; object-fit: cover;">
+                        </div>
+                        <div class="card-body text-center d-flex flex-column">
+                            <h5 class="card-title mb-1" th:text="${p.name}">Product Name</h5>
+                            <p class="card-text text-muted small mb-2" th:text="${p.categoryName}">Category</p>
+                            <p class="price gold-text fw-bold mb-3 mt-auto" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Price</p>
+                            <a th:href="@{/products/{id}(id=${p.id})}" class="btn btn-outline-dark btn-sm w-100">Xem Chi Tiết</a>
+                        </div>
+                    </a>
                 </div>
             </div>
 
