@@ -1,0 +1,184 @@
+/* ===== ABOUT PAGE STYLES ===== */
+
+.about-hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/web/images/anh_slide1.jpg') center/cover no-repeat;
+    height: 60vh;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    margin-top: -80px; /* To pull it up behind a transparent header if applicable, but we'll just keep it flush */
+}
+
+/* Adjust margin if header is not transparent */
+.about-hero-section {
+    margin-top: 0;
+}
+
+.about-hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.about-hero-content p {
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.about-section {
+    padding: 80px 0;
+}
+
+.about-section .elegant-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.about-section p {
+    color: #555;
+    line-height: 1.8;
+    font-size: 1.05rem;
+    margin-bottom: 20px;
+}
+
+/* Story Section */
+.story-image-wrapper {
+    position: relative;
+    padding-right: 30px;
+    padding-bottom: 30px;
+}
+
+.story-image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 80%;
+    height: 80%;
+    border: 3px solid #D4AF37;
+    z-index: -1;
+}
+
+.story-image {
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+/* Core Values Section */
+.values-section {
+    background-color: #fcfbf9;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.value-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+}
+
+.value-icon {
+    width: 70px;
+    height: 70px;
+    background-color: #f8f5ee;
+    color: #D4AF37;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 25px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.value-card:hover .value-icon {
+    background-color: #D4AF37;
+    color: #fff;
+}
+
+.value-card h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.value-card p {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 0;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(rgba(212, 175, 55, 0.9), rgba(212, 175, 55, 0.9)), url('/web/images/anh_slide2.jpg') center/cover fixed;
+    padding: 100px 0;
+    text-align: center;
+    color: #fff;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.btn-outline-light-custom {
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 12px 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.btn-outline-light-custom:hover {
+    background: #fff;
+    color: #D4AF37;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .about-hero-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .story-image-wrapper {
+        margin-top: 40px;
+        padding-right: 15px;
+        padding-bottom: 15px;
+    }
+}

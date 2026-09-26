@@ -106,6 +106,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         cartService.clearCart(username);
+        
+        // Auto-ẩn sản phẩm hết hàng
+        checkAndHideOutOfStockProducts(savedOrder.getId());
+        
         return savedOrder;
     }
 
@@ -173,5 +177,71 @@ public class OrderServiceImpl implements OrderService {
         Order order = getOrderById(orderId);
         orderDetailRepository.deleteAll(orderDetailRepository.findByOrderId(orderId));
         orderRepository.delete(order);
+    }
+
+    @Override
+    @Transactional
+    public void cancelOrder(Long orderId, String username) {
+        Order order = getOrderById(orderId);
+
+        // Kiểm tra quyền
+        if (!order.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Không có quyền hủy đơn hàng này");
+        }
+
+        // Chỉ cho phép hủy đơn đang PENDING
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new RuntimeException("Chỉ có thể hủy đơn hàng đang chờ xử lý");
+        }
+
+        // Hoàn lại số lượng tồn kho
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
+        for (OrderDetail detail : details) {
+            ProductVariant variant = detail.getProductVariant();
+            variant.setStock(variant.getStock() + detail.getQuantity());
+            variantRepository.save(variant);
+
+            // Nếu sản phẩm bị ẩn do hết hàng, bật lại
+            if (!variant.getProduct().getIsActive()) {
+                variant.getProduct().setIsActive(true);
+            }
+        }
+
+        // Hoàn lại điểm tích lũy nếu đã dùng
+        if (order.getDiscountAmount() != null && order.getDiscountAmount() > 0) {
+            int pointsToRefund = (int) ((order.getDiscountAmount() / 10000.0) * 100);
+            UserProfile profile = userProfileRepository.findById(order.getUser().getId()).orElse(null);
+            if (profile != null) {
+                profile.setLoyaltyPoints((profile.getLoyaltyPoints() == null ? 0 : profile.getLoyaltyPoints()) + pointsToRefund);
+                userProfileRepository.save(profile);
+
+                PointTransaction pt = new PointTransaction();
+                pt.setUser(order.getUser());
+                pt.setPoints(pointsToRefund);
+                pt.setTransactionType("REFUND_CANCEL_ORDER");
+                pointTransactionRepository.save(pt);
+            }
+        }
+
+        order.setStatus("CANCELLED");
+        orderRepository.save(order);
+    }
+
+    /**
+     * Kiểm tra và ẩn sản phẩm nếu TẤT CẢ variant đều hết hàng (stock=0).
+     */
+    private void checkAndHideOutOfStockProducts(Long orderId) {
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
+        for (OrderDetail detail : details) {
+            ProductVariant variant = detail.getProductVariant();
+            if (variant.getStock() != null && variant.getStock() <= 0) {
+                var product = variant.getProduct();
+                List<ProductVariant> allVariants = variantRepository.findByProductId(product.getId());
+                boolean allOutOfStock = allVariants.stream().allMatch(v -> v.getStock() == null || v.getStock() <= 0);
+                if (allOutOfStock) {
+                    product.setIsActive(false);
+                }
+            }
+        }
     }
 }

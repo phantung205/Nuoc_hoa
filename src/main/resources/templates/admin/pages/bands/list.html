@@ -47,7 +47,7 @@
                 <tr th:each="b : ${brands}">
                     <td class="ps-4 fw-bold text-muted" th:text="${'#' + b.id}">#1</td>
                     <td>
-                        <img th:if="${b.logo != null && !b.logo.isEmpty()}" th:src="${b.logo}" alt="Logo" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: contain;">
+                        <img th:if="${b.logo != null && !b.logo.isEmpty()}" th:src="${b.logo}" alt="Logo" class="img-thumbnail admin-brand-logo-table">
                         <span th:unless="${b.logo != null && !b.logo.isEmpty()}" class="text-muted fst-italic">Không có</span>
                     </td>
                     <td class="fw-semibold" th:text="${b.name}">Brand Name</td>

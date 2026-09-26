@@ -1,4 +1,3 @@
-/* Adjust main content since sidebar is fixed */
 .main {
     margin-left: 280px;
 }
@@ -34,3 +33,25 @@
 .elegant-title {
     font-family: 'Playfair Display', serif;
 }
+
+.sidebar {
+    width: 280px;
+    min-height: 100vh;
+    position: fixed;
+}
+
+.sidebar-management-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #d4af37;
+    opacity: 0.85;
+    font-weight: 500;
+}
+
+.sidebar-section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #adb5bd;
+}
+

@@ -16,7 +16,7 @@
         <a href="/admin/categories" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
     </div>
 
-    <div class="dashboard-card shadow-sm mx-auto" style="max-width: 600px;">
+    <div class="dashboard-card shadow-sm mx-auto form-card-container">
         <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
         <form th:action="@{/admin/categories/edit/{id}(id=${category.id})}" th:object="${category}" method="post">
@@ -35,7 +35,7 @@
             <hr class="mb-4">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <a href="/admin/categories" class="btn btn-light px-4">Hủy Bỏ</a>
-                <button type="submit" class="btn btn-primary px-4" style="background-color: #D4AF37; border-color: #D4AF37; color: #111; font-weight: bold;"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
+                <button type="submit" class="btn btn-gold-admin px-4"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
             </div>
         </form>
     </div>

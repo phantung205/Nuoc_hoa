@@ -16,7 +16,7 @@
         <a href="/admin/users" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
     </div>
 
-    <div class="dashboard-card shadow-sm mx-auto" style="max-width: 600px;">
+    <div class="dashboard-card shadow-sm mx-auto form-card-container">
         <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
         <form th:action="@{/admin/users/edit/{id}(id=${userRequest.id})}" th:object="${userRequest}" method="post" enctype="multipart/form-data">
@@ -72,9 +72,9 @@
                 <label class="form-label fw-bold">Ảnh Đại Diện (Avatar)</label>
                 <div class="d-flex align-items-center gap-3">
                     <div th:if="*{avatarUrl != null && !avatarUrl.empty}">
-                        <img th:src="*{avatarUrl}" alt="Avatar" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                        <img th:src="*{avatarUrl}" alt="Avatar" class="img-thumbnail rounded-circle admin-avatar-preview">
                     </div>
-                    <div th:unless="*{avatarUrl != null && !avatarUrl.empty}" class="bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <div th:unless="*{avatarUrl != null && !avatarUrl.empty}" class="bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center admin-avatar-placeholder">
                         <i class="bi bi-person text-secondary fs-1"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -106,7 +106,7 @@
             <hr class="mb-4">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <a href="/admin/users" class="btn btn-light px-4">Hủy Bỏ</a>
-                <button type="submit" class="btn btn-primary px-4" style="background-color: #D4AF37; border-color: #D4AF37; color: #111; font-weight: bold;"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
+                <button type="submit" class="btn btn-gold-admin px-4"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
             </div>
         </form>
     </div>

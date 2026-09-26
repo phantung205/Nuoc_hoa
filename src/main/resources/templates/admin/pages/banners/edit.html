@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'banners', ~{::div.admin-content}, ~{::link}, ~{})}">
+<head>
+    <title>Cập Nhật Banner - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/banners/edit.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Cập Nhật Banner</h2>
+            <p class="text-muted mb-0">Chỉnh sửa thông tin banner: <span th:text="${banner.title}" class="fw-bold text-dark"></span></p>
+        </div>
+        <a href="/admin/banners" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+    </div>
+
+    <div class="dashboard-card shadow-sm mx-auto form-card-container">
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/banners/edit/{id}(id=${banner.id})}" th:object="${banner}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tiêu Đề Banner <span class="text-danger">*</span></label>
+                <input type="text" class="form-control bg-light" th:field="*{title}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Miêu Tả</label>
+                <textarea class="form-control bg-light" th:field="*{description}" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Liên Kết URL (Link)</label>
+                <input type="text" class="form-control bg-light" th:field="*{link}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Thứ Tự Sắp Xếp</label>
+                <input type="number" class="form-control bg-light" th:field="*{sortOrder}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Hình Ảnh Hiện Tại</label>
+                <div class="mb-2">
+                    <img th:if="${banner.imageUrl != null && !banner.imageUrl.isEmpty()}" th:src="${banner.imageUrl}" alt="Current Image" class="img-thumbnail admin-banner-image-preview">
+                    <span th:unless="${banner.imageUrl != null && !banner.imageUrl.isEmpty()}" class="text-muted fst-italic">Không có ảnh</span>
+                </div>
+                <input type="hidden" th:field="*{imageUrl}">
+                
+                <label class="form-label fw-bold mt-2">Tải lên Ảnh Mới (để trống nếu không thay đổi)</label>
+                <input type="file" class="form-control bg-light" name="imageFile" accept="image/*">
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="bannerStatus" th:field="*{status}">
+                    <label class="form-check-label fw-bold" for="bannerStatus">Kích hoạt (Hiển thị)</label>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin/banners" class="btn btn-light px-4">Hủy Bỏ</a>
+                <button type="submit" class="btn btn-gold-admin px-4"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

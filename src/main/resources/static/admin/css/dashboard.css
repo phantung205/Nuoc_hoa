@@ -13,14 +13,12 @@ body {
     color: #D4AF37;
 }
 
-/* Main Layout Setup */
 .main {
     padding: 30px;
     background-color: #f4f6f9;
     min-height: 100vh;
 }
 
-/* Dashboard Cards */
 .dashboard-card {
     background: #ffffff;
     border-radius: 12px;
@@ -82,7 +80,6 @@ body {
     color: #b5952f;
 }
 
-/* Tables */
 .table-dark {
     background-color: #212529;
     color: #D4AF37;

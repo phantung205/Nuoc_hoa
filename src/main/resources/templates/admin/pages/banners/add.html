@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'banners', ~{::div.admin-content}, ~{::link}, ~{})}">
+<head>
+    <title>Thêm Banner Mới - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/banners/add.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Thêm Mới Banner</h2>
+            <p class="text-muted mb-0">Tạo banner hiển thị trên website</p>
+        </div>
+        <a href="/admin/banners" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+    </div>
+
+    <div class="dashboard-card shadow-sm mx-auto form-card-container">
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/banners/add}" th:object="${banner}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tiêu Đề Banner <span class="text-danger">*</span></label>
+                <input type="text" class="form-control bg-light" th:field="*{title}" required placeholder="VD: Khuyến mãi 20/10...">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Miêu Tả (Dòng chữ nhỏ dưới tiêu đề)</label>
+                <textarea class="form-control bg-light" th:field="*{description}" rows="2" placeholder="VD: Khám phá những bộ sưu tập nước hoa nữ cao cấp nhất..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Liên Kết URL (Link)</label>
+                <input type="text" class="form-control bg-light" th:field="*{link}" placeholder="VD: /products?category=... (có thể để trống)">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Thứ Tự Sắp Xếp</label>
+                <input type="number" class="form-control bg-light" th:field="*{sortOrder}" placeholder="0, 1, 2...">
+                <div class="form-text">Số nhỏ hơn sẽ hiển thị trước.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Hình Ảnh Banner <span class="text-danger">*</span></label>
+                <input type="file" class="form-control bg-light" name="imageFile" accept="image/*" required>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="bannerStatus" th:field="*{status}">
+                    <label class="form-check-label fw-bold" for="bannerStatus">Kích hoạt (Hiển thị ngay)</label>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin/banners" class="btn btn-light px-4">Hủy Bỏ</a>
+                <button type="submit" class="btn btn-dark px-4"><i class="bi bi-save me-1"></i> Tạo Banner</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1, h2, h3, h4, h5, h6, .elegant-title {
+    font-family: 'Playfair Display', serif;
+}
+
+.gold-text {
+    color: #D4AF37 !important;
+}
+
+/* ===== PROMO HERO ===== */
+.promo-hero {
+    background: linear-gradient(135deg, #111 0%, #1a1a2e 50%, #0f0f23 100%);
+    padding: 80px 0 60px;
+    margin-top: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.promo-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(212,175,55,0.08) 0%, transparent 50%);
+    animation: shimmer 8s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+}
+
+.promo-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #D4AF37, #f5d75e);
+    color: #111;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.promo-stat {
+    text-align: center;
+    padding: 15px 25px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 12px;
+    min-width: 160px;
+}
+
+.promo-stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+}
+
+.promo-stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+}
+
+/* ===== PROMO CARDS ===== */
+.promo-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.promo-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+}
+
+.promo-img-wrapper {
+    overflow: hidden;
+}
+
+.promo-img {
+    height: 260px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.promo-card:hover .promo-img {
+    transform: scale(1.05);
+}
+
+.promo-discount-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(231,76,60,0.4);
+}
+
+.promo-timer-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.75);
+    color: #D4AF37;
+    text-align: center;
+    padding: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.promo-prices {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.price-new {
+    font-size: 1.15rem;
+}
+
+.promo-savings {
+    background: rgba(40, 167, 69, 0.08);
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.promo-card .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* ===== BUTTONS ===== */
+.btn-gold {
+    background-color: #D4AF37;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: #b5952f;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .promo-hero {
+        padding: 60px 0 40px;
+    }
+    .promo-hero h1 {
+        font-size: 2rem;
+    }
+}

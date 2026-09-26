@@ -125,32 +125,31 @@ public class WebCheckoutController {
         if (addressId != null) {
             finalAddress = userAddressService.getAddressById(username, addressId);
         } else {
-            if (receiverName == null || phoneNumber == null || receiverAddress == null) {
+            if (receiverName == null || receiverName.trim().isEmpty()
+                    || phoneNumber == null || phoneNumber.trim().isEmpty()
+                    || receiverAddress == null || receiverAddress.trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng nhập đầy đủ thông tin giao hàng!");
                 return "redirect:/checkout";
             }
             
+            // Luôn lưu địa chỉ vào DB để tránh lỗi transient entity khi gán cho Order
             UserAddressDTO newAddressDto = new UserAddressDTO();
-            newAddressDto.setReceiverName(receiverName);
-            newAddressDto.setPhoneNumber(phoneNumber);
-            newAddressDto.setReceiverAddress(receiverAddress);
+            newAddressDto.setReceiverName(receiverName.trim());
+            newAddressDto.setPhoneNumber(phoneNumber.trim());
+            newAddressDto.setReceiverAddress(receiverAddress.trim());
             newAddressDto.setNote(note);
             newAddressDto.setAddressType("Khác");
             
-            if (saveAddress) {
-                finalAddress = userAddressService.addAddress(username, newAddressDto);
-            } else {
-                finalAddress = new UserAddress();
-                finalAddress.setReceiverName(receiverName);
-                finalAddress.setPhoneNumber(phoneNumber);
-                finalAddress.setReceiverAddress(receiverAddress);
-                finalAddress.setNote(note);
-                finalAddress.setAddressType("Khác");
-            }
+            finalAddress = userAddressService.addAddress(username, newAddressDto);
         }
         
         try {
-            orderService.createOrder(username, finalAddress, paymentMethod, note, pointsToUse);
+            com.perfumes.nuochoa.entity.Order createdOrder = orderService.createOrder(username, finalAddress, paymentMethod, note, pointsToUse);
+            
+            if ("QR".equalsIgnoreCase(paymentMethod)) {
+                return "redirect:/checkout/qr?orderId=" + createdOrder.getId();
+            }
+            
             redirectAttributes.addFlashAttribute("successMessage", "Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -158,5 +157,72 @@ public class WebCheckoutController {
         }
         
         return "redirect:/orders";
+    }
+
+    @GetMapping("/qr")
+    public String viewQR(@RequestParam("orderId") Long orderId, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        try {
+            com.perfumes.nuochoa.entity.Order order = orderService.getOrderById(orderId);
+            if (!order.getUser().getUsername().equals(username)) {
+                return "redirect:/orders";
+            }
+            
+            Double totalAmount = order.getTotalAmount();
+            String bankId = "BIDV";
+            String accountNo = "962472TD8I";
+            String accountName = "PHAN VAN SON TUNG";
+            String transferContent = "LTS" + orderId;
+            
+            String qrCodeUrl = String.format("https://img.vietqr.io/image/%s-%s-compact2.png?amount=%.0f&addInfo=%s&accountName=%s",
+                    bankId, accountNo, totalAmount, transferContent, accountName.replace(" ", "%20"));
+                    
+            model.addAttribute("orderId", orderId);
+            model.addAttribute("totalAmount", totalAmount);
+            model.addAttribute("qrCodeUrl", qrCodeUrl);
+            model.addAttribute("transferContent", transferContent);
+            
+            return "web/pages/checkout/qr";
+        } catch (Exception e) {
+            return "redirect:/orders";
+        }
+    }
+
+    @PostMapping("/switch-to-cod")
+    public String switchToCod(@RequestParam("orderId") Long orderId, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        try {
+            com.perfumes.nuochoa.entity.Order order = orderService.getOrderById(orderId);
+            if (!order.getUser().getUsername().equals(username)) {
+                return "redirect:/orders";
+            }
+            
+            // Cập nhật phương thức thanh toán sang COD
+            order.setPayments("COD");
+            orderService.updateOrderStatus(orderId, "PENDING"); 
+            
+            redirectAttributes.addFlashAttribute("successMessage", "Đã chuyển sang hình thức thanh toán COD thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi chuyển đổi: " + e.getMessage());
+        }
+        return "redirect:/orders";
+    }
+
+    @PostMapping("/cancel-qr")
+    public String cancelQrOrder(@RequestParam("orderId") Long orderId, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        try {
+            orderService.cancelOrder(orderId, username);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã hủy đơn hàng và hoàn lại số lượng sản phẩm.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hủy đơn: " + e.getMessage());
+        }
+        return "redirect:/cart";
     }
 }

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Về Chúng Tôi - 2T&amp;C</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/about.css}">
+</head>
+<body>
+
+<script>
+    // JS dành riêng cho trang About (nếu cần hiệu ứng cuộn, v.v.)
+</script>
+
+<section>
+    <!-- Hero Banner -->
+    <div class="about-hero-section">
+        <div class="about-hero-content px-3">
+            <h1 class="gold-text">Về 2T&amp;C</h1>
+            <p>Khám phá câu chuyện đằng sau những mùi hương đẳng cấp và niềm đam mê bất tận với nghệ thuật nước hoa.</p>
+        </div>
+    </div>
+
+    <!-- Our Story Section -->
+    <div class="about-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+                    <h6 class="gold-text fw-bold mb-2">CÂU CHUYỆN CỦA CHÚNG TÔI</h6>
+                    <h2 class="elegant-title">Hành trình tìm kiếm<br>Hương thơm đích thực</h2>
+                    <div class="decorative-line mb-4" style="margin: 0;"></div>
+                    
+                    <p>Được thành lập với tình yêu mãnh liệt dành cho thế giới nước hoa, <strong>2T&amp;C</strong> ra đời mang theo sứ mệnh mang đến cho khách hàng những trải nghiệm hương thơm tinh tế và độc đáo nhất từ khắp nơi trên thế giới.</p>
+                    
+                    <p>Chúng tôi không chỉ bán nước hoa, chúng tôi mang đến những câu chuyện, những kỷ niệm và phong cách sống được gói gọn trong từng tầng hương. Mỗi sản phẩm trên kệ hàng của 2T&amp;C đều được tuyển chọn kỹ lưỡng, đảm bảo tính nguyên bản và chất lượng hoàn hảo nhất khi đến tay khách hàng.</p>
+                    
+                    <p class="mb-0">Từ những dòng nước hoa Designer đình đám đến những tuyệt tác Niche quý hiếm, 2T&amp;C tự hào là điểm đến tin cậy của những tâm hồn đồng điệu, say mê nghệ thuật khứu giác.</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="story-image-wrapper">
+                        <img th:src="@{/web/images/anh_slide3.jpg}" alt="Cửa hàng 2T&C" class="story-image img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Values Section -->
+    <div class="about-section values-section">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h6 class="gold-text fw-bold mb-2">TẠI SAO CHỌN CHÚNG TÔI</h6>
+                    <h2 class="elegant-title">Giá trị cốt lõi</h2>
+                    <div class="decorative-line mx-auto"></div>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4>Cam Kết Chính Hãng</h4>
+                        <p>100% sản phẩm tại 2T&amp;C được nhập khẩu chính ngạch, có nguồn gốc xuất xứ rõ ràng. Chúng tôi kiên quyết nói không với hàng giả, hàng kém chất lượng.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="bi bi-gem"></i>
+                        </div>
+                        <h4>Chất Lượng Thượng Lưu</h4>
+                        <p>Từ không gian mua sắm, bao bì sản phẩm cho đến chất lượng dịch vụ, tất cả đều được thiết kế để mang đến trải nghiệm xứng tầm đẳng cấp cho quý khách.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h4>Tận Tâm Phục Vụ</h4>
+                        <p>Đội ngũ chuyên viên tư vấn được đào tạo bài bản, luôn sẵn sàng lắng nghe và giúp bạn tìm ra mùi hương mang đậm dấu ấn cá nhân của riêng mình.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2>Sẵn sàng tìm kiếm chữ ký mùi hương của bạn?</h2>
+                    <p>Khám phá bộ sưu tập nước hoa cao cấp hàng đầu tại 2T&amp;C ngay hôm nay.</p>
+                    <a th:href="@{/products}" class="btn btn-outline-light-custom">Đến Cửa Hàng <i class="bi bi-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

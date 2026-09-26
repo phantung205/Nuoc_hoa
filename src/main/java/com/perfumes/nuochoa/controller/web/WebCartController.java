@@ -48,6 +48,7 @@ public class WebCartController {
             Double price = item.getProductVariant().getPrice();
             dto.setPrice(price);
             dto.setQuantity(item.getQuantity());
+            dto.setStock(item.getProductVariant().getStock());
             
             Double itemTotal = price * item.getQuantity();
             dto.setTotalPrice(itemTotal);
@@ -122,3 +123,4 @@ public class WebCartController {
         return "redirect:/cart";
     }
 }
+

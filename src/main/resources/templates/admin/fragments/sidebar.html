@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="sidebar(activeMenu)" class="sidebar bg-black text-light d-flex flex-column" style="width: 280px; min-height: 100vh; position: fixed;">
+<div th:fragment="sidebar(activeMenu)" class="sidebar bg-black text-light d-flex flex-column">
     <div class="sidebar-brand p-4 text-center border-bottom border-secondary">
         <h2 class="elegant-title gold-text mb-0 fs-3"><i class="bi bi-droplet-fill me-2"></i>2T&C</h2>
-        <span style="font-size: 11px; letter-spacing: 2px; color: #d4af37; opacity: 0.85; font-weight: 500;">MANAGEMENT</span>
+        <span class="sidebar-management-label">MANAGEMENT</span>
     </div>
     
     <div class="sidebar-menu flex-grow-1 p-3 mt-3">
-        <div class="mb-2 ps-3" style="font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: #adb5bd;">MENU CHÍNH</div>
+        <div class="mb-2 ps-3 sidebar-section-label">MENU CHÍNH</div>
         <ul class="nav flex-column gap-2">
             <li class="nav-item">
                 <a th:href="@{/admin/dashboard}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'dashboard' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
@@ -40,9 +40,14 @@
                     <i class="bi bi-cart-check-fill me-2"></i> Đơn Hàng
                 </a>
             </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/banners}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'banners' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-images me-2"></i> Banner
+                </a>
+            </li>
         </ul>
 
-        <div class="mb-2 ps-3 mt-4" style="font-size: 12px; font-weight: 600; letter-spacing: 1.5px; color: #adb5bd;">CỬA HÀNG</div>
+        <div class="mb-2 ps-3 mt-4 sidebar-section-label">CỬA HÀNG</div>
         <ul class="nav flex-column gap-2">
             <li class="nav-item">
                 <a th:href="@{/}" class="nav-link text-light rounded px-3 py-2 hover-bg-dark" target="_blank">

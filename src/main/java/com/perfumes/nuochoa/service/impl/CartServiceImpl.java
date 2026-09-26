@@ -55,18 +55,25 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public void addToCart(String username, Long variantId, int quantity) {
         if (quantity <= 0) return;
-        
+
         Cart cart = getCartByUsername(username);
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
 
         Optional<CartItem> existingItemOpt = cartItemRepository.findByCartIdAndProductVariantId(cart.getId(), variantId);
-        
+
         if (existingItemOpt.isPresent()) {
             CartItem item = existingItemOpt.get();
-            item.setQuantity(item.getQuantity() + quantity);
+            int newQuantity = item.getQuantity() + quantity;
+            if (newQuantity > variant.getStock()) {
+                throw new RuntimeException("Số lượng yêu cầu vượt quá số lượng tồn kho (Còn lại: " + variant.getStock() + ")");
+            }
+            item.setQuantity(newQuantity);
             cartItemRepository.save(item);
         } else {
+            if (quantity > variant.getStock()) {
+                throw new RuntimeException("Số lượng yêu cầu vượt quá số lượng tồn kho (Còn lại: " + variant.getStock() + ")");
+            }
             CartItem newItem = new CartItem();
             newItem.setCart(cart);
             newItem.setProductVariant(variant);
@@ -81,7 +88,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartByUsername(username);
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ hàng"));
-                
+
         if (!item.getCart().getId().equals(cart.getId())) {
             throw new RuntimeException("Không có quyền cập nhật giỏ hàng này");
         }
@@ -89,6 +96,10 @@ public class CartServiceImpl implements CartService {
         if (quantity <= 0) {
             cartItemRepository.delete(item);
         } else {
+            ProductVariant variant = item.getProductVariant();
+            if (quantity > variant.getStock()) {
+                throw new RuntimeException("Số lượng yêu cầu vượt quá số lượng tồn kho (Còn lại: " + variant.getStock() + ")");
+            }
             item.setQuantity(quantity);
             cartItemRepository.save(item);
         }
@@ -100,11 +111,11 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartByUsername(username);
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ hàng"));
-                
+
         if (!item.getCart().getId().equals(cart.getId())) {
             throw new RuntimeException("Không có quyền xóa sản phẩm này");
         }
-        
+
         cartItemRepository.delete(item);
     }
 

@@ -1,1 +1,20 @@
-﻿/* CSS for Checkout page */
+.address-list-item {
+    cursor: pointer;
+}
+
+.checkout-summary-card {
+    top: 100px;
+}
+
+.checkout-items-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.checkout-product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+

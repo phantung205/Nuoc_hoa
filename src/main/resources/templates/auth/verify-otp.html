@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<section class="auth-section py-5 bg-light" style="min-height: 80vh; display: flex; align-items: center;">
+<section class="auth-section py-5 bg-light">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
@@ -32,7 +32,7 @@
 
                         <form th:action="${isResetPassword} ? @{/auth/verify-reset-otp} : @{/auth/verify-otp}" method="post">
                             <div class="form-floating mb-4">
-                                <input type="text" name="otp" id="otp" class="form-control text-center fs-4 fw-bold" style="letter-spacing: 5px;" maxlength="6" placeholder="000000" required autofocus autocomplete="off">
+                                <input type="text" name="otp" id="otp" class="form-control text-center fs-4 fw-bold otp-input-styled" maxlength="6" placeholder="000000" required autofocus autocomplete="off">
                                 <label for="otp">Nhập mã OTP</label>
                             </div>
 

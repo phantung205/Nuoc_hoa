@@ -1,4 +1,3 @@
-/* Fonts and base styles */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
 
 body {
@@ -11,7 +10,6 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     font-family: 'Playfair Display', serif;
 }
 
-/* Colors */
 .gold-text {
     color: #D4AF37 !important;
 }
@@ -20,20 +18,35 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     background-color: #111;
 }
 
-/* Carousel Slider */
+.ls-2 {
+    letter-spacing: 3px;
+}
+
+/* ===== CAROUSEL / BANNER ===== */
 .carousel-item img {
     height: 70vh;
     object-fit: cover;
-    filter: brightness(0.6);
+    filter: brightness(0.55);
+    transition: transform 6s ease;
+}
+
+.carousel-item.active img {
+    transform: scale(1.05);
+}
+
+.carousel-item a {
+    display: block;
 }
 
 .carousel-caption {
-    bottom: 20%;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 30px;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 8px;
-    backdrop-filter: blur(4px);
+    bottom: 18%;
+    background: rgba(0, 0, 0, 0.45);
+    padding: 35px 40px;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .carousel-caption h5 {
@@ -41,27 +54,147 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     font-weight: 700;
     margin-bottom: 15px;
     letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .carousel-caption p {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 300;
     letter-spacing: 1px;
+    opacity: 0.9;
 }
 
-/* Main Content Area */
-.welcome-card {
-    background-color: #fff;
-    border-top: 4px solid #D4AF37;
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #D4AF37;
+    background-color: transparent;
+    opacity: 0.6;
 }
 
+.carousel-indicators button.active {
+    background-color: #D4AF37;
+    opacity: 1;
+}
+
+/* ===== DECORATIVE LINE ===== */
 .decorative-line {
     width: 60px;
     height: 3px;
-    background-color: #D4AF37;
+    background: linear-gradient(90deg, transparent, #D4AF37, transparent);
     margin-top: 10px;
 }
 
+/* ===== CATEGORY SECTION ===== */
+.category-card-pro {
+    height: 320px;
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.category-card-pro:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important;
+}
+
+.category-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s ease;
+}
+
+.category-card-pro:hover .category-card-bg {
+    transform: scale(1.08);
+}
+
+.category-bg-0 {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.category-bg-1 {
+    background: linear-gradient(135deg, #2d1b2e 0%, #441a3e 50%, #6b1d5e 100%);
+}
+
+.category-bg-2 {
+    background: linear-gradient(135deg, #1a2e1a 0%, #2e3e16 50%, #4a6020 100%);
+}
+
+.category-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+    z-index: 1;
+}
+
+.category-icon {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #D4AF37;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D4AF37;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+}
+
+.category-card-pro:hover .category-icon {
+    background-color: #D4AF37;
+    color: #111;
+}
+
+.category-explore-btn {
+    display: inline-block;
+    color: #D4AF37;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.3s ease;
+}
+
+.category-card-pro:hover .category-explore-btn {
+    letter-spacing: 2.5px;
+}
+
+/* ===== BRAND SECTION ===== */
+.brand-card {
+    height: 100px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-color: #eee !important;
+}
+
+.brand-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06) !important;
+    transform: translateY(-3px);
+    border-color: #d4af37 !important;
+}
+
+.brand-logo-img {
+    max-height: 55px;
+    max-width: 100%;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.7);
+    transition: all 0.3s ease;
+}
+
+.brand-card:hover .brand-logo-img {
+    filter: grayscale(0%) opacity(1);
+}
+
+/* ===== PRODUCT CARDS ===== */
 .btn-gold {
     background-color: #D4AF37;
     color: #fff;
@@ -92,14 +225,15 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     color: #fff;
 }
 
-/* Products */
 .product-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12) !important;
 }
 
 .product-card .card-title {
@@ -119,40 +253,42 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     margin: 10px 0;
 }
 
-/* Category Cards */
-.category-card {
-    border-radius: 8px;
-    height: 300px;
-}
-
-.category-card img {
+.featured-product-img {
+    height: 250px;
     object-fit: cover;
-    height: 100%;
-    transition: transform 0.5s ease;
-    filter: brightness(0.7);
 }
 
-.category-card:hover img {
-    transform: scale(1.05);
-    filter: brightness(0.5);
+/* ===== BRAND STORY ===== */
+.brand-story-text {
+    line-height: 1.8;
 }
 
-.category-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 1;
-}
-
-/* Utilities */
+/* ===== MISC ===== */
 .border-gold {
     border-color: #D4AF37 !important;
-}
-
-.bg-black {
-    background-color: #111;
 }
 
 .btn-outline-light:hover {
     background-color: #fff;
     color: #111;
 }
+
+.welcome-card {
+    background-color: #fff;
+    border-top: 4px solid #D4AF37;
+}
+
+.header-avatar {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.navbar-nav {
+    letter-spacing: 1px;
+}
+
+.otp-input-styled {
+    letter-spacing: 5px;
+}
+

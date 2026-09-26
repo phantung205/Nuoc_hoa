@@ -48,7 +48,7 @@
                 <tr th:each="p : ${products}">
                     <td class="ps-4 fw-bold text-muted" th:text="${'#' + p.id}">#1</td>
                     <td>
-                        <img th:if="${p.mainImageUrl != null}" th:src="${p.mainImageUrl}" alt="Ảnh SP" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                        <img th:if="${p.mainImageUrl != null}" th:src="${p.mainImageUrl}" alt="Ảnh SP" class="img-thumbnail admin-product-thumb-table">
                         <span th:unless="${p.mainImageUrl != null}" class="text-muted fst-italic">Không có ảnh</span>
                     </td>
                     <td class="fw-semibold" th:text="${p.name}">Product Name</td>

@@ -1,25 +1,31 @@
-/* Custom CSS for Edit User in Admin */
-.dashboard-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 35px 40px;
-    border-top: 5px solid #111;
+.form-card-container {
+    max-width: 800px;
 }
-.gold-accent {
-    color: #D4AF37;
+
+.alert-sm-text {
+    font-size: 0.9em;
 }
-.form-label {
-    font-size: 0.95rem;
-    color: #333;
+
+.admin-product-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
 }
-.form-control:focus, .form-select:focus {
+
+.variant-label {
+    font-size: 0.85em;
+}
+
+.btn-gold-admin {
+    background-color: #D4AF37;
     border-color: #D4AF37;
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    color: #111;
+    font-weight: bold;
 }
-.btn-primary {
-    transition: all 0.3s;
+
+.btn-gold-admin:hover {
+    background-color: #b5952f;
+    border-color: #b5952f;
+    color: #111;
 }
-.btn-primary:hover {
-    background-color: #b5952f !important;
-    border-color: #b5952f !important;
-}
+

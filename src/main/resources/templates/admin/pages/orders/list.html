@@ -48,6 +48,7 @@
                             <td><span class="badge bg-secondary" th:text="${order.payments}"></span></td>
                             <td>
                                 <span class="badge bg-primary" th:if="${order.status == 'PENDING'}">Chờ xử lý</span>
+                                <span class="badge bg-success" th:if="${order.status == 'PAID'}">Đã thanh toán</span>
                                 <span class="badge bg-info" th:if="${order.status == 'PROCESSING'}">Đang xử lý</span>
                                 <span class="badge bg-warning text-dark" th:if="${order.status == 'SHIPPED'}">Đang giao</span>
                                 <span class="badge bg-success" th:if="${order.status == 'DELIVERED'}">Thành công</span>

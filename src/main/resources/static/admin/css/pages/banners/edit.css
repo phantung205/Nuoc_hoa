@@ -1,0 +1,23 @@
+.form-card-container {
+    max-width: 700px;
+}
+
+.admin-banner-image-preview {
+    width: 250px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.btn-gold-admin {
+    background-color: #D4AF37;
+    border-color: #D4AF37;
+    color: #111;
+    font-weight: bold;
+}
+
+.btn-gold-admin:hover {
+    background-color: #b5952f;
+    border-color: #b5952f;
+    color: #111;
+}

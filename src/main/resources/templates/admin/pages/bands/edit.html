@@ -16,7 +16,7 @@
         <a href="/admin/brands" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
     </div>
 
-    <div class="dashboard-card shadow-sm mx-auto" style="max-width: 600px;">
+    <div class="dashboard-card shadow-sm mx-auto form-card-container">
         <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
         <form th:action="@{/admin/brands/edit/{id}(id=${brand.id})}" th:object="${brand}" method="post" enctype="multipart/form-data">
@@ -33,7 +33,7 @@
             <div class="mb-3">
                 <label class="form-label fw-bold">Ảnh Logo Hiện Tại</label>
                 <div class="mb-2">
-                    <img th:if="${brand.logo != null && !brand.logo.isEmpty()}" th:src="${brand.logo}" alt="Current Logo" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: contain;">
+                    <img th:if="${brand.logo != null && !brand.logo.isEmpty()}" th:src="${brand.logo}" alt="Current Logo" class="img-thumbnail admin-brand-logo-preview">
                     <span th:unless="${brand.logo != null && !brand.logo.isEmpty()}" class="text-muted fst-italic">Không có ảnh</span>
                 </div>
                 <!-- Giữ lại URL logo cũ nếu không chọn file mới -->
@@ -53,7 +53,7 @@
             <hr class="mb-4">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <a href="/admin/brands" class="btn btn-light px-4">Hủy Bỏ</a>
-                <button type="submit" class="btn btn-primary px-4" style="background-color: #D4AF37; border-color: #D4AF37; color: #111; font-weight: bold;"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
+                <button type="submit" class="btn btn-gold-admin px-4"><i class="bi bi-check2-circle me-1"></i> Lưu Thay Đổi</button>
             </div>
         </form>
     </div>

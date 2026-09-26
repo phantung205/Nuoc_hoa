@@ -57,8 +57,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Tắt CSRF chỉ cho API chatbot (để JavaScript fetch/POST hoạt động không cần CSRF token)
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chat/**"))
+            // Tắt CSRF cho API chatbot và webhook SePay
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chat/**", "/api/webhook/**", "/webhook/**"))
 
             .authenticationProvider(authenticationProvider())
 
@@ -68,9 +68,9 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**",
                                  "/admin/css/**", "/admin/js/**", "/web/**", "/common/**","/error/**").permitAll()
 
-                // Trang công khai: trang chủ, sản phẩm, chatbot, đăng ký/đăng nhập
+                // Trang công khai: trang chủ, sản phẩm, chatbot, webhook, đăng ký/đăng nhập
                 .requestMatchers("/", "/home", "/products/**", "/categories/**",
-                                 "/brands/**", "/api/chat/**", "/auth/**").permitAll()
+                                 "/brands/**", "/api/chat/**", "/api/webhook/**", "/webhook/**", "/api/orders/status/**", "/auth/**").permitAll()
 
                 // Trang Admin: chỉ tài khoản có quyền ADMIN
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -87,7 +87,9 @@ public class SecurityConfig {
                 .failureHandler(failureHandler)             // Handler xử lý lỗi đăng nhập tùy chỉnh
                 .permitAll()
             )
-
+            .exceptionHandling(e -> e.authenticationEntryPoint(new org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint("/auth/login")))
+            .sessionManagement(session -> session.invalidSessionUrl("/auth/login?expired=true"))
+            
             // cấu hình rememberme
             .rememberMe(remember -> remember
                     .key("NuocHoaSecretKey_Dk93ns81")           // Khóa bí mật dùng để mã hóa token (bạn có thể đổi chuỗi này)

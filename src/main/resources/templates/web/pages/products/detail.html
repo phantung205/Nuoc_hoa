@@ -24,13 +24,13 @@
                 <div class="product-gallery">
                     <!-- Ảnh chính -->
                     <div class="main-image-container border rounded mb-3 overflow-hidden text-center bg-light p-3 shadow-sm">
-                        <img id="mainImage" th:src="${product.mainImageUrl != null ? product.mainImageUrl : '/web/images/default-product.jpg'}" th:alt="${product.name}" class="img-fluid" style="max-height: 500px; object-fit: contain;">
+                        <img id="mainImage" th:src="${product.mainImageUrl != null ? product.mainImageUrl : '/web/images/default-product.jpg'}" th:alt="${product.name}" class="img-fluid product-main-img">
                     </div>
                     
                     <!-- Thumbnails -->
                     <div class="d-flex gap-2 overflow-auto py-2" th:if="${product.imageUrls != null && product.imageUrls.size() > 1}">
                         <div th:each="imgUrl : ${product.imageUrls}" class="thumbnail-wrapper border rounded p-1 cursor-pointer" onclick="changeMainImage(this)">
-                            <img th:src="${imgUrl}" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;">
+                            <img th:src="${imgUrl}" class="img-fluid product-thumb-img">
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,11 @@
                     
                     <p class="text-muted mb-4 fs-5" th:text="${product.brandName} + ' | ' + ${product.categoryName}">Thương Hiệu | Danh Mục</p>
 
-                    <h2 class="price gold-text fw-bold mb-4" id="displayPrice" th:text="${#numbers.formatDecimal(product.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</h2>
+                    <div class="d-flex align-items-center mb-4">
+                        <span th:if="${product.discount != null && product.discount > 0}" class="text-muted text-decoration-line-through me-3 fs-5" id="originalPrice" th:text="${#numbers.formatDecimal(product.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá gốc</span>
+                        <h2 class="price gold-text fw-bold mb-0" id="displayPrice" 
+                            th:text="${product.discount != null && product.discount > 0 ? #numbers.formatDecimal(product.minPrice - product.discount, 0, 'COMMA', 0, 'POINT') + ' ₫' : #numbers.formatDecimal(product.minPrice, 0, 'COMMA', 0, 'POINT') + ' ₫'}">Giá</h2>
+                    </div>
 
                     <div class="description-box mb-4 pb-4 border-bottom">
                         <h5 class="fw-bold mb-3">Mô Tả Sản Phẩm</h5>
@@ -56,6 +60,7 @@
                     <!-- Lựa chọn biến thể -->
                     <form th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="productId" th:value="${product.id}">
+                        <input type="hidden" id="productDiscount" th:value="${product.discount != null ? product.discount : 0}">
                         
                         <div class="mb-4" th:if="${product.variants != null && !product.variants.empty}">
                             <h5 class="fw-bold mb-3">Chọn Dung Tích & Nồng Độ:</h5>
@@ -71,7 +76,7 @@
                         </div>
 
                         <div class="d-flex align-items-center gap-3 mb-4">
-                            <div class="input-group" style="width: 130px;">
+                            <div class="input-group product-qty-group">
                                 <button class="btn btn-outline-secondary" type="button" onclick="updateQty(-1)">-</button>
                                 <input type="number" class="form-control text-center bg-white" name="quantity" id="quantity" value="1" min="1" readonly>
                                 <button class="btn btn-outline-secondary" type="button" onclick="updateQty(1)">+</button>
@@ -79,7 +84,7 @@
                             <span class="text-muted small">Trong kho: <span id="displayStock" th:text="${product.variants != null && !product.variants.empty ? product.variants[0].stock : 0}"></span></span>
                         </div>
 
-                        <button type="submit" class="btn btn-gold btn-lg w-100 py-3 fw-bold fs-5 shadow-sm text-uppercase">
+                        <button type="submit" id="addToCartBtn" class="btn btn-gold btn-lg w-100 py-3 fw-bold fs-5 shadow-sm text-uppercase">
                             <i class="bi bi-cart-plus me-2"></i> Thêm Vào Giỏ Hàng
                         </button>
                     </form>
@@ -107,18 +112,51 @@
         element.classList.add('border-dark', 'border-2');
     }
 
+    function updateAddToCartButton(stock) {
+        const btn = document.getElementById('addToCartBtn');
+        const qtyInput = document.getElementById('quantity');
+        if (!btn) return;
+        
+        if (stock <= 0) {
+            btn.disabled = true;
+            btn.classList.remove('btn-gold');
+            btn.classList.add('btn-secondary');
+            btn.innerHTML = '<i class="bi bi-x-circle me-2"></i> HẾT HÀNG';
+            qtyInput.value = 0;
+        } else {
+            btn.disabled = false;
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-gold');
+            btn.innerHTML = '<i class="bi bi-cart-plus me-2"></i> THÊM VÀO GIỎ HÀNG';
+            if (parseInt(qtyInput.value) === 0) qtyInput.value = 1;
+        }
+    }
+
     // Xử lý cập nhật giá tiền và số lượng kho khi chọn variant
     document.querySelectorAll('.variant-radio').forEach(radio => {
         radio.addEventListener('change', function() {
             if(this.checked) {
+                // Lấy discount
+                const discount = parseFloat(document.getElementById('productDiscount').value) || 0;
+                
                 // Update price
-                const price = parseFloat(this.getAttribute('data-price'));
-                const formattedPrice = new Intl.NumberFormat('vi-VN').format(price) + ' ₫';
-                document.getElementById('displayPrice').innerText = formattedPrice;
+                const originalPrice = parseFloat(this.getAttribute('data-price'));
+                const finalPrice = discount > 0 ? originalPrice - discount : originalPrice;
+                
+                const formattedFinalPrice = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' ₫';
+                document.getElementById('displayPrice').innerText = formattedFinalPrice;
+                
+                // Cập nhật giá gốc bị gạch ngang nếu có
+                const originalPriceEl = document.getElementById('originalPrice');
+                if (originalPriceEl && discount > 0) {
+                    originalPriceEl.innerText = new Intl.NumberFormat('vi-VN').format(originalPrice) + ' ₫';
+                }
 
                 // Update stock
-                const stock = this.getAttribute('data-stock');
+                const stock = parseInt(this.getAttribute('data-stock')) || 0;
                 document.getElementById('displayStock').innerText = stock;
+                
+                updateAddToCartButton(stock);
             }
         });
     });
@@ -126,12 +164,27 @@
     // Hàm tăng giảm số lượng
     function updateQty(change) {
         const input = document.getElementById('quantity');
+        const maxStock = parseInt(document.getElementById('displayStock').innerText);
+        if (maxStock <= 0) return;
+        
         let newVal = parseInt(input.value) + change;
-        if (newVal >= 1) {
+        if (newVal >= 1 && newVal <= maxStock) {
             input.value = newVal;
+        } else if (newVal > maxStock) {
+            alert('Không thể thêm, đã đạt giới hạn tồn kho (' + maxStock + ')');
         }
     }
+
+    // Run on load to set initial state
+    window.addEventListener('DOMContentLoaded', () => {
+        const checkedVariant = document.querySelector('.variant-radio:checked');
+        if (checkedVariant) {
+            const initialStock = parseInt(checkedVariant.getAttribute('data-stock')) || 0;
+            updateAddToCartButton(initialStock);
+        }
+    });
 </script>
 
 </body>
 </html>
+

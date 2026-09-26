@@ -107,7 +107,7 @@
 
         <!-- Cột phải: Trạng thái & Hành động -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 position-sticky" style="top: 20px;">
+            <div class="card border-0 shadow-sm rounded-4 position-sticky order-status-card">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-4 border-bottom pb-2">Cập Nhật Trạng Thái</h5>
                     
@@ -116,6 +116,7 @@
                             <label class="form-label text-muted small">Trạng thái hiện tại</label>
                             <select class="form-select form-select-lg fw-semibold" name="status" id="statusSelect">
                                 <option value="PENDING" th:selected="${order.status == 'PENDING'}" class="text-primary">Chờ xử lý</option>
+                                <option value="PAID" th:selected="${order.status == 'PAID'}" class="text-success">Đã thanh toán</option>
                                 <option value="PROCESSING" th:selected="${order.status == 'PROCESSING'}" class="text-info">Đang xử lý</option>
                                 <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}" class="text-warning">Đang giao hàng</option>
                                 <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}" class="text-success">Thành công</option>

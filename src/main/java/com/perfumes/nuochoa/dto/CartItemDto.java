@@ -9,6 +9,7 @@ public class CartItemDto {
     private Double concentration;
     private Double price;
     private Integer quantity;
+    private Integer stock;
     private Double totalPrice;
 
     // Getters and Setters
@@ -38,4 +39,7 @@ public class CartItemDto {
 
     public Double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(Double totalPrice) { this.totalPrice = totalPrice; }
+    public Integer getStock() { return stock; }
+    public void setStock(Integer stock) { this.stock = stock; }
 }
+

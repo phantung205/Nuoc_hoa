@@ -57,14 +57,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm có ID: " + id));
+                .orElseThrow(() -> new RuntimeException("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m cÃ³ ID: " + id));
         return mapToResponseDTO(product);
     }
 
     @Override
     @Transactional
     public ProductResponseDTO createProduct(ProductRequestDTO requestDTO) {
-        // 1. Tạo đối tượng Product từ DTO
+        // 1. Táº¡o Ä‘á»‘i tÆ°á»£ng Product tá»« DTO
         Product product = new Product();
         product.setName(requestDTO.getName());
         product.setDescription(requestDTO.getDescription());
@@ -73,22 +73,22 @@ public class ProductServiceImpl implements ProductService {
 
         if (requestDTO.getBrandId() != null) {
             Brand brand = brandRepository.findById(requestDTO.getBrandId())
-                    .orElseThrow(() -> new RuntimeException("Brand không tồn tại"));
+                    .orElseThrow(() -> new RuntimeException("Brand khÃ´ng tá»“n táº¡i"));
             product.setBrand(brand);
         }
 
         if (requestDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(requestDTO.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category không tồn tại"));
+                    .orElseThrow(() -> new RuntimeException("Category khÃ´ng tá»“n táº¡i"));
             product.setCategory(category);
         }
 
         Product savedProduct = productRepository.save(product);
 
-        // 2. Lưu các biến thể (ProductVariants)
+        // 2. LÆ°u cÃ¡c biáº¿n thá»ƒ (ProductVariants)
         if (requestDTO.getVariants() != null && !requestDTO.getVariants().isEmpty()) {
             for (ProductVariantDTO vDto : requestDTO.getVariants()) {
-                if (vDto.getVolume() == null && vDto.getPrice() == null) continue; // Bỏ qua dòng rỗng
+                if (vDto.getVolume() == null && vDto.getPrice() == null) continue; // Bá» qua dÃ²ng rá»—ng
 
                 ProductVariant variant = new ProductVariant();
                 variant.setProduct(savedProduct);
@@ -102,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        // 3. Xử lý lưu các file ảnh chung cho toàn bộ sản phẩm
+        // 3. Xá»­ lÃ½ lÆ°u cÃ¡c file áº£nh chung cho toÃ n bá»™ sáº£n pháº©m
         if (requestDTO.getImageFiles() != null && !requestDTO.getImageFiles().isEmpty()) {
             List<MultipartFile> files = requestDTO.getImageFiles();
             for (int i = 0; i < files.size(); i++) {
@@ -126,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductRequestDTO getProductRequestDTOById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm có ID: " + id));
+                .orElseThrow(() -> new RuntimeException("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m cÃ³ ID: " + id));
 
         ProductRequestDTO dto = new ProductRequestDTO();
         dto.setId(product.getId());
@@ -177,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO requestDTO) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm có ID: " + id));
+                .orElseThrow(() -> new RuntimeException("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m cÃ³ ID: " + id));
 
         product.setName(requestDTO.getName());
         product.setDescription(requestDTO.getDescription());
@@ -186,43 +186,58 @@ public class ProductServiceImpl implements ProductService {
 
         if (requestDTO.getBrandId() != null) {
             Brand brand = brandRepository.findById(requestDTO.getBrandId())
-                    .orElseThrow(() -> new RuntimeException("Brand không tồn tại"));
+                    .orElseThrow(() -> new RuntimeException("Brand khÃ´ng tá»“n táº¡i"));
             product.setBrand(brand);
         }
 
         if (requestDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(requestDTO.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category không tồn tại"));
+                    .orElseThrow(() -> new RuntimeException("Category khÃ´ng tá»“n táº¡i"));
             product.setCategory(category);
         }
 
         Product savedProduct = productRepository.save(product);
 
-        // Xóa cũ và tạo mới biến thể
-        List<ProductVariant> existingVariants = variantRepository.findByProductId(id);
-        variantRepository.deleteAll(existingVariants);
+        // XÃ³a cÅ© vÃ  táº¡o má»›i biáº¿n thá»ƒ
+                List<ProductVariant> existingVariants = variantRepository.findByProductId(id);
+        java.util.Map<Long, ProductVariant> existingVariantMap = new java.util.HashMap<>();
+        for (ProductVariant v : existingVariants) {
+            existingVariantMap.put(v.getId(), v);
+        }
 
         if (requestDTO.getVariants() != null && !requestDTO.getVariants().isEmpty()) {
             for (ProductVariantDTO vDto : requestDTO.getVariants()) {
-                if (vDto.getVolume() == null && vDto.getPrice() == null) continue; // Bỏ qua dòng rỗng
+                if (vDto.getVolume() == null && vDto.getPrice() == null) continue;
 
-                ProductVariant variant = new ProductVariant();
-                variant.setProduct(savedProduct);
+                ProductVariant variant;
+                if (vDto.getId() != null && existingVariantMap.containsKey(vDto.getId())) {
+                    variant = existingVariantMap.get(vDto.getId());
+                    existingVariantMap.remove(vDto.getId());
+                } else {
+                    variant = new ProductVariant();
+                    variant.setProduct(savedProduct);
+                }
+                
                 variant.setSku(vDto.getSku());
                 variant.setVolume(vDto.getVolume());
                 variant.setConcentration(vDto.getConcentration());
                 variant.setPrice(vDto.getPrice());
-                variant.setStock(vDto.getStock());
+                variant.setStock(vDto.getStock() != null ? vDto.getStock() : 0);
 
                 variantRepository.save(variant);
             }
         }
+        
+                for (ProductVariant variantToRemove : existingVariantMap.values()) {
+            variantToRemove.setStock(0);
+            variantRepository.save(variantToRemove);
+        }
 
-        // Cập nhật lại danh sách ảnh:
-        // Bước 1: Lấy các URL ảnh hiện tại cần giữ lại
+        // Cáº­p nháº­t láº¡i danh sÃ¡ch áº£nh:
+        // BÆ°á»›c 1: Láº¥y cÃ¡c URL áº£nh hiá»‡n táº¡i cáº§n giá»¯ láº¡i
         List<String> keptUrls = requestDTO.getExistingImageUrls() != null ? requestDTO.getExistingImageUrls() : new ArrayList<>();
 
-        // Bước 2: Xóa toàn bộ ảnh cũ trong DB và xóa vật lý những ảnh bị người dùng gỡ
+        // BÆ°á»›c 2: XÃ³a toÃ n bá»™ áº£nh cÅ© trong DB vÃ  xÃ³a váº­t lÃ½ nhá»¯ng áº£nh bá»‹ ngÆ°á»i dÃ¹ng gá»¡
         List<ProductImage> oldImages = imageRepository.findByProductId(id);
         for (ProductImage oldImg : oldImages) {
             if (!keptUrls.contains(oldImg.getImageUrl())) {
@@ -234,7 +249,7 @@ public class ProductServiceImpl implements ProductService {
         int currentImageIndex = 0;
         int primaryIndex = requestDTO.getPrimaryImageIndex() != null ? requestDTO.getPrimaryImageIndex() : 0;
 
-        // Bước 3: Lưu lại các ảnh cũ mà người dùng không xóa
+        // BÆ°á»›c 3: LÆ°u láº¡i cÃ¡c áº£nh cÅ© mÃ  ngÆ°á»i dÃ¹ng khÃ´ng xÃ³a
         for (String url : keptUrls) {
             if (url != null && !url.trim().isEmpty()) {
                 ProductImage img = new ProductImage();
@@ -246,7 +261,7 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        // Bước 4: Thêm các ảnh upload mới
+        // BÆ°á»›c 4: ThÃªm cÃ¡c áº£nh upload má»›i
         if (requestDTO.getImageFiles() != null) {
             for (MultipartFile file : requestDTO.getImageFiles()) {
                 if (!file.isEmpty()) {
@@ -270,22 +285,23 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm để xóa"));
                 
-        // Xóa cứng: Xóa các biến thể
-        List<ProductVariant> variants = variantRepository.findByProductId(id);
-        variantRepository.deleteAll(variants);
-
-        // Xóa cứng: Xóa ảnh trong DB và xóa file vật lý
         List<ProductImage> images = imageRepository.findByProductId(id);
-        for (ProductImage img : images) {
-            deleteFile(img.getImageUrl());
+        List<ProductVariant> variants = variantRepository.findByProductId(id);
+        
+        try {
+            imageRepository.deleteAll(images);
+            variantRepository.deleteAll(variants);
+            productRepository.delete(product);
+            
+            for (ProductImage img : images) {
+                deleteFile(img.getImageUrl());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể xóa sản phẩm vì nó đang nằm trong đơn hàng của khách.");
         }
-        imageRepository.deleteAll(images);
-
-        // Xóa sản phẩm
-        productRepository.delete(product);
     }
 
-    // ===================== HÀM BỔ TRỢ (HELPER METHODS) =====================
+    // ===================== HÃ€M Bá»” TRá»¢ (HELPER METHODS) =====================
 
     private void deleteFile(String fileUrl) {
         try {
@@ -294,11 +310,11 @@ public class ProductServiceImpl implements ProductService {
                 Files.deleteIfExists(path);
             }
         } catch (IOException e) {
-            System.err.println("Không thể xóa file: " + fileUrl);
+            System.err.println("KhÃ´ng thá»ƒ xÃ³a file: " + fileUrl);
         }
     }
 
-    /** Xử lý lưu file ảnh xuống thư mục vật lýuploads/products/ */
+    /** Xá»­ lÃ½ lÆ°u file áº£nh xuá»‘ng thÆ° má»¥c váº­t lÃ½uploads/products/ */
     private String saveProductImageFile(MultipartFile file) {
         try {
             String uploadDir = "uploads/products/";
@@ -314,11 +330,11 @@ public class ProductServiceImpl implements ProductService {
             return uniqueFileName;
 
         } catch (IOException e) {
-            throw new RuntimeException("Không thể lưu file ảnh sản phẩm!", e);
+            throw new RuntimeException("KhÃ´ng thá»ƒ lÆ°u file áº£nh sáº£n pháº©m!", e);
         }
     }
 
-    /** Map từ Entity Product sang ProductResponseDTO hiển thị ngoài view */
+    /** Map tá»« Entity Product sang ProductResponseDTO hiá»ƒn thá»‹ ngoÃ i view */
     private ProductResponseDTO mapToResponseDTO(Product product) {
         ProductResponseDTO dto = new ProductResponseDTO();
         dto.setId(product.getId());
@@ -334,7 +350,7 @@ public class ProductServiceImpl implements ProductService {
             dto.setCategoryName(product.getCategory().getName());
         }
 
-        // Lấy danh sách biến thể
+        // Láº¥y danh sÃ¡ch biáº¿n thá»ƒ
         List<ProductVariant> variants = variantRepository.findByProductId(product.getId());
         List<ProductVariantDTO> variantDTOs = variants.stream().map(v -> {
             ProductVariantDTO vDto = new ProductVariantDTO();
@@ -349,19 +365,19 @@ public class ProductServiceImpl implements ProductService {
 
         dto.setVariants(variantDTOs);
 
-        // Lấy giá nhỏ nhất làm giá hiển thị
+        // Láº¥y giÃ¡ nhá» nháº¥t lÃ m giÃ¡ hiá»ƒn thá»‹
         dto.setMinPrice(variants.stream()
                 .map(ProductVariant::getPrice)
                 .filter(Objects::nonNull)
                 .min(Double::compareTo)
                 .orElse(0.0));
 
-        // Lấy danh sách ảnh
+        // Láº¥y danh sÃ¡ch áº£nh
         List<ProductImage> images = imageRepository.findByProductId(product.getId());
         List<String> imageUrls = images.stream().map(ProductImage::getImageUrl).collect(Collectors.toList());
         dto.setImageUrls(imageUrls);
 
-        // Lấy ảnh chính (hoặc ảnh đầu tiên làm ảnh đại diện)
+        // Láº¥y áº£nh chÃ­nh (hoáº·c áº£nh Ä‘áº§u tiÃªn lÃ m áº£nh Ä‘áº¡i diá»‡n)
         String mainImage = images.stream()
                 .filter(img -> Boolean.TRUE.equals(img.getIsPrimary()))
                 .map(ProductImage::getImageUrl)
@@ -373,3 +389,8 @@ public class ProductServiceImpl implements ProductService {
         return dto;
     }
 }
+
+
+
+
+

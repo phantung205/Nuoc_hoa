@@ -10,44 +10,58 @@
 
 <section class="home-section">
 
-    <!-- 1. Hero Slider (Giữ nguyên Banner mặc định ban đầu) -->
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <!-- 1. Hero Slider (Dữ liệu lấy ĐỘNG từ DB) -->
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" th:if="${banners != null and !banners.empty}">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button th:each="banner, stat : ${banners}" type="button" data-bs-target="#heroCarousel" 
+                    th:attr="data-bs-slide-to=${stat.index}" 
+                    th:classappend="${stat.index == 0} ? 'active' : ''" 
+                    th:aria-current="${stat.index == 0} ? 'true' : 'false'" 
+                    th:aria-label="'Slide ' + ${stat.count}"></button>
+        </div>
+        <div class="carousel-inner">
+            <div th:each="banner, stat : ${banners}" class="carousel-item" th:classappend="${stat.index == 0} ? 'active' : ''" data-bs-interval="4000">
+                <img th:src="${banner.imageUrl}" class="d-block w-100" th:alt="${banner.title}">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 class="gold-text" th:text="${banner.title}">Tiêu Đề</h5>
+                    <p th:if="${banner.description != null and !banner.description.isEmpty()}" th:text="${banner.description}">Miêu tả</p>
+                    <a th:if="${banner.link != null and !banner.link.isEmpty()}" th:href="${banner.link}" class="btn btn-gold mt-3">Khám Phá Ngay</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" th:if="${banners.size() > 1}">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" th:if="${banners.size() > 1}">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    
+    <!-- Hero Slider (Fallback tĩnh khi không có banner nào trong DB) -->
+    <div id="heroCarouselStatic" class="carousel slide carousel-fade" data-bs-ride="carousel" th:unless="${banners != null and !banners.empty}">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarouselStatic" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarouselStatic" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarouselStatic" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="4000">
                 <img th:src="@{/web/images/anh_slide1.jpg}" class="d-block w-100" alt="Slide 1">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5 class="gold-text">Tinh Hoa Phái Đẹp</h5>
-                    <p>Khám phá những bộ sưu tập nước hoa nữ cao cấp nhất.</p>
-                    <a href="#" class="btn btn-gold mt-3">Khám Phá Ngay</a>
-                </div>
             </div>
             <div class="carousel-item" data-bs-interval="4000">
                 <img th:src="@{/web/images/anh_slide2.jpg}" class="d-block w-100" alt="Slide 2">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5 class="gold-text">Đẳng Cấp Phái Mạnh</h5>
-                    <p>Hương thơm nam tính, mạnh mẽ và đầy cuốn hút.</p>
-                    <a href="#" class="btn btn-gold mt-3">Mua Sắm Cho Nam</a>
-                </div>
             </div>
             <div class="carousel-item" data-bs-interval="4000">
                 <img th:src="@{/web/images/anh_slide3.jpg}" class="d-block w-100" alt="Slide 3">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5 class="gold-text">Phiên Bản Giới Hạn</h5>
-                    <p>Sở hữu ngay những tuyệt tác hương thơm hiếm có.</p>
-                    <a href="#" class="btn btn-gold mt-3">Xem Chi Tiết</a>
-                </div>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarouselStatic" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarouselStatic" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
@@ -76,11 +90,11 @@
             <div class="decorative-line mx-auto"></div>
         </div>
         <div class="row g-4 align-items-center justify-content-center">
-            <div th:each="brand : ${brands}" class="col-6 col-md-2 text-center">
-                <a th:href="@{/brands/{id}(id=${brand.id})}" class="text-decoration-none">
-                    <div class="p-3 bg-light rounded shadow-sm">
-                        <img th:if="${brand.logo != null and !brand.logo.empty}" th:src="${brand.logo}" th:alt="${brand.name}" class="img-fluid" style="max-height: 50px;">
-                        <span th:if="${brand.logo == null or brand.logo.empty}" class="fw-bold text-dark d-block py-2" th:text="${brand.name}">Tên Brand</span>
+            <div th:each="brand : ${brands}" class="col-6 col-md-3 col-lg-2 text-center">
+                <a th:href="@{/products(brandId=${brand.id})}" class="text-decoration-none" th:title="${brand.name}">
+                    <div class="brand-card d-flex align-items-center justify-content-center bg-white border rounded">
+                        <img th:if="${brand.logo != null and !brand.logo.empty}" th:src="${brand.logo}" th:alt="${brand.name}" class="img-fluid brand-logo-img">
+                        <span th:if="${brand.logo == null or brand.logo.empty}" class="fw-bold text-dark text-uppercase" th:text="${brand.name}">Tên Brand</span>
                     </div>
                 </a>
             </div>

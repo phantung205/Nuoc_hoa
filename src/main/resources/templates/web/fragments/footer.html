@@ -17,10 +17,9 @@
             <div class="col-lg-2 col-md-6">
                 <h5 class="gold-text mb-3 fw-bold">Khám Phá</h5>
                 <ul class="list-unstyled footer-links">
-                    <li class="mb-2"><a href="#">Nước hoa Nam</a></li>
-                    <li class="mb-2"><a href="#">Nước hoa Nữ</a></li>
-                    <li class="mb-2"><a href="#">Bán chạy nhất</a></li>
-                    <li class="mb-2"><a href="#">Hàng mới về</a></li>
+                    <li class="mb-2" th:each="cat : ${categories}"><a th:href="@{/products(categoryId=${cat.id})}" th:text="${cat.name}">Danh mục</a></li>
+                    <li class="mb-2"><a th:href="@{/promotions}">Ưu đãi đặc biệt</a></li>
+                    <li class="mb-2"><a th:href="@{/products}">Tất cả sản phẩm</a></li>
                 </ul>
             </div>
 
