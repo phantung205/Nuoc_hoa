@@ -171,3 +171,28 @@
         margin-top: 15px;
     }
 }
+
+/* ===== CATEGORY NAVBAR ===== */
+.category-navbar {
+    background-color: #151515;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.category-navbar::-webkit-scrollbar {
+    display: none;
+}
+
+.category-nav-list {
+    display: flex;
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    justify-content: center;
+}
+
+.category-nav-list .nav-link {
+    font-size: 0.8rem;
+    padding: 12px 20px;
+}

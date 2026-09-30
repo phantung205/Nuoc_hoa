@@ -30,9 +30,7 @@ public class WebProductController {
         this.brandService = brandService;
     }
 
-    /**
-     * Hiển thị danh sách sản phẩm với hỗ trợ lọc theo category, brand, keyword
-     */
+
     @GetMapping
     public String listProducts(
             @RequestParam(required = false) Long categoryId,
@@ -87,9 +85,6 @@ public class WebProductController {
         return "web/pages/products/list";
     }
 
-    /**
-     * Hiển thị trang chi tiết một sản phẩm
-     */
     @GetMapping("/{id}")
     public String productDetail(@PathVariable Long id, Model model) {
         ProductResponseDTO product = productService.getProductById(id);

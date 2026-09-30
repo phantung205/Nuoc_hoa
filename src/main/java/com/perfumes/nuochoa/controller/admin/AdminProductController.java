@@ -26,28 +26,25 @@ public class AdminProductController {
         this.brandService = brandService;
     }
 
-    /** 1. Hiển thị danh sách tất cả sản phẩm */
     @GetMapping
     public String listProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
         return "admin/pages/products/list";
     }
 
-    /** 2. Hiển thị trang Form thêm mới sản phẩm */
     @GetMapping("/add")
     public String showCreateForm(Model model) {
-        ProductRequestDTO requestDTO = new ProductRequestDTO();
-
-        // Mặc định tạo sẵn 1 biến thể trống trên Form cho người dùng nhập
-        requestDTO.getVariants().add(new ProductVariantDTO());
-
-        model.addAttribute("product", requestDTO);
+        if (!model.containsAttribute("product")) {
+            ProductRequestDTO requestDTO = new ProductRequestDTO();
+            // Mặc định tạo sẵn 1 biến thể trống trên Form cho người dùng nhập
+            requestDTO.getVariants().add(new ProductVariantDTO());
+            model.addAttribute("product", requestDTO);
+        }
         model.addAttribute("categories", categoryService.getActiveCategories());
         model.addAttribute("brands", brandService.getActiveBrands());
         return "admin/pages/products/add";
     }
 
-    /** 3. Xử lý nhận thông tin Form thêm mới sản phẩm */
     @PostMapping("/add")
     public String createProduct(@ModelAttribute("product") ProductRequestDTO requestDTO,
                                 RedirectAttributes redirectAttributes) {
@@ -56,23 +53,24 @@ public class AdminProductController {
             redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm mới thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi thêm sản phẩm: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("product", requestDTO);
             return "redirect:/admin/products/add";
         }
         return "redirect:/admin/products";
     }
-
-    /** 4. Hiển thị trang Form cập nhật sản phẩm */
+    
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        // Cần DTO để map lên form, hoặc dùng lại ProductRequestDTO
-        // Để đơn giản, ta sẽ gọi một hàm trong service để lấy ra ProductRequestDTO
-        ProductRequestDTO requestDTO = productService.getProductRequestDTOById(id);
-        
-        if (requestDTO.getVariants().isEmpty()) {
-            requestDTO.getVariants().add(new ProductVariantDTO());
+        if (!model.containsAttribute("product")) {
+            // Cần DTO để map lên form, hoặc dùng lại ProductRequestDTO
+            // Để đơn giản, ta sẽ gọi một hàm trong service để lấy ra ProductRequestDTO
+            ProductRequestDTO requestDTO = productService.getProductRequestDTOById(id);
+            
+            if (requestDTO.getVariants().isEmpty()) {
+                requestDTO.getVariants().add(new ProductVariantDTO());
+            }
+            model.addAttribute("product", requestDTO);
         }
-
-        model.addAttribute("product", requestDTO);
         model.addAttribute("categories", categoryService.getActiveCategories());
         model.addAttribute("brands", brandService.getActiveBrands());
         return "admin/pages/products/edit";
@@ -88,6 +86,7 @@ public class AdminProductController {
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật sản phẩm thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi cập nhật: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("product", requestDTO);
             return "redirect:/admin/products/edit/" + id;
         }
         return "redirect:/admin/products";

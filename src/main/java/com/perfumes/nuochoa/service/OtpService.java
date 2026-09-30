@@ -63,7 +63,6 @@ public class OtpService {
     private String generateRandomCode() {
         int maxValue = (int) Math.pow(10, OTP_LENGTH); // 10^6 = 1_000_000
         int code = secureRandom.nextInt(maxValue);
-        // %06d đảm bảo luôn có đủ 6 chữ số, thêm số 0 ở đầu nếu cần (VD: 47 → "000047")
         return String.format("%0" + OTP_LENGTH + "d", code);
     }
 

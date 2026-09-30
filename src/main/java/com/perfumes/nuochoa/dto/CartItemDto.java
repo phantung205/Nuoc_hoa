@@ -12,7 +12,7 @@ public class CartItemDto {
     private Integer stock;
     private Double totalPrice;
 
-    // Getters and Setters
+
     public Long getItemId() { return itemId; }
     public void setItemId(Long itemId) { this.itemId = itemId; }
 

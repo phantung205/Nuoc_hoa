@@ -89,9 +89,9 @@
                             <span class="text-muted">Tạm tính:</span>
                             <span class="fw-semibold" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span class="text-muted">Giảm giá:</span>
-                            <span class="fw-semibold text-success">- 0 ₫</span>
+                        <div class="d-flex justify-content-between mb-3" th:if="${discountAmount != null && discountAmount > 0}">
+                            <span class="text-muted">Voucher giảm:</span>
+                            <span class="fw-semibold text-success" th:text="'- ' + ${#numbers.formatDecimal(discountAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">- 0 ₫</span>
                         </div>
                         <div class="d-flex justify-content-between mb-4 pb-3 border-bottom">
                             <span class="text-muted">Phí giao hàng:</span>
@@ -100,9 +100,12 @@
                         
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <span class="fw-bold fs-5">Tổng cộng:</span>
-                            <span class="fw-bold fs-4 gold-text" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                            <span class="fw-bold fs-4 gold-text" th:text="${#numbers.formatDecimal(finalTotal != null ? finalTotal : totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
                         </div>
                         
+                        
+                        
+
                         <a href="/checkout" class="btn btn-gold w-100 py-3 fw-bold rounded-pill text-uppercase shadow-sm">
                             <i class="bi bi-credit-card me-2"></i> Tiến Hành Thanh Toán
                         </a>
@@ -114,6 +117,59 @@
             </div>
         </div>
         
+        
+<!-- Voucher Modal -->
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="voucherModalLabel">Chọn Voucher 2T&C</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 bg-light">
+                <!-- Search box -->
+                <div class="input-group mb-3 shadow-sm rounded">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" id="voucherSearchInput" placeholder="Nhập mã voucher để tìm...">
+                </div>
+
+                <!-- Voucher list -->
+                <div class="d-flex flex-column gap-3" id="voucherListContainer">
+                    <div th:each="uv : ${userVouchers}"
+                         class="card border-0 shadow-sm voucher-item"
+                         th:data-code="${uv.voucher.code}">
+                        <div class="card-body d-flex align-items-center p-3">
+                            <div class="voucher-icon bg-gold-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; background-color: #fdf5e6;">
+                                <i class="bi bi-ticket-perforated-fill gold-text fs-4" style="color: #cda434;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1"><span class="badge bg-dark me-2" th:text="${uv.voucher.code}">CODE</span></h6>
+                                <p class="mb-1 text-danger fw-semibold">
+                                    <span th:if="${uv.voucher.discountType == 'FIXED'}"
+                                          th:text="'Giảm ' + ${#numbers.formatDecimal(uv.voucher.discountValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+                                    <span th:if="${uv.voucher.discountType == 'PERCENT'}"
+                                          th:text="'Giảm ' + ${uv.voucher.discountValue} + '%'"></span>
+                                </p>
+                                <p class="mb-0 text-muted small" th:if="${uv.voucher.minOrderValue != null && uv.voucher.minOrderValue > 0}"
+                                   th:text="'Đơn tối thiểu: ' + ${#numbers.formatDecimal(uv.voucher.minOrderValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></p>
+                                <p class="mb-0 text-muted small" th:if="${uv.voucher.endDate != null}"
+                                   th:text="'HSD: ' + ${#temporals.format(uv.voucher.endDate, 'dd/MM/yyyy')}"></p>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-outline-gold rounded-pill px-3 py-1 fw-bold select-voucher-btn" th:data-code="${uv.voucher.code}" data-bs-dismiss="modal" style="border-color: #cda434; color: #cda434;">Chọn</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="noVoucherMsg" class="text-center py-4 d-none">
+                    <p class="text-muted">Không tìm thấy voucher phù hợp.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
         <!-- Cart Empty State -->
         <div th:if="${cartItems == null || cartItems.empty}" class="text-center py-5 bg-white rounded-4 shadow-sm">
             <i class="bi bi-cart-x text-muted mb-3 cart-empty-icon"></i>
@@ -136,6 +192,41 @@
             }
         });
     });
+
+    // Select voucher from modal
+    document.querySelectorAll('.select-voucher-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('voucherCodeInput').value = this.getAttribute('data-code');
+            document.getElementById('applyVoucherBtn').click(); // Tự động áp dụng
+        });
+    });
+
+    // Search voucher
+    const searchInput = document.getElementById('voucherSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.voucher-item');
+            let hasVisible = false;
+            
+            items.forEach(item => {
+                const code = item.getAttribute('data-code').toLowerCase();
+                if (code.includes(keyword)) {
+                    item.classList.remove('d-none');
+                    hasVisible = true;
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+            
+            const msg = document.getElementById('noVoucherMsg');
+            if (msg) {
+                if (hasVisible) msg.classList.add('d-none');
+                else msg.classList.remove('d-none');
+            }
+        });
+    }
+
 </script>
 
 </body>

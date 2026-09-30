@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Trung Tâm Voucher - 2T&amp;C</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/vouchers.css}">
+</head>
+<body>
+<script></script>
+<section>
+    <!-- Hero Banner -->
+    <div class="voucher-hero-section">
+        <div class="voucher-hero-content px-3">
+            <h1 class="gold-text">Trung Tâm Voucher</h1>
+            <p>Khám phá các ưu đãi đặc quyền và hoàn thành nhiệm vụ để nhận ngay mã giảm giá giá trị.</p>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="container">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <!-- Voucher List -->
+    <div class="container mb-5 pb-5">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="elegant-title fw-bold">Mã Giảm Giá Dành Cho Bạn</h2>
+                <div class="decorative-line mx-auto"></div>
+                <p class="text-muted mt-3" th:if="${vouchers.empty}">Hiện tại chưa có mã giảm giá nào. Vui lòng quay lại sau!</p>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center" th:if="${!vouchers.empty}">
+            <div class="col-lg-4 col-md-6" th:each="v : ${vouchers}">
+                <div class="voucher-card">
+
+                    <!-- Header -->
+                    <div class="voucher-header">
+                        <div class="voucher-discount-value" th:if="${v.discountType == 'FIXED'}"
+                             th:text="${#numbers.formatDecimal(v.discountValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">50,000 ₫</div>
+                        <div class="voucher-discount-value" th:if="${v.discountType == 'PERCENT'}"
+                             th:text="${v.discountValue} + '%'">10%</div>
+                        <div class="voucher-discount-type">Giảm Giá Đơn Hàng</div>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="voucher-body">
+                        <!-- Da nhan: hien ma -->
+                        <div th:if="${claimedVoucherIds != null && #lists.contains(claimedVoucherIds, v.id)}" class="voucher-code-box">
+                            <span th:text="${v.code}">SALE10</span>
+                            <span class="d-block mt-1 text-success fs-7 fw-normal"><i class="bi bi-check-circle-fill"></i> Đã lưu vào ví</span>
+                        </div>
+                        <!-- Chua nhan: an ma -->
+                        <div th:if="${claimedVoucherIds == null || !#lists.contains(claimedVoucherIds, v.id)}" class="voucher-code-box" style="filter: blur(5px); user-select: none;">
+                            XXXXXX
+                        </div>
+
+                        <ul class="voucher-info-list">
+                            <li th:if="${v.minOrderValue != null && v.minOrderValue > 0}">
+                                <i class="bi bi-cart-check"></i>
+                                <span>Đơn tối thiểu: <strong th:text="${#numbers.formatDecimal(v.minOrderValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">500k</strong></span>
+                            </li>
+                            <li th:if="${v.minOrderValue == null || v.minOrderValue == 0}">
+                                <i class="bi bi-cart-check"></i>
+                                <span>Áp dụng cho mọi đơn hàng</span>
+                            </li>
+                            <li th:if="${v.discountType == 'PERCENT' && v.maxDiscountAmount != null && v.maxDiscountAmount > 0}">
+                                <i class="bi bi-shield-check"></i>
+                                <span>Giảm tối đa: <strong th:text="${#numbers.formatDecimal(v.maxDiscountAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">100k</strong></span>
+                            </li>
+                            <li th:if="${v.endDate != null}">
+                                <i class="bi bi-clock-history"></i>
+                                <span>HSD: <strong th:text="${#temporals.format(v.endDate, 'dd/MM/yyyy')}">31/12/2026</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Nhiem vu -->
+                    <div class="voucher-task-section">
+                        <div class="task-title">Cách thức nhận mã</div>
+                        <div th:class="'task-desc method-' + ${v.receiveMethod != null ? v.receiveMethod : 'FREE'}">
+                            <i class="bi bi-gift-fill text-success" th:if="${v.receiveMethod == 'FREE' || v.receiveMethod == null}"></i>
+                            <i class="bi bi-person-check-fill text-primary" th:if="${v.receiveMethod == 'LOGIN'}"></i>
+                            <i class="bi bi-bag-check-fill text-info" th:if="${v.receiveMethod == 'ORDER_VALUE'}"></i>
+
+                            <span th:if="${v.receiveDescription != null && !v.receiveDescription.empty}" th:text="${v.receiveDescription}"></span>
+                            <span th:if="${v.receiveDescription == null || v.receiveDescription.empty}">
+                                <th:block th:if="${v.receiveMethod == 'FREE' || v.receiveMethod == null}">Nhận miễn phí</th:block>
+                                <th:block th:if="${v.receiveMethod == 'LOGIN'}">Đăng nhập để nhận</th:block>
+                                <th:block th:if="${v.receiveMethod == 'ORDER_VALUE'}">Mua hàng để nhận</th:block>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Nut nhan -->
+                    <div class="p-3 text-center" th:if="${claimedVoucherIds == null || !#lists.contains(claimedVoucherIds, v.id)}">
+
+                        <!-- FREE: nhan luon -->
+                        <th:block th:if="${v.receiveMethod == 'FREE' || v.receiveMethod == null}">
+                            <form th:action="@{/vouchers/claim/{id}(id=${v.id})}" method="post">
+                                <button type="submit" class="btn btn-gold w-100 rounded-pill fw-bold">
+                                    <i class="bi bi-gift me-1"></i> NHẬN NGAY
+                                </button>
+                            </form>
+                        </th:block>
+
+                        <!-- LOGIN: chua dang nhap thi chuyen sang login, da dang nhap thi nhan luon -->
+                        <th:block th:if="${v.receiveMethod == 'LOGIN'}">
+                            <div sec:authorize="isAnonymous()">
+                                <a th:href="@{/auth/login}" class="btn btn-primary w-100 rounded-pill fw-bold">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i> ĐĂNG NHẬP ĐỂ NHẬN
+                                </a>
+                            </div>
+                            <div sec:authorize="isAuthenticated()">
+                                <form th:action="@{/vouchers/claim/{id}(id=${v.id})}" method="post">
+                                    <button type="submit" class="btn btn-gold w-100 rounded-pill fw-bold">
+                                        <i class="bi bi-gift me-1"></i> NHẬN NGAY
+                                    </button>
+                                </form>
+                            </div>
+                        </th:block>
+
+                        <!-- ORDER_VALUE: chuyen toi gio hang -->
+                        <th:block th:if="${v.receiveMethod == 'ORDER_VALUE'}">
+                            <a th:href="@{/cart}" class="btn btn-info w-100 rounded-pill fw-bold text-white">
+                                <i class="bi bi-cart me-1"></i> ĐẾN GIỎ HÀNG
+                            </a>
+                        </th:block>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

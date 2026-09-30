@@ -1,0 +1,162 @@
+/* ===== VOUCHERS PAGE STYLES ===== */
+
+.voucher-hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/web/images/anh_slide2.jpg') center/cover no-repeat;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 50px;
+}
+
+.voucher-hero-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.voucher-hero-content p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.voucher-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.voucher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+}
+
+.voucher-header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+    color: #D4AF37;
+    padding: 25px 20px;
+    text-align: center;
+    position: relative;
+    border-bottom: 2px dashed #e0e0e0;
+}
+
+/* Semi-circles on the side to simulate a ticket */
+.voucher-header::before,
+.voucher-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    width: 20px;
+    height: 20px;
+    background-color: #f8f9fa; /* Should match the page background if possible, assuming light bg */
+    border-radius: 50%;
+}
+.voucher-header::before {
+    left: -10px;
+}
+.voucher-header::after {
+    right: -10px;
+}
+
+.voucher-discount-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.voucher-discount-type {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    opacity: 0.8;
+}
+
+.voucher-body {
+    padding: 25px 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.voucher-code-box {
+    background: #f8f5ee;
+    border: 1px dashed #D4AF37;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #222;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.voucher-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    flex-grow: 1;
+}
+
+.voucher-info-list li {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.voucher-info-list li i {
+    color: #D4AF37;
+    margin-right: 10px;
+    margin-top: 3px;
+}
+
+.voucher-task-section {
+    background: #fafafa;
+    border-top: 1px solid #eee;
+    padding: 15px 20px;
+}
+
+.task-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #888;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.task-desc {
+    font-size: 1rem;
+    color: #222;
+    font-weight: 500;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.task-desc i {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+/* Specific icons for receive methods */
+.method-FREE i { color: #28a745; }
+.method-LOGIN i { color: #007bff; }
+.method-POINT_EXCHANGE i { color: #ffc107; }
+.method-ORDER_VALUE i { color: #17a2b8; }

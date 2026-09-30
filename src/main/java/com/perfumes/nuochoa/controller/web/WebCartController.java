@@ -46,11 +46,16 @@ public class WebCartController {
             dto.setConcentration(item.getProductVariant().getConcentration());
             
             Double price = item.getProductVariant().getPrice();
-            dto.setPrice(price);
+            Double discount = item.getProductVariant().getProduct().getDiscount();
+            if (discount == null) discount = 0.0;
+            Double finalPrice = price - discount;
+            if (finalPrice < 0) finalPrice = 0.0;
+            
+            dto.setPrice(finalPrice);
             dto.setQuantity(item.getQuantity());
             dto.setStock(item.getProductVariant().getStock());
             
-            Double itemTotal = price * item.getQuantity();
+            Double itemTotal = finalPrice * item.getQuantity();
             dto.setTotalPrice(itemTotal);
             totalAmount = totalAmount + itemTotal;
             
@@ -83,7 +88,7 @@ public class WebCartController {
         
         try {
             cartService.addToCart(username, variantId, quantity);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã thêm sản phẩm vào giỏ hàng!");
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật giỏ hàng!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
@@ -115,7 +120,7 @@ public class WebCartController {
         
         try {
             cartService.removeFromCart(username, itemId);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa sản phẩm khỏi giỏ hàng!");
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật giỏ hàng!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }

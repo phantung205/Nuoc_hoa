@@ -46,25 +46,22 @@ public class ChatbotService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String askOllama(String userMessage) {
-        
-        // 1. Fetch dynamic data from database
+
         List<Brand> brands = brandRepository.findByIsActiveTrue();
         List<Category> categories = categoryRepository.findByIsActiveTrue();
         List<Product> products = productRepository.findByIsActiveTrue();
         List<ProductVariant> variants = productVariantRepository.findAll();
 
-        // 2. Format into strings
+
         String brandList = brands.stream().map(Brand::getName).collect(Collectors.joining(", "));
         String categoryList = categories.stream().map(Category::getName).collect(Collectors.joining(", "));
-        
-        // Map variants by Product ID for quick lookup
+
         Map<Long, List<ProductVariant>> variantsByProduct = variants.stream()
                 .filter(v -> v.getProduct() != null && v.getVolume() != null)
                 .collect(Collectors.groupingBy(v -> v.getProduct().getId()));
 
         DecimalFormat currencyFormat = new DecimalFormat("#,###");
 
-        // Limit to 100 products to prevent exceeding LLM context limits
         String productList = products.stream()
                 .limit(100)
                 .map(p -> {

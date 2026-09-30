@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Câu Hỏi Thường Gặp - 2T&C</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/about.css}">
+</head>
+<body>
+
+<script>
+</script>
+
+<section>
+    <div class="about-hero-section" style="padding: 60px 0; min-height: auto;">
+        <div class="about-hero-content px-3">
+            <h1 class="gold-text">Câu Hỏi Thường Gặp</h1>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto bg-white p-5 shadow-sm rounded-4 border-top border-gold border-3">
+                    <div class="accordion" id="faqAccordion">
+                        
+                        <!-- Question 1 -->
+                        <div class="accordion-item border-0 mb-3 bg-light rounded">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button fw-bold bg-transparent text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    1. Nước hoa tại 2T&C có phải hàng chính hãng 100% không?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Chắc chắn rồi. 2T&C cam kết 100% sản phẩm bán ra đều là hàng chuẩn Auth (chính hãng), được nhập khẩu có nguồn gốc rõ ràng. Chúng tôi sẵn sàng bồi thường gấp 10 lần giá trị đơn hàng nếu phát hiện hàng giả, hàng nhái.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="accordion-item border-0 mb-3 bg-light rounded">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed fw-bold bg-transparent text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    2. Tôi có thể thử mùi trước khi mua không?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Nếu bạn mua hàng trực tiếp tại Showroom, bạn sẽ được trải nghiệm thử toàn bộ các mùi hương. Đối với khách mua online, chúng tôi có bán các mẫu chiết (vial/mini) để bạn thử nghiệm trước khi quyết định mua chai full size.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="accordion-item border-0 mb-3 bg-light rounded">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed fw-bold bg-transparent text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    3. Thời gian giao hàng mất bao lâu?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    - Nội thành Hà Nội: Nhận hàng trong ngày (Hỏa tốc) hoặc 1-2 ngày làm việc.<br>
+                                    - Các tỉnh thành khác: Từ 2 - 4 ngày làm việc tùy vào khu vực.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 4 -->
+                        <div class="accordion-item border-0 bg-light rounded">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed fw-bold bg-transparent text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    4. Làm sao để phân biệt nước hoa EDT, EDP, Parfum?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body text-muted">
+                                    Đây là các thuật ngữ chỉ nồng độ tinh dầu:<br>
+                                    - <strong>EDT (Eau de Toilette)</strong>: Nồng độ tinh dầu 5-15%, lưu hương trung bình (4-6h), thích hợp dùng hàng ngày.<br>
+                                    - <strong>EDP (Eau de Parfum)</strong>: Nồng độ 15-20%, lưu hương tốt (6-8h), bám tỏa mạnh.<br>
+                                    - <strong>Parfum / Extrait</strong>: Nồng độ trên 20%, lưu hương xuất sắc nhất (hơn 8h), mùi hương có chiều sâu.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

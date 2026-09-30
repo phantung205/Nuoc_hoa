@@ -120,7 +120,6 @@ public class UserServiceImpl implements UserService {
                 .orElseGet(() -> createEmptyProfileForUser(userId));
     }
 
-    /** Tạo UserProfile rỗng cho User chưa có Profile. */
     private UserProfile createEmptyProfileForUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy User với ID: " + userId));
@@ -179,7 +178,7 @@ public class UserServiceImpl implements UserService {
     private void deleteFile(String fileUrl) {
         try {
             if (fileUrl != null && fileUrl.startsWith("/")) {
-                Path path = Paths.get(fileUrl.substring(1)); // Bỏ dấu / ở đầu (vd: /uploads/... -> uploads/...)
+                Path path = Paths.get(fileUrl.substring(1));
                 Files.deleteIfExists(path);
             }
         } catch (IOException e) {
@@ -327,14 +326,15 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
-            
         // Xóa ảnh cứng của User (nếu có)
         userProfileRepository.findById(id).ifPresent(profile -> {
             if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isEmpty()) {
                 deleteFile(profile.getAvatarUrl());
             }
         });
-        
+
         userRepository.delete(user);
     }
 }
+
+

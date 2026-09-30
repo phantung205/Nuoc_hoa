@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let statusElement = document.getElementById('payment-status');
 
         if (statusElement) {
-            // Polling mỗi 5 giây để kiểm tra trạng thái thanh toán
+            // Polling má»—i 5 giÃ¢y Ä‘á»ƒ kiá»ƒm tra tráº¡ng thÃ¡i thanh toÃ¡n
             let checkInterval = setInterval(function() {
                 fetch(statusUrl, { headers: { 'Accept': 'application/json' } })
                     .then(response => response.json())
@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         if (data.status === 'PAID' || data.status === 'COMPLETED' || data.status === 'DELIVERED') {
                             clearInterval(checkInterval);
                             statusElement.className = 'alert alert-success fw-bold fs-5 border-success';
-                            statusElement.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Thanh toán thành công! Đang chuyển hướng...';
+                            statusElement.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Thanh toÃ¡n thÃ nh cÃ´ng! Äang chuyá»ƒn hÆ°á»›ng...';
                             setTimeout(() => window.location.href = successUrl, 2000);
                         }
                     })
-                    .catch(err => console.log('Đang kiểm tra thanh toán...'));
+                    .catch(err => console.log('Äang kiá»ƒm tra thanh toÃ¡n...'));
             }, 5000);
         }
     }
@@ -32,19 +32,19 @@ document.addEventListener("DOMContentLoaded", function() {
        ============================================================== */
     const newAddressForm = document.getElementById('newAddressForm');
     
-    if (newAddressForm) { // Chỉ chạy nếu đang ở trang checkout (không phải trang QR)
-        // Xử lý ẩn/hiện form địa chỉ
+    if (newAddressForm) { // Chá»‰ cháº¡y náº¿u Ä‘ang á»Ÿ trang checkout
+        // Xá»­ lÃ½ áº©n/hiá»‡n form Ä‘á»‹a chá»‰
         const addressRadios = document.querySelectorAll('.address-radio');
         const requiredInputs = newAddressForm.querySelectorAll('input[required], textarea[required]');
 
         function toggleAddressForm() {
             const checkedRadio = document.querySelector('.address-radio:checked');
             if (checkedRadio && checkedRadio.value === '') {
-                // Chọn "Địa chỉ khác" -> Hiện form
+                // Chá»n Ä‘á»‹a chá»‰ khÃ¡c
                 newAddressForm.classList.remove('d-none');
                 requiredInputs.forEach(input => input.setAttribute('required', 'required'));
             } else {
-                // Chọn địa chỉ có sẵn -> Ẩn form
+                // Chá»n Ä‘á»‹a chá»‰ cÃ³ sáºµn
                 newAddressForm.classList.add('d-none');
                 requiredInputs.forEach(input => input.removeAttribute('required'));
             }
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Initialize on load
         toggleAddressForm();
         
-        // Xử lý điểm tích lũy
+        // Xá»­ lÃ½ Ä‘iá»ƒm tÃ­ch lÅ©y
         const pointsInput = document.getElementById('pointsToUse');
         const btnMaxPoints = document.getElementById('btnMaxPoints');
         const pointsError = document.getElementById('pointsError');
@@ -130,12 +130,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-/* ==============================================================
-   3. GLOBAL FUNCTIONS
-   ============================================================== */
-// Dùng cho nút Hủy trong trang QR
 function confirmCancel() {
-    if (confirm('Bạn có chắc muốn hủy đơn hàng này? Số lượng sản phẩm sẽ được hoàn lại.')) {
+    if (confirm('Bạn có chắc chắn muốn quay lại và không thanh toán đơn hàng này?')) {
         const form = document.getElementById('cancelForm');
         if (form) form.submit();
     }

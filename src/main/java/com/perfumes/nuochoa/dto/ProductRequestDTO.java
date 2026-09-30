@@ -14,19 +14,16 @@ public class ProductRequestDTO {
     private Long brandId;
     private Long categoryId;
 
-    // Danh sách biến thể đi kèm sản phẩm
     private List<ProductVariantDTO> variants = new ArrayList<>();
 
-    // Danh sách file ảnh tải lên từ máy tính
+
     private List<MultipartFile> imageFiles = new ArrayList<>();
 
-    // Danh sách ảnh đã có từ trước (dùng cho form Edit)
     private List<String> existingImageUrls = new ArrayList<>();
 
-    // Vị trí của ảnh chính trong danh sách (Ví dụ: 0 là ảnh đầu tiên)
+
     private Integer primaryImageIndex = 0;
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

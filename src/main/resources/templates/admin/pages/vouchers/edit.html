@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'vouchers', ~{::div.admin-content}, ~{}, ~{})}">
+<head>
+    <title>Sửa Mã Giảm Giá - 2T&C Admin</title>
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Cập Nhật Mã Giảm Giá</h2>
+            <p class="text-muted mb-0">Chỉnh sửa thông tin mã khuyến mãi</p>
+        </div>
+        <a href="/admin/vouchers" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+    </div>
+
+    <div class="dashboard-card shadow-sm mx-auto form-card-container p-4 bg-white rounded">
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/vouchers/edit/{id}(id=${voucher.id})}" th:object="${voucher}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{usageCount}">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Mã Code <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control bg-light" th:field="*{code}" required placeholder="VD: SALE10, FREESHIP...">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Trạng Thái</label>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" id="voucherActive" th:field="*{isActive}">
+                        <label class="form-check-label" for="voucherActive">Kích hoạt (Hiển thị và dùng được)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Loại Giảm Giá <span class="text-danger">*</span></label>
+                    <select class="form-select bg-light" th:field="*{discountType}">
+                        <option value="PERCENT">Giảm theo phần trăm (%)</option>
+                        <option value="FIXED">Giảm số tiền cố định (VNĐ)</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Giá Trị Giảm <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control bg-light" th:field="*{discountValue}" required placeholder="Nhập giá trị...">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Giá Trị Đơn Hàng Tối Thiểu (VNĐ)</label>
+                    <input type="number" step="0.01" class="form-control bg-light" th:field="*{minOrderValue}" placeholder="Bỏ trống nếu không yêu cầu">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Số Tiền Giảm Tối Đa (Dành cho loại %)</label>
+                    <input type="number" step="0.01" class="form-control bg-light" th:field="*{maxDiscountAmount}" placeholder="Bỏ trống nếu không giới hạn">
+                </div>
+            </div>
+
+            
+            <h5 class="mt-4 mb-3 fw-bold border-bottom pb-2">Điều Kiện / Nhiệm Vụ Nhận Mã</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Phương Thức Nhận</label>
+                    <select class="form-select bg-light" th:field="*{receiveMethod}">
+                        <option value="FREE">Nhận Miễn Phí</option>
+                        <option value="LOGIN">Đăng Nhập Lần Đầu</option>
+                        <option value="ORDER_VALUE">Giá Trị Đơn Hàng Đạt</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Mô Tả Hiển Thị</label>
+                    <input type="text" class="form-control bg-light" th:field="*{receiveDescription}" placeholder="VD: Đổi 500 điểm để nhận">
+                </div>
+            </div>
+<div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Ngày Bắt Đầu</label>
+                    <input type="date" class="form-control bg-light" th:field="*{startDate}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Ngày Kết Thúc</label>
+                    <input type="date" class="form-control bg-light" th:field="*{endDate}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Tổng Số Lượt Dùng</label>
+                    <input type="number" class="form-control bg-light" th:field="*{usageLimit}" placeholder="Bỏ trống nếu không giới hạn">
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-2">
+                <i class="bi bi-info-circle-fill me-1"></i> Mã này đã được sử dụng <strong><span th:text="${voucher.usageCount}">0</span></strong> lần.
+            </div>
+
+            <hr class="my-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin/vouchers" class="btn btn-light px-4">Hủy Bỏ</a>
+                <button type="submit" class="btn btn-dark px-4"><i class="bi bi-save me-1"></i> Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -71,7 +71,7 @@ public class WebUserAddressController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/personal_page/addresses";
+        return "redirect:/profile/addresses";
     }
 
     @PostMapping("/set-default/{id}")
@@ -83,6 +83,6 @@ public class WebUserAddressController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/personal_page/addresses";
+        return "redirect:/profile/addresses";
     }
 }

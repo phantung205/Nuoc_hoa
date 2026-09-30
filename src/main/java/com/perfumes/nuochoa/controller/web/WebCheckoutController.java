@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.perfumes.nuochoa.repository.VoucherRepository;
+import com.perfumes.nuochoa.repository.UserVoucherRepository;
+import com.perfumes.nuochoa.service.VoucherService;
+import com.perfumes.nuochoa.entity.Voucher;
+import com.perfumes.nuochoa.entity.UserVoucher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +36,18 @@ public class WebCheckoutController {
     private final ProductImageRepository productImageRepository;
     private final com.perfumes.nuochoa.service.OrderService orderService;
     private final com.perfumes.nuochoa.service.UserService userService;
+    private final VoucherRepository voucherRepository;
+    private final VoucherService voucherService;
+    private final UserVoucherRepository userVoucherRepository;
 
     public WebCheckoutController(CartService cartService, 
                                  UserAddressService userAddressService, 
                                  ProductImageRepository productImageRepository,
                                  com.perfumes.nuochoa.service.OrderService orderService,
-                                 com.perfumes.nuochoa.service.UserService userService) {
+                                 com.perfumes.nuochoa.service.UserService userService, VoucherRepository voucherRepository, VoucherService voucherService, UserVoucherRepository userVoucherRepository) {
+        this.voucherRepository = voucherRepository;
+        this.voucherService = voucherService;
+        this.userVoucherRepository = userVoucherRepository;
         this.cartService = cartService;
         this.userAddressService = userAddressService;
         this.productImageRepository = productImageRepository;
@@ -45,7 +56,7 @@ public class WebCheckoutController {
     }
 
     @GetMapping
-    public String viewCheckout(Model model, RedirectAttributes redirectAttributes) {
+    public String viewCheckout(Model model, RedirectAttributes redirectAttributes, jakarta.servlet.http.HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         
@@ -67,10 +78,14 @@ public class WebCheckoutController {
             dto.setConcentration(item.getProductVariant().getConcentration());
             
             Double price = item.getProductVariant().getPrice();
-            dto.setPrice(price);
-            dto.setQuantity(item.getQuantity());
+            Double pDiscount = item.getProductVariant().getProduct().getDiscount();
+            if (pDiscount == null) pDiscount = 0.0;
+            Double finalPrice = price - pDiscount;
+            if (finalPrice < 0) finalPrice = 0.0;
             
-            Double itemTotal = price * item.getQuantity();
+            dto.setPrice(finalPrice);
+            dto.setQuantity(item.getQuantity());
+            Double itemTotal = finalPrice * item.getQuantity();
             dto.setTotalPrice(itemTotal);
             totalAmount += itemTotal;
             
@@ -92,6 +107,48 @@ public class WebCheckoutController {
         com.perfumes.nuochoa.entity.UserProfile profile = userService.getUserProfileByUserId(user.getId());
         model.addAttribute("userProfile", profile);
         
+        
+        // Voucher logic
+        Double voucherDiscount = 0.0;
+        String appliedVoucherCode = (String) session.getAttribute("appliedVoucherCode");
+        Voucher appliedVoucher = null;
+        if (appliedVoucherCode != null && !appliedVoucherCode.isEmpty()) {
+            appliedVoucher = voucherRepository.findByCode(appliedVoucherCode).orElse(null);
+            if (appliedVoucher != null && appliedVoucher.getIsActive()) {
+                if (appliedVoucher.getMinOrderValue() == null || totalAmount >= appliedVoucher.getMinOrderValue()) {
+                    if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
+                        voucherDiscount = totalAmount * (appliedVoucher.getDiscountValue() / 100.0);
+                        if (appliedVoucher.getMaxDiscountAmount() != null && appliedVoucher.getMaxDiscountAmount() > 0 && voucherDiscount > appliedVoucher.getMaxDiscountAmount()) {
+                            voucherDiscount = appliedVoucher.getMaxDiscountAmount();
+                        }
+                    } else {
+                        voucherDiscount = appliedVoucher.getDiscountValue();
+                    }
+                    if (voucherDiscount > totalAmount) {
+                        voucherDiscount = totalAmount;
+                    }
+                    model.addAttribute("appliedVoucher", appliedVoucher);
+                }
+            }
+        }
+        
+        Double finalTotalAfterVoucher = totalAmount - voucherDiscount;
+        if (finalTotalAfterVoucher < 0) finalTotalAfterVoucher = 0.0;
+        
+        model.addAttribute("voucherDiscount", voucherDiscount);
+        model.addAttribute("finalTotalAfterVoucher", finalTotalAfterVoucher);
+        
+        try {
+            if (user != null) {
+                List<UserVoucher> userVouchers = voucherService.getUserVouchers(user.getId());
+                model.addAttribute("userVouchers", userVouchers);
+            } else {
+                model.addAttribute("userVouchers", new java.util.ArrayList<>());
+            }
+        } catch (Exception e) {
+            model.addAttribute("userVouchers", new java.util.ArrayList<>());
+        }
+        
         model.addAttribute("cartItems", itemDtos);
         model.addAttribute("totalAmount", totalAmount);
         model.addAttribute("addresses", addresses);
@@ -99,9 +156,53 @@ public class WebCheckoutController {
         return "web/pages/checkout/index";
     }
 
+    
+    @PostMapping("/apply-voucher")
+    public String applyVoucher(@org.springframework.web.bind.annotation.RequestParam("voucherCode") String voucherCode, jakarta.servlet.http.HttpSession session, RedirectAttributes redirectAttributes) {
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        if (voucherCode == null || voucherCode.trim().isEmpty()) {
+            if (session.getAttribute("appliedVoucherCode") != null) {
+                session.removeAttribute("appliedVoucherCode");
+                redirectAttributes.addFlashAttribute("successMessage", "Đã gỡ voucher");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng nhập mã voucher!");
+            }
+            return "redirect:/checkout";
+        }
+        
+        Voucher voucher = voucherRepository.findByCode(voucherCode.trim()).orElse(null);
+        if (voucher == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Mã voucher không hợp lệ (mã sai)!");
+            return "redirect:/checkout";
+        }
+        if (!voucher.getIsActive() || (voucher.getEndDate() != null && voucher.getEndDate().isBefore(java.time.LocalDate.now()))) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Voucher không còn hoạt động hoặc đã hết hạn!");
+            return "redirect:/checkout";
+        }
+        if (voucher.getUsageLimit() != null && voucher.getUsageCount() >= voucher.getUsageLimit()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Voucher đã hết lượt sử dụng!");
+            return "redirect:/checkout";
+        }
+        
+        com.perfumes.nuochoa.entity.User user = userService.findByUsername(username);
+        if (user != null) {
+            UserVoucher uv = userVoucherRepository.findByUserIdAndVoucherId(user.getId(), voucher.getId()).orElse(null);
+            if (uv != null && uv.getIsUsed()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã sử dụng mã voucher này rồi!");
+                return "redirect:/checkout";
+            }
+        }
+        
+        session.setAttribute("appliedVoucherCode", voucher.getCode());
+        redirectAttributes.addFlashAttribute("successMessage", "Áp dụng voucher thành công!");
+        return "redirect:/checkout";
+    }
+
     @PostMapping("/process")
-    public String processCheckout(
-            @RequestParam(required = false, name = "addressId") String addressIdStr,
+    public String processCheckout(jakarta.servlet.http.HttpSession session,
+                                 @RequestParam(required = false, name = "addressId") String addressIdStr,
             @RequestParam(required = false) String receiverName,
             @RequestParam(required = false) String phoneNumber,
             @RequestParam(required = false) String receiverAddress,
@@ -144,7 +245,16 @@ public class WebCheckoutController {
         }
         
         try {
-            com.perfumes.nuochoa.entity.Order createdOrder = orderService.createOrder(username, finalAddress, paymentMethod, note, pointsToUse);
+            Long voucherId = null;
+            String appliedVoucherCode = (String) session.getAttribute("appliedVoucherCode");
+            if (appliedVoucherCode != null && !appliedVoucherCode.isEmpty()) {
+                Voucher appliedVoucher = voucherRepository.findByCode(appliedVoucherCode).orElse(null);
+                if (appliedVoucher != null) {
+                    voucherId = appliedVoucher.getId();
+                }
+            }
+            com.perfumes.nuochoa.entity.Order createdOrder = orderService.createOrder(username, finalAddress, paymentMethod, note, pointsToUse, voucherId);
+            session.removeAttribute("appliedVoucherCode");
             
             if ("QR".equalsIgnoreCase(paymentMethod)) {
                 return "redirect:/checkout/qr?orderId=" + createdOrder.getId();
@@ -218,10 +328,10 @@ public class WebCheckoutController {
         String username = auth.getName();
         
         try {
-            orderService.cancelOrder(orderId, username);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã hủy đơn hàng và hoàn lại số lượng sản phẩm.");
+            orderService.revertUnpaidOrder(orderId, username);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã quay lại giỏ hàng.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi hủy đơn: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi quay lại: " + e.getMessage());
         }
         return "redirect:/cart";
     }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Hướng Dẫn Mua Hàng - 2T&C</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/about.css}">
+</head>
+<body>
+
+<script>
+</script>
+
+<section>
+    <div class="about-hero-section" style="padding: 60px 0; min-height: auto;">
+        <div class="about-hero-content px-3">
+            <h1 class="gold-text">Hướng Dẫn Mua Hàng</h1>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto bg-white p-5 shadow-sm rounded-4 border-top border-gold border-3">
+                    <p class="mb-4 text-center">Quá trình mua sắm tại <strong>2T&C Perfume Shop</strong> được thiết kế vô cùng đơn giản, thân thiện. Quý khách chỉ cần làm theo các bước sau:</p>
+
+                    <div class="row mt-5">
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-gold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; font-weight: bold; font-size: 1.2rem;">1</div>
+                                <div class="ms-3">
+                                    <h4 class="elegant-title mb-2">Tìm kiếm sản phẩm</h4>
+                                    <p class="text-muted small">Sử dụng thanh tìm kiếm ở đầu trang hoặc duyệt qua các Danh mục để tìm chai nước hoa ưng ý. Đừng quên xem các mã giảm giá nhé!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-gold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; font-weight: bold; font-size: 1.2rem;">2</div>
+                                <div class="ms-3">
+                                    <h4 class="elegant-title mb-2">Thêm vào giỏ hàng</h4>
+                                    <p class="text-muted small">Kiểm tra thông tin sản phẩm (dung tích, nồng độ). Bấm "Thêm vào giỏ hàng" hoặc "Mua ngay" nếu bạn chỉ muốn thanh toán luôn sản phẩm đó.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-gold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; font-weight: bold; font-size: 1.2rem;">3</div>
+                                <div class="ms-3">
+                                    <h4 class="elegant-title mb-2">Xác nhận đơn hàng</h4>
+                                    <p class="text-muted small">Vào biểu tượng Giỏ hàng, kiểm tra lại số lượng. Tiến hành điền địa chỉ giao hàng, áp dụng Voucher giảm giá (nếu có).</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="bg-gold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; font-weight: bold; font-size: 1.2rem;">4</div>
+                                <div class="ms-3">
+                                    <h4 class="elegant-title mb-2">Thanh toán & Nhận hàng</h4>
+                                    <p class="text-muted small">Chọn phương thức thanh toán (COD hoặc Chuyển khoản). Bấm Đặt Hàng. Bạn sẽ nhận được nước hoa trong vòng 1-4 ngày tới!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a th:href="@{/products}" class="btn btn-gold px-4 py-2">Bắt Đầu Mua Sắm <i class="bi bi-cart3 ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

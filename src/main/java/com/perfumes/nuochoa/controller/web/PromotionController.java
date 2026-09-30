@@ -24,9 +24,7 @@ public class PromotionController {
         this.brandService = brandService;
     }
 
-    /**
-     * Trang Ưu Đãi - Hiển thị các sản phẩm đang giảm giá
-     */
+
     @GetMapping("/promotions")
     public String promotions(Model model) {
         List<ProductResponseDTO> allProducts = productService.getAllActiveProducts();
@@ -34,6 +32,7 @@ public class PromotionController {
         // Lọc sản phẩm có discount > 0
         List<ProductResponseDTO> discountedProducts = allProducts.stream()
                 .filter(p -> p.getDiscount() != null && p.getDiscount() > 0)
+                .sorted((p1, p2) -> Double.compare(p2.getDiscount(), p1.getDiscount()))
                 .collect(Collectors.toList());
 
         model.addAttribute("products", discountedProducts);

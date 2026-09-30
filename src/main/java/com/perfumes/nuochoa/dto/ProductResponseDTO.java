@@ -13,12 +13,12 @@ public class ProductResponseDTO {
     private String brandName;
     private String categoryName;
 
-    private String mainImageUrl;            // Ảnh đại diện sản phẩm
-    private Double minPrice;             // Giá thấp nhất trong các biến thể
+    private String mainImageUrl;
+    private Double minPrice;
     private List<ProductVariantDTO> variants;
-    private List<String> imageUrls;          // Tất cả ảnh của sản phẩm
+    private List<String> imageUrls;
 
-    // Getters & Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -123,12 +123,14 @@
             btn.classList.add('btn-secondary');
             btn.innerHTML = '<i class="bi bi-x-circle me-2"></i> HẾT HÀNG';
             qtyInput.value = 0;
+            document.querySelectorAll('.product-qty-group button').forEach(b => b.disabled = true);
         } else {
             btn.disabled = false;
             btn.classList.remove('btn-secondary');
             btn.classList.add('btn-gold');
             btn.innerHTML = '<i class="bi bi-cart-plus me-2"></i> THÊM VÀO GIỎ HÀNG';
             if (parseInt(qtyInput.value) === 0) qtyInput.value = 1;
+            document.querySelectorAll('.product-qty-group button').forEach(b => b.disabled = false);
         }
     }
 
@@ -181,6 +183,8 @@
         if (checkedVariant) {
             const initialStock = parseInt(checkedVariant.getAttribute('data-stock')) || 0;
             updateAddToCartButton(initialStock);
+        } else {
+            updateAddToCartButton(0);
         }
     });
 </script>

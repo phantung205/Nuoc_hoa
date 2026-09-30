@@ -31,11 +31,6 @@ public class SepayWebhookController {
         this.productVariantRepository = productVariantRepository;
     }
 
-    /**
-     * Webhook nhận callback từ SePay khi có giao dịch chuyển khoản mới.
-     * SePay gửi POST JSON chứa thông tin giao dịch.
-     * Nội dung chuyển khoản có dạng "LTS{orderId}" để xác định đơn hàng.
-     */
     @PostMapping("/webhook/sepay")
     public ResponseEntity<?> handleSepayWebhook(@RequestBody Map<String, Object> payload) {
         try {
@@ -82,9 +77,7 @@ public class SepayWebhookController {
         }
     }
 
-    /**
-     * API để frontend kiểm tra trạng thái đơn hàng (polling từ trang QR).
-     */
+
     @GetMapping("/api/orders/status/{orderId}")
     public ResponseEntity<?> getOrderStatus(@PathVariable Long orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
@@ -94,9 +87,7 @@ public class SepayWebhookController {
         return ResponseEntity.ok(Map.of("status", order.getStatus()));
     }
 
-    /**
-     * Kiểm tra sản phẩm nào hết hàng (stock=0) thì tự động ẩn.
-     */
+
     private void checkAndHideOutOfStockProducts(Long orderId) {
         List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
         for (OrderDetail detail : details) {

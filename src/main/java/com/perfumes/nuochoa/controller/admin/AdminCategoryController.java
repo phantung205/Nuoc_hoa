@@ -25,7 +25,9 @@ public class AdminCategoryController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("category", new Category());
+        if (!model.containsAttribute("category")) {
+            model.addAttribute("category", new Category());
+        }
         return "admin/pages/categories/add";
     }
 
@@ -36,14 +38,17 @@ public class AdminCategoryController {
             return "redirect:/admin/categories?success=created";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("category", category);
             return "redirect:/admin/categories/add";
         }
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Category category = categoryService.getCategoryById(id);
-        model.addAttribute("category", category);
+        if (!model.containsAttribute("category")) {
+            Category category = categoryService.getCategoryById(id);
+            model.addAttribute("category", category);
+        }
         return "admin/pages/categories/edit";
     }
 
@@ -54,6 +59,7 @@ public class AdminCategoryController {
             return "redirect:/admin/categories?success=updated";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("category", category);
             return "redirect:/admin/categories/edit/" + id;
         }
     }

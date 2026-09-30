@@ -7,6 +7,7 @@ import com.perfumes.nuochoa.service.OrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -19,6 +20,8 @@ public class OrderServiceImpl implements OrderService {
     private final ProductVariantRepository variantRepository;
     private final UserProfileRepository userProfileRepository;
     private final PointTransactionRepository pointTransactionRepository;
+    private final VoucherRepository voucherRepository;
+    private final UserVoucherRepository userVoucherRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             OrderDetailRepository orderDetailRepository,
@@ -26,7 +29,9 @@ public class OrderServiceImpl implements OrderService {
                             CartService cartService,
                             ProductVariantRepository variantRepository,
                             UserProfileRepository userProfileRepository,
-                            PointTransactionRepository pointTransactionRepository) {
+                            PointTransactionRepository pointTransactionRepository,
+                            VoucherRepository voucherRepository,
+                            UserVoucherRepository userVoucherRepository) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.userRepository = userRepository;
@@ -34,32 +39,34 @@ public class OrderServiceImpl implements OrderService {
         this.variantRepository = variantRepository;
         this.userProfileRepository = userProfileRepository;
         this.pointTransactionRepository = pointTransactionRepository;
+        this.voucherRepository = voucherRepository;
+        this.userVoucherRepository = userVoucherRepository;
     }
 
     @Override
     @Transactional
-    public Order createOrder(String username, UserAddress shippingAddress, String paymentMethod, String note, Integer pointsToUse) {
+    public Order createOrder(String username, UserAddress shippingAddress, String paymentMethod, String note, Integer pointsToUse, Long voucherId) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
         List<CartItem> cartItems = cartService.getCartItemsByUsername(username);
         if (cartItems.isEmpty()) {
-            throw new RuntimeException("Giá» hÃ ng Ä‘ang trá»‘ng");
+            throw new RuntimeException("Giỏ hàng đang trống");
         }
 
         Double totalAmount = 0.0;
         for (CartItem item : cartItems) {
             ProductVariant variant = item.getProductVariant();
             if (variant.getStock() < item.getQuantity()) {
-                throw new RuntimeException("Sáº£n pháº©m " + variant.getProduct().getName() + " khÃ´ng Ä‘á»§ sá»‘ lÆ°á»£ng trong kho");
+                throw new RuntimeException("Sản phẩm " + variant.getProduct().getName() + " không đủ số lượng trong kho");
             }
             variant.setStock(variant.getStock() - item.getQuantity());
             variantRepository.save(variant);
-            
+
             totalAmount += variant.getPrice() * item.getQuantity();
         }
 
-                Double discountAmount = 0.0;
+        Double discountAmount = 0.0;
         if (pointsToUse != null && pointsToUse > 0) {
             UserProfile profile = userProfileRepository.findById(user.getId()).orElse(null);
             if (profile == null || profile.getLoyaltyPoints() == null || profile.getLoyaltyPoints() < pointsToUse) {
@@ -72,15 +79,66 @@ public class OrderServiceImpl implements OrderService {
             if (discountAmount > totalAmount) {
                 discountAmount = totalAmount; // Không giảm quá tổng tiền
             }
-            
+
             profile.setLoyaltyPoints(profile.getLoyaltyPoints() - pointsToUse);
             userProfileRepository.save(profile);
-            
+
             PointTransaction pt = new PointTransaction();
             pt.setUser(user);
             pt.setPoints(-pointsToUse);
             pt.setTransactionType("SPEND_ON_ORDER");
             pointTransactionRepository.save(pt);
+        }
+
+        Voucher voucher = null;
+        if (voucherId != null) {
+            voucher = voucherRepository.findById(voucherId).orElse(null);
+            if (voucher != null) {
+                if (voucher.getIsActive() != null && !voucher.getIsActive()) {
+                    throw new RuntimeException("Voucher không hoạt động");
+                }
+                LocalDate now = LocalDate.now();
+                if (voucher.getStartDate() != null && now.isBefore(voucher.getStartDate())) {
+                    throw new RuntimeException("Voucher chưa đến ngày sử dụng");
+                }
+                if (voucher.getEndDate() != null && now.isAfter(voucher.getEndDate())) {
+                    throw new RuntimeException("Voucher đã hết hạn");
+                }
+                if (voucher.getUsageLimit() != null && voucher.getUsageCount() != null && voucher.getUsageCount() >= voucher.getUsageLimit()) {
+                    throw new RuntimeException("Voucher đã hết lượt sử dụng");
+                }
+                if (voucher.getMinOrderValue() != null && totalAmount < voucher.getMinOrderValue()) {
+                    throw new RuntimeException("Đơn hàng chưa đạt giá trị tối thiểu để sử dụng voucher này");
+                }
+
+                UserVoucher uv = userVoucherRepository.findByUserIdAndVoucherId(user.getId(), voucherId).orElse(null);
+                if (uv != null && uv.getIsUsed() != null && uv.getIsUsed()) {
+                    throw new RuntimeException("Bạn đã sử dụng voucher này rồi");
+                }
+
+                Double vDiscount = 0.0;
+                if ("PERCENT".equalsIgnoreCase(voucher.getDiscountType())) {
+                    vDiscount = totalAmount * (voucher.getDiscountValue() / 100.0);
+                    if (voucher.getMaxDiscountAmount() != null && vDiscount > voucher.getMaxDiscountAmount()) {
+                        vDiscount = voucher.getMaxDiscountAmount();
+                    }
+                } else if ("FIXED".equalsIgnoreCase(voucher.getDiscountType())) {
+                    vDiscount = voucher.getDiscountValue();
+                }
+
+                discountAmount += vDiscount;
+                if (discountAmount > totalAmount) {
+                    discountAmount = totalAmount;
+                }
+
+                voucher.setUsageCount((voucher.getUsageCount() == null ? 0 : voucher.getUsageCount()) + 1);
+                voucherRepository.save(voucher);
+
+                if (uv != null) {
+                    uv.setIsUsed(true);
+                    userVoucherRepository.save(uv);
+                }
+            }
         }
 
         Order order = new Order();
@@ -93,6 +151,9 @@ public class OrderServiceImpl implements OrderService {
         order.setFinalAmount(totalAmount - discountAmount);
         order.setStatus("PENDING");
         order.setCreatedAt(java.time.LocalDateTime.now());
+        if (voucher != null) {
+            order.setVoucher(voucher);
+        }
 
         Order savedOrder = orderRepository.save(order);
 
@@ -106,32 +167,32 @@ public class OrderServiceImpl implements OrderService {
         }
 
         cartService.clearCart(username);
-        
+
         // Auto-ẩn sản phẩm hết hàng
         checkAndHideOutOfStockProducts(savedOrder.getId());
-        
+
         return savedOrder;
     }
 
     @Override
     public List<Order> getOrdersByUsername(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         return orderRepository.findByUserId(user.getId());
     }
 
     @Override
     public Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("KhÃ´ng tÃ¬m tháº¥y Ä‘Æ¡n hÃ ng"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
     }
 
     @Override
     @Transactional
     public void updateOrderStatus(Long orderId, String status) {
         Order order = getOrderById(orderId);
-        
-        // Cáº¥p Ä‘iá»ƒm thÆ°á»Ÿng náº¿u tráº¡ng thÃ¡i chuyá»ƒn sang DELIVERED vÃ  tráº¡ng thÃ¡i cÅ© chÆ°a pháº£i DELIVERED
+
+        // Cấp điểm thưởng nếu trạng thái chuyển sang DELIVERED và trạng thái cũ chưa phải DELIVERED
         if ("DELIVERED".equals(status) && !"DELIVERED".equals(order.getStatus())) {
             Double amount = order.getFinalAmount();
             if (amount != null && amount > 0) {
@@ -142,26 +203,26 @@ public class OrderServiceImpl implements OrderService {
                     if (profile != null) {
                         profile.setLoyaltyPoints((profile.getLoyaltyPoints() == null ? 0 : profile.getLoyaltyPoints()) + points);
                         userProfileRepository.save(profile);
-                        
+
                         PointTransaction trans = new PointTransaction();
                         trans.setUser(user);
                         trans.setPoints(points);
-                        
+
                         String payment = order.getPayments();
                         if (payment != null && payment.toUpperCase().contains("COD")) {
-                            trans.setTransactionType("Thanh toÃ¡n khi nháº­n hÃ ng (COD)");
+                            trans.setTransactionType("Thanh toán khi nhận hàng (COD)");
                         } else if (payment != null && payment.toUpperCase().contains("CK")) {
-                            trans.setTransactionType("Thanh toÃ¡n chuyá»ƒn khoáº£n");
+                            trans.setTransactionType("Thanh toán chuyển khoản");
                         } else {
-                            trans.setTransactionType("Thanh toÃ¡n Ä‘Æ¡n hÃ ng (" + (payment != null ? payment : "KhÃ¡c") + ")");
+                            trans.setTransactionType("Thanh toán đơn hàng (" + (payment != null ? payment : "Khác") + ")");
                         }
-                        
+
                         pointTransactionRepository.save(trans);
                     }
                 }
             }
         }
-        
+
         order.setStatus(status);
         orderRepository.save(order);
     }
@@ -194,8 +255,31 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Chỉ có thể hủy đơn hàng đang chờ xử lý");
         }
 
+        processOrderCancellation(order);
+
+        order.setStatus("CANCELLED");
+        orderRepository.save(order);
+    }
+
+    @Override
+    @Transactional
+    public void revertUnpaidOrder(Long orderId, String username) {
+        Order order = getOrderById(orderId);
+
+        // Kiểm tra quyền
+        if (!order.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Không có quyền hủy đơn hàng này");
+        }
+
+        processOrderCancellation(order);
+
+        order.setStatus("CANCELLED");
+        orderRepository.save(order);
+    }
+
+    private void processOrderCancellation(Order order) {
         // Hoàn lại số lượng tồn kho
-        List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(order.getId());
         for (OrderDetail detail : details) {
             ProductVariant variant = detail.getProductVariant();
             variant.setStock(variant.getStock() + detail.getQuantity());
@@ -207,24 +291,54 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        // Hoàn lại điểm tích lũy nếu đã dùng
-        if (order.getDiscountAmount() != null && order.getDiscountAmount() > 0) {
-            int pointsToRefund = (int) ((order.getDiscountAmount() / 10000.0) * 100);
-            UserProfile profile = userProfileRepository.findById(order.getUser().getId()).orElse(null);
-            if (profile != null) {
-                profile.setLoyaltyPoints((profile.getLoyaltyPoints() == null ? 0 : profile.getLoyaltyPoints()) + pointsToRefund);
-                userProfileRepository.save(profile);
+        // Hoàn lại voucher
+        if (order.getVoucher() != null) {
+            Voucher voucher = order.getVoucher();
+            voucher.setUsageCount(Math.max(0, (voucher.getUsageCount() == null ? 0 : voucher.getUsageCount()) - 1));
+            voucherRepository.save(voucher);
 
-                PointTransaction pt = new PointTransaction();
-                pt.setUser(order.getUser());
-                pt.setPoints(pointsToRefund);
-                pt.setTransactionType("REFUND_CANCEL_ORDER");
-                pointTransactionRepository.save(pt);
+            UserVoucher uv = userVoucherRepository.findByUserIdAndVoucherId(order.getUser().getId(), voucher.getId()).orElse(null);
+            if (uv != null) {
+                uv.setIsUsed(false);
+                userVoucherRepository.save(uv);
             }
         }
 
-        order.setStatus("CANCELLED");
-        orderRepository.save(order);
+        // Hoàn lại điểm tích lũy nếu đã dùng
+        if (order.getDiscountAmount() != null && order.getDiscountAmount() > 0) {
+            Double voucherDiscount = 0.0;
+            if (order.getVoucher() != null) {
+                Voucher v = order.getVoucher();
+                if ("PERCENT".equalsIgnoreCase(v.getDiscountType())) {
+                    voucherDiscount = order.getTotalAmount() * (v.getDiscountValue() / 100.0);
+                    if (v.getMaxDiscountAmount() != null && voucherDiscount > v.getMaxDiscountAmount()) {
+                        voucherDiscount = v.getMaxDiscountAmount();
+                    }
+                } else if ("FIXED".equalsIgnoreCase(v.getDiscountType())) {
+                    voucherDiscount = v.getDiscountValue();
+                }
+            }
+
+            Double pointsDiscount = order.getDiscountAmount() - voucherDiscount;
+
+            // Xử lý làm tròn để tránh sai số dấu phẩy động
+            if (pointsDiscount > 1.0) {
+                int pointsToRefund = (int) Math.round((pointsDiscount / 10000.0) * 100);
+                if (pointsToRefund > 0) {
+                    UserProfile profile = userProfileRepository.findById(order.getUser().getId()).orElse(null);
+                    if (profile != null) {
+                        profile.setLoyaltyPoints((profile.getLoyaltyPoints() == null ? 0 : profile.getLoyaltyPoints()) + pointsToRefund);
+                        userProfileRepository.save(profile);
+
+                        PointTransaction pt = new PointTransaction();
+                        pt.setUser(order.getUser());
+                        pt.setPoints(pointsToRefund);
+                        pt.setTransactionType("REFUND_CANCEL_ORDER");
+                        pointTransactionRepository.save(pt);
+                    }
+                }
+            }
+        }
     }
 
     /**

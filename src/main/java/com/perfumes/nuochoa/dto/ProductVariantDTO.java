@@ -6,11 +6,11 @@ public class ProductVariantDTO {
     private Long id;
     private String sku;
     private Double volume;
-    private Double concentration; // 1 = EDT, 2 = EDP, 3 = Parfum
+    private Double concentration;
     private Double price;
     private Integer stock;
 
-    // Getters & Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

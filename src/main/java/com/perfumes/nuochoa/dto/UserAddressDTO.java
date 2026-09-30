@@ -5,11 +5,10 @@ public class UserAddressDTO {
     private String receiverName;
     private String phoneNumber;
     private String receiverAddress;
-    private String addressType; // Nhà riêng, Công ty
+    private String addressType;
     private String note;
     private Boolean isDefault;
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     

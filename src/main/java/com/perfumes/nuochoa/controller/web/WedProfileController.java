@@ -4,6 +4,7 @@ import com.perfumes.nuochoa.dto.UserProfileRequest;
 import com.perfumes.nuochoa.entity.UserProfile;
 import com.perfumes.nuochoa.security.CustomUserDetails;
 import com.perfumes.nuochoa.service.UserService;
+import com.perfumes.nuochoa.service.VoucherService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,27 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Controller xử lý trang Hồ sơ cá nhân của người dùng đang đăng nhập.
- *
- * @AuthenticationPrincipal CustomUserDetails currentUser
- *   → Spring Security tự động inject người dùng đang đăng nhập vào tham số này,
- *     không cần gọi SecurityContextHolder thủ công.
- */
+
 @Controller
 @RequestMapping("/profile")
 public class WedProfileController {
 
     private final UserService userService;
+    private final VoucherService voucherService;
 
-    public WedProfileController(UserService userService) {
+    public WedProfileController(UserService userService, VoucherService voucherService) {
         this.userService = userService;
+        this.voucherService = voucherService;
     }
 
-    /**
-     * Hiển thị trang hồ sơ cá nhân.
-     * Load UserProfile từ DB và đổ dữ liệu vào form để hiển thị.
-     */
     @GetMapping
     public String showProfile(@AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
         Long userId = currentUser.getUser().getId();
@@ -48,14 +41,12 @@ public class WedProfileController {
         model.addAttribute("profileRequest", profileRequest);
         model.addAttribute("userProfile", profile);
         model.addAttribute("user", currentUser.getUser());
+        model.addAttribute("userVouchers", voucherService.getUserVouchers(userId));
 
         return "web/pages/personal_page/profile";
     }
 
-    /**
-     * Xử lý form cập nhật hồ sơ cá nhân.
-     * Dùng RedirectAttributes để hiển thị thông báo thành công sau khi redirect.
-     */
+
     @PostMapping("/update")
     public String updateProfile(@AuthenticationPrincipal CustomUserDetails currentUser,
                                 @ModelAttribute("profileRequest") UserProfileRequest profileRequest,
@@ -68,4 +59,14 @@ public class WedProfileController {
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
         return "redirect:/profile";
     }
+
+
+    @GetMapping("/vouchers")
+    public String showVouchers(@AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        Long userId = currentUser.getUser().getId();
+        model.addAttribute("userVouchers", voucherService.getUserVouchers(userId));
+        model.addAttribute("user", currentUser.getUser());
+        return "web/pages/personal_page/vouchers";
+    }
+
 }

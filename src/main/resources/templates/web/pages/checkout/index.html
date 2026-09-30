@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
 <head>
-    <title>Thanh ToÃ¡n - 2T&C</title>
+    <title>Thanh Toán - 2T&C</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" th:href="@{/web/css/pages/checkout.css}">
 </head>
 <body>
@@ -11,70 +12,70 @@
     <div class="container my-5 pt-3">
         <form th:action="@{/checkout/process}" method="post" id="checkoutForm">
             <div class="row">
-                <!-- ThÃ´ng tin giao hÃ ng -->
+                <!-- Thông tin giao hàng -->
                 <div class="col-lg-7 mb-4">
                     <div class="card border-0 shadow-sm rounded-4 mb-4">
                         <div class="card-body p-4">
-                            <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-geo-alt-fill text-gold me-2"></i>ThÃ´ng Tin Giao HÃ ng</h5>
+                            <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-geo-alt-fill text-gold me-2"></i>Thông Tin Giao Hàng</h5>
                             
-                            <!-- Chá»n Ä‘á»‹a chá»‰ Ä‘Ã£ cÃ³ -->
+                            <!-- Chọn địa chỉ đã có -->
                             <div th:if="${addresses != null && !addresses.empty}" class="mb-4">
-                                <label class="form-label text-muted small fw-bold">Chá»n Ä‘á»‹a chá»‰ Ä‘Ã£ lÆ°u:</label>
+                                <label class="form-label text-muted small fw-bold">Chọn địa chỉ đã lưu:</label>
                                 <div class="list-group">
-                                    <label class="list-group-item list-group-item-action p-3 address-list-item" th:each="addr : ${addresses}">
+                                    <label class="list-group-item list-group-item-action p-3" th:each="addr : ${addresses}" style="cursor: pointer;">
                                         <div class="d-flex align-items-center">
                                             <input class="form-check-input address-radio me-3 mt-0 fs-5" type="radio" name="addressId" th:value="${addr.id}" th:checked="${addr.isDefault}">
                                             <div>
-                                                <span class="fw-bold d-block" th:text="${addr.receiverName} + ' - ' + ${addr.phoneNumber}">TÃªn - SÄT</span>
-                                                <small class="text-muted d-block" th:text="${addr.receiverAddress}">Äá»‹a chá»‰</small>
-                                                <span class="badge bg-secondary mt-1" th:text="${addr.addressType}">NhÃ </span>
-                                                <span class="badge bg-warning text-dark mt-1" th:if="${addr.isDefault}"><i class="bi bi-star-fill me-1"></i>Máº·c Ä‘á»‹nh</span>
+                                                <span class="fw-bold d-block" th:text="${addr.receiverName} + ' - ' + ${addr.phoneNumber}">Tên - SĐT</span>
+                                                <small class="text-muted d-block" th:text="${addr.receiverAddress}">Địa chỉ</small>
+                                                <span class="badge bg-secondary mt-1" th:text="${addr.addressType}">Nhà</span>
+                                                <span class="badge bg-warning text-dark mt-1" th:if="${addr.isDefault}"><i class="bi bi-star-fill me-1"></i>Mặc định</span>
                                             </div>
                                         </div>
                                     </label>
                                     
-                                    <label class="list-group-item list-group-item-action p-3 address-list-item">
+                                    <label class="list-group-item list-group-item-action p-3" style="cursor: pointer;">
                                         <div class="d-flex align-items-center">
                                             <input class="form-check-input address-radio me-3 mt-0 fs-5" type="radio" name="addressId" value="" th:checked="${addresses == null || addresses.empty}">
-                                            <span class="fw-bold">Giao Ä‘áº¿n Ä‘á»‹a chá»‰ khÃ¡c</span>
+                                            <span class="fw-bold">Giao đến địa chỉ khác</span>
                                         </div>
                                     </label>
                                 </div>
                             </div>
                             
-                            <!-- Form nháº­p Ä‘á»‹a chá»‰ má»›i -->
+                            <!-- Form nhập địa chỉ mới -->
                             <div id="newAddressForm" th:classappend="${addresses != null && !addresses.empty} ? 'd-none' : ''">
                                 <div th:if="${addresses != null && !addresses.empty}" class="border-top pt-3 mt-2">
-                                    <h6 class="fw-bold mb-3">Nháº­p Ä‘á»‹a chá»‰ má»›i</h6>
+                                    <h6 class="fw-bold mb-3">Nhập địa chỉ mới</h6>
                                 </div>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label text-muted small fw-bold">Há» vÃ  tÃªn ngÆ°á»i nháº­n <span class="text-danger">*</span></label>
+                                        <label class="form-label text-muted small fw-bold">Họ và tên người nhận <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="receiverName" id="receiverName" th:required="${addresses == null || addresses.empty}">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label text-muted small fw-bold">Sá»‘ Ä‘iá»‡n thoáº¡i <span class="text-danger">*</span></label>
+                                        <label class="form-label text-muted small fw-bold">Số điện thoại <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" pattern="[0-9]{10,11}" th:required="${addresses == null || addresses.empty}">
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label text-muted small fw-bold">Äá»‹a chá»‰ chi tiáº¿t <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="receiverAddress" id="receiverAddress" placeholder="Sá»‘ nhÃ , Ä‘Æ°á»ng, phÆ°á»ng/xÃ£, quáº­n/huyá»‡n, tá»‰nh/thÃ nh phá»‘..." th:required="${addresses == null || addresses.empty}">
+                                        <label class="form-label text-muted small fw-bold">Địa chỉ chi tiết <small class="text-primary">(Bấm vào ô dưới để chọn trên Google Map)</small> <span class="text-danger">*</span></label>
+                                        <textarea class="form-control bg-white" name="receiverAddress" id="receiverAddress" rows="2" placeholder="Bấm vào đây để chọn địa chỉ từ bản đồ..." th:required="${addresses == null || addresses.empty}" readonly style="cursor: pointer;"></textarea>
                                     </div>
                                     <div class="col-12 mt-3">
                                         <div class="form-check bg-light p-3 rounded border">
                                             <input class="form-check-input ms-1" type="checkbox" name="saveAddress" value="true" id="saveAddress" checked>
                                             <label class="form-check-label ms-2 fw-bold" for="saveAddress">
-                                                LÆ°u Ä‘á»‹a chá»‰ nÃ y vÃ o sá»• Ä‘á»‹a chá»‰ Ä‘á»ƒ sá»­ dá»¥ng cho láº§n sau
+                                                Lưu địa chỉ này vào sổ địa chỉ để sử dụng cho lần sau
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Ghi chÃº chung (LuÃ´n hiá»ƒn thá»‹) -->
+                            <!-- Ghi chú chung (Luôn hiển thị) -->
                             <div class="mt-4 pt-4 border-top">
-                                <label class="form-label text-muted small fw-bold">Ghi chÃº Ä‘Æ¡n hÃ ng (TÃ¹y chá»n)</label>
-                                <textarea class="form-control bg-light" name="note" rows="2" placeholder="VÃ­ dá»¥: Giao giá» hÃ nh chÃ­nh, gá»i Ä‘iá»‡n trÆ°á»›c khi Ä‘áº¿n..."></textarea>
+                                <label class="form-label text-muted small fw-bold">Ghi chú đơn hàng (Tùy chọn)</label>
+                                <textarea class="form-control bg-light" name="note" rows="2" placeholder="Ví dụ: Giao giờ hành chính, gọi điện trước khi đến..."></textarea>
                             </div>
                             
                         </div>
@@ -82,24 +83,34 @@
                     
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body p-4">
-                            <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-wallet2 text-gold me-2"></i>PhÆ°Æ¡ng Thá»©c Thanh ToÃ¡n</h5>
+                            <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-wallet2 text-gold me-2"></i>Phương Thức Thanh Toán</h5>
                             <div class="form-check border rounded p-3 mb-2 shadow-sm">
                                 <input class="form-check-input ms-1 mt-2" type="radio" name="paymentMethod" id="paymentCOD" value="COD" checked>
                                 <label class="form-check-label ms-2 d-flex align-items-center" for="paymentCOD">
                                     <i class="bi bi-cash-stack text-success fs-3 me-3"></i>
                                     <div>
-                                        <span class="fw-bold d-block">Thanh toÃ¡n khi nháº­n hÃ ng (COD)</span>
-                                        <small class="text-muted">Báº¡n sáº½ thanh toÃ¡n báº±ng tiá»n máº·t khi shipper giao hÃ ng tá»›i.</small>
+                                        <span class="fw-bold d-block">Thanh toán khi nhận hàng (COD)</span>
+                                        <small class="text-muted">Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng tới.</small>
                                     </div>
                                 </label>
                             </div>
-                            <div class="form-check border rounded p-3 shadow-sm opacity-50">
+                                                        <div class="form-check border rounded p-3 shadow-sm mb-2">
+                                <input class="form-check-input ms-1 mt-2" type="radio" name="paymentMethod" id="paymentQR" value="QR">
+                                <label class="form-check-label ms-2 d-flex align-items-center" for="paymentQR">
+                                    <i class="bi bi-qr-code-scan text-dark fs-3 me-3"></i>
+                                    <div>
+                                        <span class="fw-bold d-block">Thanh toán qua mã QR (Chuyển khoản)</span>
+                                        <small class="text-muted">Quét mã QR bằng ứng dụng ngân hàng để thanh toán nhanh.</small>
+                                    </div>
+                                </label>
+                            </div>
+<div class="form-check border rounded p-3 shadow-sm opacity-50">
                                 <input class="form-check-input ms-1 mt-2" type="radio" name="paymentMethod" id="paymentVNPay" value="VNPAY" disabled>
                                 <label class="form-check-label ms-2 d-flex align-items-center" for="paymentVNPay">
                                     <i class="bi bi-credit-card-2-front text-primary fs-3 me-3"></i>
                                     <div>
-                                        <span class="fw-bold d-block">Thanh toÃ¡n VNPay (Äang báº£o trÃ¬)</span>
-                                        <small class="text-muted">Cá»•ng thanh toÃ¡n Ä‘ang Ä‘Æ°á»£c nÃ¢ng cáº¥p.</small>
+                                        <span class="fw-bold d-block">Thanh toán VNPay (Đang bảo trì)</span>
+                                        <small class="text-muted">Cổng thanh toán đang được nâng cấp.</small>
                                     </div>
                                 </label>
                             </div>
@@ -107,81 +118,428 @@
                     </div>
                 </div>
 
-                <!-- ÄÆ¡n hÃ ng -->
+                <!-- Đơn hàng -->
                 <div class="col-lg-5">
                     <div class="card border-0 shadow-sm rounded-4 position-sticky" style="top: 100px;">
                         <div class="card-body p-4">
-                            <h5 class="fw-bold border-bottom pb-3 mb-4">ÄÆ¡n HÃ ng Cá»§a Báº¡n</h5>
+                            <h5 class="fw-bold border-bottom pb-3 mb-4">Đơn Hàng Của Bạn</h5>
                             
                             <div class="checkout-items mb-4" style="max-height: 350px; overflow-y: auto; padding-right: 10px;">
                                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom" th:each="item : ${cartItems}">
                                     <img th:src="${item.imageUrl}" class="rounded border shadow-sm me-3 bg-white" style="width: 60px; height: 60px; object-fit: cover;">
                                     <div class="flex-grow-1">
-                                        <h6 class="fw-bold mb-1 fs-6" th:text="${item.productName}">TÃªn sáº£n pháº©m</h6>
-                                        <small class="text-muted d-block mb-1">PhÃ¢n loáº¡i: <span th:text="${item.volume} + 'ml'"></span></small>
+                                        <h6 class="fw-bold mb-1 fs-6" th:text="${item.productName}">Tên sản phẩm</h6>
+                                        <small class="text-muted d-block mb-1">Phân loại: <span th:text="${item.volume} + 'ml'"></span></small>
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <span class="fw-semibold gold-text" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + ' â‚«'">GiÃ¡</span>
+                                            <span class="fw-semibold gold-text" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Giá</span>
                                             <span class="badge bg-secondary rounded-pill">x<span th:text="${item.quantity}">1</span></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Äiá»ƒm tÃ­ch lÅ©y -->
+                            <!-- Điểm tích lũy -->
+                            
+                        <!-- VOUCHER -->
+                        <div class="card border-warning shadow-sm rounded-4 mb-4">
+                            <div class="card-body p-4 bg-light">
+                                <h6 class="fw-bold mb-3"><i class="bi bi-ticket-perforated gold-text me-2"></i>Mã Giảm Giá</h6>
+                                
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" id="visibleVoucherCode" placeholder="Nhập mã voucher..." th:value="${appliedVoucher != null ? appliedVoucher.code : ''}">
+                                    <button class="btn btn-outline-dark" type="button" onclick="submitVoucher()">Áp dụng</button>
+                                </div>
+                                
+                                <div th:if="${userVouchers != null && !userVouchers.empty}" class="mt-2">
+                                    <button type="button" class="btn btn-outline-secondary w-100 rounded text-start d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#voucherModal">
+                                        <span><i class="bi bi-list-ul me-2"></i>Chọn voucher từ kho của bạn</span>
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                
+                                <div th:if="${userVouchers == null || userVouchers.empty}" class="text-center py-2">
+                                    <small class="text-muted">Bạn chưa có voucher nào. <a th:href="@{/vouchers}" class="gold-text">Nhận ngay</a></small>
+                                </div>
+                                
+                                <div th:if="${successMessage}" class="text-success mt-2 small"><i class="bi bi-check-circle-fill me-1"></i> <span th:text="${successMessage}"></span></div>
+                                <div th:if="${errorMessage}" class="text-danger mt-2 small"><i class="bi bi-exclamation-triangle-fill me-1"></i> <span th:text="${errorMessage}"></span></div>
+                            </div>
+                        </div>
+
                             <div class="bg-warning bg-opacity-10 border border-warning rounded p-3 mb-4" th:if="${userProfile != null && userProfile.loyaltyPoints != null && userProfile.loyaltyPoints >= 100}">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="fw-bold text-dark"><i class="bi bi-star-fill text-warning me-2"></i>Äiá»ƒm tÃ­ch lÅ©y cá»§a báº¡n:</span>
+                                    <span class="fw-bold text-dark"><i class="bi bi-star-fill text-warning me-2"></i>Điểm tích lũy của bạn:</span>
                                     <span class="badge bg-warning text-dark fs-6" th:text="${userProfile.loyaltyPoints} + ' pt'">0 pt</span>
                                 </div>
-                                <small class="text-muted d-block mb-2">Cá»© 100 Ä‘iá»ƒm sáº½ Ä‘Æ°á»£c giáº£m 10.000 â‚«.</small>
+                                <small class="text-muted d-block mb-2">Cứ 100 điểm sẽ được giảm 10.000 ₫.</small>
                                 
                                 <div class="input-group input-group-sm mb-1">
-                                    <span class="input-group-text bg-white">Sá»­ dá»¥ng Ä‘iá»ƒm</span>
+                                    <span class="input-group-text bg-white">Sử dụng điểm</span>
                                     <input type="number" class="form-control" th:disabled="${userProfile.loyaltyPoints == null || userProfile.loyaltyPoints < 100}" name="pointsToUse" id="pointsToUse" 
                                            value="0" min="0" th:max="${userProfile.loyaltyPoints}" step="100">
-                                    <button class="btn btn-outline-warning text-dark fw-bold" type="button" id="btnMaxPoints" th:disabled="${userProfile.loyaltyPoints == null || userProfile.loyaltyPoints < 100}">Tá»‘i Ä‘a</button>
+                                    <button class="btn btn-outline-warning text-dark fw-bold" type="button" id="btnMaxPoints" th:disabled="${userProfile.loyaltyPoints == null || userProfile.loyaltyPoints < 100}">Tối đa</button>
                                 </div>
-                                <small class="text-danger d-none" id="pointsError">Sá»‘ Ä‘iá»ƒm pháº£i lÃ  bá»™i sá»‘ cá»§a 100.</small>
+                                <small class="text-danger d-none" id="pointsError">Số điểm phải là bội số của 100.</small>
                             </div>
                             
                             <div class="bg-light rounded p-3 mb-4">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Táº¡m tÃ­nh:</span>
-                                    <span class="fw-semibold" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' â‚«'">0 â‚«</span>
+                                    <span class="text-muted">Tạm tính:</span>
+                                    <span class="fw-semibold" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2" th:if="${voucherDiscount != null && voucherDiscount > 0}">
+                                    <span class="text-muted">Voucher giảm:</span>
+                                    <span class="fw-semibold text-success" th:text="'- ' + ${#numbers.formatDecimal(voucherDiscount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">- 0 ₫</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">PhÃ­ váº­n chuyá»ƒn:</span>
-                                    <span class="fw-semibold text-success">Miá»…n phÃ­</span>
+                                    <span class="text-muted">Phí vận chuyển:</span>
+                                    <span class="fw-semibold text-success">Miễn phí</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2 text-danger d-none" id="discountRow">
-                                    <span>Giáº£m giÃ¡ (Äiá»ƒm):</span>
-                                    <span class="fw-semibold" id="discountDisplay">-0 â‚«</span>
+                                    <span>Giảm giá (Điểm):</span>
+                                    <span class="fw-semibold" id="discountDisplay">-0 ₫</span>
                                 </div>
                                 <div class="d-flex justify-content-between pt-2 mt-2 border-top">
-                                    <span class="fw-bold fs-5">Tá»•ng cá»™ng:</span>
-                                    <span class="fw-bold fs-4 gold-text" id="finalTotalDisplay" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' â‚«'">0 â‚«</span>
+                                    <span class="fw-bold fs-5">Tổng cộng:</span>
+                                    <span class="fw-bold fs-4 gold-text" id="finalTotalDisplay" th:text="${#numbers.formatDecimal(finalTotalAfterVoucher != null ? finalTotalAfterVoucher : totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
                                 </div>
                             </div>
                             
-                            <input type="hidden" id="baseTotalAmount" th:value="${totalAmount}">
+                            <input type="hidden" id="baseTotalAmount" th:value="${finalTotalAfterVoucher != null ? finalTotalAfterVoucher : totalAmount}">
                             <input type="hidden" id="maxPointsValue" th:value="${userProfile != null && userProfile.loyaltyPoints != null ? userProfile.loyaltyPoints : 0}">
                             
                             <button type="submit" class="btn btn-gold w-100 py-3 fw-bold rounded-pill text-uppercase shadow-sm" id="btnSubmitOrder">
-                                <i class="bi bi-check-circle me-2"></i> HoÃ n Táº¥t Äáº·t HÃ ng
+                                <i class="bi bi-check-circle me-2"></i> Hoàn Tất Đặt Hàng
                             </button>
                             <a th:href="@{/cart}" class="btn btn-link text-muted w-100 mt-2 text-decoration-none">
-                                <i class="bi bi-arrow-left me-1"></i> Quay láº¡i giá» hÃ ng
+                                <i class="bi bi-arrow-left me-1"></i> Quay lại giỏ hàng
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
+
+        <!-- Voucher Selection Modal - nằm trong container, ngoài form -->
+        <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 rounded-4 shadow">
+                    <div class="modal-header bg-light border-bottom-0">
+                        <h5 class="modal-title fw-bold" id="voucherModalLabel">Chọn Voucher</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 bg-light">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="searchVoucher" placeholder="Tìm mã voucher...">
+                        </div>
+
+                        <div class="voucher-list" id="voucherList">
+                            <div th:each="uv : ${userVouchers}" class="card border-0 shadow-sm rounded-3 mb-3 voucher-item"
+                                 th:data-code="${uv.voucher.code}"
+                                 th:classappend="${uv.isUsed or !uv.voucher.isActive or (uv.voucher.minOrderValue != null and totalAmount lt uv.voucher.minOrderValue) ? 'opacity-50 bg-light' : ''}">
+                                <div class="card-body p-3 d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1" th:text="${uv.voucher.code}"></h6>
+                                        <p class="mb-0 text-muted small">
+                                            <span th:if="${uv.voucher.discountType == 'PERCENT'}" th:text="'Giảm ' + ${#numbers.formatDecimal(uv.voucher.discountValue, 0, 'COMMA', 0, 'POINT')} + '%'"></span>
+                                            <span th:if="${uv.voucher.discountType != 'PERCENT'}" th:text="'Giảm ' + ${#numbers.formatDecimal(uv.voucher.discountValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+                                        </p>
+                                        <small class="text-danger" th:if="${uv.voucher.minOrderValue != null}" th:text="'Đơn tối thiểu ' + ${#numbers.formatDecimal(uv.voucher.minOrderValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></small>
+
+                                        <div class="mt-1 small text-danger fw-bold" th:if="${uv.isUsed}">Đã sử dụng</div>
+                                        <div class="mt-1 small text-danger fw-bold" th:if="${!uv.isUsed and uv.voucher.minOrderValue != null and totalAmount lt uv.voucher.minOrderValue}">Chưa đủ điều kiện</div>
+                                        <div class="mt-1 small text-danger fw-bold" th:if="${!uv.isUsed and !uv.voucher.isActive}">Hết hạn / Khóa</div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-sm rounded-pill px-3"
+                                                th:classappend="${uv.isUsed or !uv.voucher.isActive or (uv.voucher.minOrderValue != null and totalAmount lt uv.voucher.minOrderValue) ? 'btn-secondary' : 'btn-gold'}"
+                                                th:disabled="${uv.isUsed or !uv.voucher.isActive or (uv.voucher.minOrderValue != null and totalAmount lt uv.voucher.minOrderValue)}"
+                                                th:attr="onclick='submitVoucher(\'' + ${uv.voucher.code} + '\')'">
+                                            Dùng ngay
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden form for voucher -->
+        <form id="applyVoucherForm" th:action="@{/checkout/apply-voucher}" method="post" class="d-none">
+            <input type="hidden" name="voucherCode" id="hiddenVoucherCode">
+        </form>
+
     </div>
+<!-- Map Picker Modal -->
+
+<div class="modal fade" id="mapPickerModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0,0,0,0.6); z-index: 1060;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Chọn vị trí trên bản đồ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 position-relative">
+                <div class="position-absolute w-100 p-2" style="z-index: 1000; top: 0; left: 0;">
+                    <div class="input-group shadow-sm">
+                        <input type="text" id="mapSearchInput" class="form-control" placeholder="Tìm kiếm địa chỉ..." autocomplete="off">
+                        <button class="btn btn-primary" id="btnMapSearch" type="button"><i class="bi bi-search"></i></button>
+                    </div>
+                    <ul id="mapSearchResults" class="list-group shadow mt-1" style="display: none; max-height: 200px; overflow-y: auto; z-index: 1001;"></ul>
+                </div>
+                <div id="global-map" style="height: 450px; width: 100%;"></div>
+                <div class="p-3 bg-light border-top">
+                    <p class="mb-2 fw-bold text-dark">Địa chỉ đã chọn:</p>
+                    <p id="selected-address-text" class="text-muted mb-0">Chưa chọn vị trí nào...</p>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-gold px-4" id="btnConfirmAddress">Xác nhận địa chỉ</button>
+            </div>
+        </div>
+    </div>
+</div>
 </section>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let globalMap = null;
+    let globalMarker = null;
+    let currentAddressInput = null;
+    let tempAddress = "";
+    let isFromSearch = false;
+
+    const receiverInput = document.getElementById('receiverAddress');
+    if (receiverInput) {
+        receiverInput.addEventListener('click', function() {
+            currentAddressInput = this;
+            tempAddress = this.value;
+            document.getElementById('selected-address-text').textContent = tempAddress || "Vui lòng click trên bản đồ để chọn vị trí...";
+            
+            // Hiện modal map
+            let mapModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('mapPickerModal'));
+            mapModal.show();
+        });
+    }
+
+    document.getElementById('mapPickerModal').addEventListener('shown.bs.modal', function () {
+        if (!globalMap) {
+            globalMap = L.map('global-map', {zoomControl: false}).setView([21.0285, 105.8542], 13);
+            L.control.zoom({ position: 'bottomright' }).addTo(globalMap);
+            
+            L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+                maxZoom: 20,
+                subdomains:['mt0','mt1','mt2','mt3'],
+                attribution: '&copy; Google Maps'
+            }).addTo(globalMap);
+
+            globalMap.on('click', function(e) {
+                if (isFromSearch) return; // Bỏ qua click này vì nó bắt nguồn từ search
+
+                if (globalMarker) globalMap.removeLayer(globalMarker);
+                globalMarker = L.marker(e.latlng).addTo(globalMap);
+                
+                document.getElementById('selected-address-text').innerHTML = '<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Đang tải địa chỉ...';
+                
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=vi-VN,vi`)
+                    .then(res => {
+                        if (!res.ok) throw new Error("Nominatim error");
+                        return res.json();
+                    })
+                    .then(data => {
+                        if(data && data.display_name) {
+                            tempAddress = data.display_name;
+                            document.getElementById('selected-address-text').textContent = tempAddress;
+                        } else {
+                            throw new Error("No display_name");
+                        }
+                    })
+                    .catch(err => {
+                        fetch(`https://photon.komoot.io/reverse?lon=${e.latlng.lng}&lat=${e.latlng.lat}`)
+                            .then(r => r.json())
+                            .then(d => {
+                                if (d.features && d.features.length > 0) {
+                                    let p = d.features[0].properties;
+                                    let arr = [];
+                                    if (p.name) arr.push(p.name);
+                                    if (p.housenumber) arr.push(p.housenumber);
+                                    if (p.street) arr.push(p.street);
+                                    if (p.district) arr.push(p.district);
+                                    if (p.city) arr.push(p.city);
+                                    tempAddress = arr.join(", ");
+                                    document.getElementById('selected-address-text').textContent = tempAddress;
+                                } else {
+                                    document.getElementById('selected-address-text').textContent = "Không thể lấy chi tiết địa chỉ.";
+                                }
+                            })
+                            .catch(err2 => {
+                                document.getElementById('selected-address-text').textContent = "Lỗi mạng hoặc bị chặn kết nối API.";
+                            });
+                    });
+            });
+        }
+        globalMap.invalidateSize();
+    });
+
+    document.getElementById('btnMapSearch').addEventListener('click', function() {
+        let query = document.getElementById('mapSearchInput').value;
+        if (!query) return;
+        
+        document.getElementById('btnMapSearch').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        let resultsList = document.getElementById('mapSearchResults');
+        
+        function renderResults(items) {
+            document.getElementById('btnMapSearch').innerHTML = '<i class="bi bi-search"></i>';
+            resultsList.innerHTML = '';
+            
+            if (items && items.length > 0) {
+                items.forEach(item => {
+                    let li = document.createElement('li');
+                    li.className = 'list-group-item list-group-item-action text-truncate map-result-item';
+                    li.style.cursor = 'pointer';
+                    li.title = item.name;
+                    li.textContent = item.name;
+                    li.dataset.lat = item.lat;
+                    li.dataset.lon = item.lon;
+                    li.dataset.name = item.name;
+                    resultsList.appendChild(li);
+                });
+                resultsList.style.display = 'block';
+            } else {
+                let li = document.createElement('li');
+                li.className = 'list-group-item text-muted';
+                li.textContent = 'Không tìm thấy kết quả.';
+                resultsList.appendChild(li);
+                resultsList.style.display = 'block';
+            }
+        }
+        
+        if (!resultsList.dataset.bound) {
+            resultsList.dataset.bound = "true";
+            resultsList.addEventListener('pointerdown', function(e) {
+                let li = e.target.closest('li.map-result-item');
+                if (!li) return;
+                
+                e.preventDefault();
+                isFromSearch = true;
+                setTimeout(() => isFromSearch = false, 500);
+                
+                try {
+                    let lat = parseFloat(li.dataset.lat);
+                    let lng = parseFloat(li.dataset.lon);
+                    let name = li.dataset.name;
+                    
+                    globalMap.setView([lat, lng], 16, { animate: false });
+                    
+                    if (globalMarker) globalMap.removeLayer(globalMarker);
+                    globalMarker = L.marker([lat, lng]).addTo(globalMap);
+                    
+                    tempAddress = name;
+                    document.getElementById('selected-address-text').textContent = tempAddress;
+                    
+                    resultsList.style.display = 'none';
+                } catch (err) {
+                    console.error(err);
+                    alert("Lỗi bản đồ: " + err.message);
+                }
+            });
+        }
+        
+        fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&limit=5&countrycodes=vn&accept-language=vi-VN,vi`)
+            .then(res => {
+                if(!res.ok) throw new Error("Nominatim failed");
+                return res.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    renderResults(data.map(d => ({name: d.display_name, lat: d.lat, lon: d.lon})));
+                } else {
+                    throw new Error("Nominatim 0 results");
+                }
+            })
+            .catch(err => {
+                fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`)
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.features && d.features.length > 0) {
+                            renderResults(d.features.map(f => {
+                                let p = f.properties;
+                                let arr = [];
+                                if (p.name) arr.push(p.name);
+                                if (p.housenumber) arr.push(p.housenumber);
+                                if (p.street) arr.push(p.street);
+                                if (p.district) arr.push(p.district);
+                                if (p.city) arr.push(p.city);
+                                return {
+                                    name: arr.join(", ") || p.name,
+                                    lat: f.geometry.coordinates[1],
+                                    lon: f.geometry.coordinates[0]
+                                };
+                            }));
+                        } else {
+                            renderResults([]);
+                        }
+                    })
+                    .catch(e => {
+                        renderResults([]);
+                    });
+            });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#mapSearchResults') && !e.target.closest('#mapSearchInput') && !e.target.closest('#btnMapSearch')) {
+            let res = document.getElementById('mapSearchResults');
+            if(res) res.style.display = 'none';
+        }
+    });
+
+    document.getElementById('mapSearchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnMapSearch').click();
+        }
+    });
+
+    document.getElementById('btnConfirmAddress').addEventListener('click', function() {
+        if (currentAddressInput && tempAddress) {
+            currentAddressInput.value = tempAddress;
+        }
+        bootstrap.Modal.getInstance(document.getElementById('mapPickerModal')).hide();
+    });
+});
+</script>
+
 <script th:src="@{/web/js/pages/checkout.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.getElementById('searchVoucher');
+        if(searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                var term = this.value.toLowerCase();
+                var items = document.querySelectorAll('.voucher-item');
+                for (var i = 0; i < items.length; i++) {
+                    var code = items[i].getAttribute('data-code').toLowerCase();
+                    items[i].style.display = code.indexOf(term) >= 0 ? 'block' : 'none';
+                }
+            });
+        }
+    });
+
+    function submitVoucher(code) {
+        if (code) {
+            document.getElementById('hiddenVoucherCode').value = code;
+        } else {
+            var val = document.getElementById('visibleVoucherCode').value;
+            document.getElementById('hiddenVoucherCode').value = val;
+        }
+        document.getElementById('applyVoucherForm').submit();
+    }
+</script>
 
 </body>
 </html>
-

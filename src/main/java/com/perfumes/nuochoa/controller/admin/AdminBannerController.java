@@ -26,7 +26,9 @@ public class AdminBannerController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("banner", new Banner());
+        if (!model.containsAttribute("banner")) {
+            model.addAttribute("banner", new Banner());
+        }
         return "admin/pages/banners/add";
     }
 
@@ -39,14 +41,17 @@ public class AdminBannerController {
             return "redirect:/admin/banners?success=created";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("banner", banner);
             return "redirect:/admin/banners/add";
         }
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Banner banner = bannerService.getBannerById(id);
-        model.addAttribute("banner", banner);
+        if (!model.containsAttribute("banner")) {
+            Banner banner = bannerService.getBannerById(id);
+            model.addAttribute("banner", banner);
+        }
         return "admin/pages/banners/edit";
     }
 
@@ -60,6 +65,7 @@ public class AdminBannerController {
             return "redirect:/admin/banners?success=updated";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("banner", banner);
             return "redirect:/admin/banners/edit/" + id;
         }
     }

@@ -43,7 +43,7 @@ public class BrandServiceImpl implements BrandService {
 
         brand.setName(brand.getName().trim());
 
-        // Mặc định cho phép hoạt động nếu không truyền vào
+
         if (brand.getIsActive() == null) {
             brand.setIsActive(true);
         }

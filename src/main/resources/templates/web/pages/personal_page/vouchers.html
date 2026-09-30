@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{}, ~{::section})}">
+<head>
+    <title>Voucher Của Tôi - 2T&amp;C</title>
+    <link rel="stylesheet" th:href="@{/web/css/pages/profile.css}">
+</head>
+<body>
+
+<section class="py-5 bg-light" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-person-circle text-secondary" style="font-size: 4rem;"></i>
+                            <h5 class="fw-bold mt-2" th:text="${#authentication.name}">Username</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a th:href="@{/profile}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-person me-2"></i> Hồ Sơ Cá Nhân
+                            </a>
+                            <a th:href="@{/profile/addresses}" class="list-group-item list-group-item-action py-3 border-0">
+                                <i class="bi bi-geo-alt me-2"></i> Sổ Địa Chỉ
+                            </a>
+                            <a th:href="@{/profile/vouchers}" class="list-group-item list-group-item-action py-3 border-0 fw-bold gold-text active bg-transparent">
+                                <i class="bi bi-ticket-perforated me-2"></i> Voucher Của Tôi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-5">
+                        <h4 class="fw-bold mb-4 border-bottom pb-3">
+                            <i class="bi bi-ticket-perforated-fill gold-text me-2"></i> Kho Voucher Của Bạn
+                        </h4>
+
+                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <div th:if="${userVouchers.empty}" class="text-center py-5 text-muted">
+                            <i class="bi bi-box-seam fs-1 d-block mb-3 opacity-50"></i>
+                            <p class="mb-3">Bạn chưa có voucher nào trong kho.</p>
+                            <a th:href="@{/vouchers}" class="btn btn-outline-dark btn-sm rounded-pill">
+                                <i class="bi bi-arrow-right me-1"></i> Đến Trung Tâm Voucher
+                            </a>
+                        </div>
+
+                        <div class="row g-3" th:if="${!userVouchers.empty}">
+                            <div class="col-md-6" th:each="uv : ${userVouchers}">
+                                <div class="border rounded-3 p-3 position-relative h-100"
+                                     th:classappend="${uv.isUsed} ? 'bg-light opacity-50' : 'bg-white shadow-sm'">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-dark px-3 py-2 rounded-pill" th:text="${uv.voucher.code}">CODE</span>
+                                        <span class="badge bg-success rounded-pill" th:if="${!uv.isUsed}">Có sẵn</span>
+                                        <span class="badge bg-secondary rounded-pill" th:if="${uv.isUsed}">Đã dùng</span>
+                                    </div>
+                                    <h5 class="gold-text fw-bold mb-1 mt-2">
+                                        <span th:if="${uv.voucher.discountType == 'FIXED'}"
+                                              th:text="'Giảm ' + ${#numbers.formatDecimal(uv.voucher.discountValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+                                        <span th:if="${uv.voucher.discountType == 'PERCENT'}"
+                                              th:text="'Giảm ' + ${uv.voucher.discountValue} + '%'"></span>
+                                    </h5>
+                                    <p class="text-muted small mb-1"
+                                       th:if="${uv.voucher.minOrderValue != null && uv.voucher.minOrderValue > 0}"
+                                       th:text="'Đơn tối thiểu: ' + ${#numbers.formatDecimal(uv.voucher.minOrderValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></p>
+                                    <p class="text-muted small mb-0"
+                                       th:if="${uv.voucher.endDate != null}"
+                                       th:text="'HSD: ' + ${#temporals.format(uv.voucher.endDate, 'dd/MM/yyyy')}"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4" th:if="${!userVouchers.empty}">
+                            <a th:href="@{/vouchers}" class="btn btn-outline-dark btn-sm rounded-pill">
+                                <i class="bi bi-plus-circle me-1"></i> Nhận thêm Voucher
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

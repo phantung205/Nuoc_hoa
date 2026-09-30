@@ -4,68 +4,69 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-/**
- * Bảng "vouchers" – mã giảm giá dùng khi thanh toán đơn hàng.
- *
- * Hai loại giảm giá (discountType):
- *   - "PERCENT" : giảm theo % tổng đơn hàng (có giới hạn tối đa = maxDiscountAmount)
- *   - "FIXED"   : giảm một số tiền cố định
- *
- * Voucher chỉ hiệu lực khi:
- *   - isActive = true
- *   - Ngày hiện tại nằm trong khoảng [startDate, endDate]
- *   - usageCount < usageLimit (còn lượt dùng)
- *   - Tổng đơn hàng >= minOrderValue
- */
+
 @Entity
 @Table(name = "vouchers")
 public class Voucher {
 
-    // ===================== FIELDS =====================
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Mã voucher người dùng nhập (VD: "SALE10"). Không được trùng. */
+
     @Column(unique = true, nullable = false)
     private String code;
 
-    /** Loại giảm giá: "PERCENT" hoặc "FIXED". */
+
     @Column(name = "discount_type", nullable = false)
     private String discountType;
 
-    /** Giá trị giảm: nếu PERCENT thì là %, nếu FIXED thì là số tiền VND. */
+
     @Column(name = "discount_value", nullable = false)
     private Double discountValue;
 
-    /** Giá trị đơn hàng tối thiểu để áp dụng voucher này. */
+
     @Column(name = "min_order_value")
     private Double minOrderValue;
 
-    /** Số tiền giảm tối đa khi dùng PERCENT (null = không giới hạn). */
+
     @Column(name = "max_discount_amount")
     private Double maxDiscountAmount;
 
-    /** Tổng số lượt được phép sử dụng. */
+
     @Column(name = "usage_limit")
     private Integer usageLimit;
 
-    /** Số lượt đã được sử dụng. Tăng lên mỗi khi có đơn hàng dùng voucher này. */
+
     @Column(name = "usage_count")
     private Integer usageCount = 0;
 
     @Column(name = "start_date")
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Column(name = "end_date")
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    /** true = voucher đang hoạt động; false = đã vô hiệu hóa. */
+
     @Column(name = "is_active")
     private Boolean isActive;
 
-    // ===================== GETTERS & SETTERS =====================
+
+    @Column(name = "receive_method")
+    private String receiveMethod;
+
+
+
+
+    @Column(name = "receive_description", columnDefinition = "TEXT")
+    private String receiveDescription;
+
+
+
 
     public Long getId() {
         return id;
@@ -147,6 +148,23 @@ public class Voucher {
         this.endDate = endDate;
     }
 
+    public String getReceiveMethod() {
+        return receiveMethod;
+    }
+
+    public void setReceiveMethod(String receiveMethod) {
+        this.receiveMethod = receiveMethod;
+    }
+
+
+    public String getReceiveDescription() {
+        return receiveDescription;
+    }
+
+    public void setReceiveDescription(String receiveDescription) {
+        this.receiveDescription = receiveDescription;
+    }
+
     public Boolean getIsActive() {
         return isActive;
     }
@@ -155,3 +173,4 @@ public class Voucher {
         this.isActive = isActive;
     }
 }
+

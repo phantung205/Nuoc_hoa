@@ -25,7 +25,9 @@ public class AdminBrandController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("brand", new Brand());
+        if (!model.containsAttribute("brand")) {
+            model.addAttribute("brand", new Brand());
+        }
         return "admin/pages/bands/add";
     }
 
@@ -38,14 +40,17 @@ public class AdminBrandController {
             return "redirect:/admin/brands?success=created";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("brand", brand);
             return "redirect:/admin/brands/add";
         }
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Brand brand = brandService.getBrandById(id);
-        model.addAttribute("brand", brand);
+        if (!model.containsAttribute("brand")) {
+            Brand brand = brandService.getBrandById(id);
+            model.addAttribute("brand", brand);
+        }
         return "admin/pages/bands/edit";
     }
 
@@ -59,6 +64,7 @@ public class AdminBrandController {
             return "redirect:/admin/brands?success=updated";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("brand", brand);
             return "redirect:/admin/brands/edit/" + id;
         }
     }

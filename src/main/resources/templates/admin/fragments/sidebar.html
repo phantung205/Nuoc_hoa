@@ -45,6 +45,11 @@
                     <i class="bi bi-images me-2"></i> Banner
                 </a>
             </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/vouchers}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'vouchers' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-ticket-perforated-fill me-2"></i> Mã Giảm Giá
+                </a>
+            </li>
         </ul>
 
         <div class="mb-2 ps-3 mt-4 sidebar-section-label">CỬA HÀNG</div>

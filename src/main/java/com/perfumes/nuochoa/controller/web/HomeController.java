@@ -24,7 +24,6 @@ public class HomeController {
         this.bannerService = bannerService;
     }
 
-    /** Hiển thị trang chủ với dữ liệu Category và Brand đang hoạt động. */
     @GetMapping({"/", "/home"})
     public String homePage(Model model) {
         model.addAttribute("categories", categoryService.getActiveCategories());
@@ -36,6 +35,26 @@ public class HomeController {
 
     @GetMapping("/about")
     public String aboutPage() {
-        return "web/pages/about";
+        return "web/pages/content/about";
+    }
+
+    @GetMapping("/return-policy")
+    public String returnPolicyPage() {
+        return "web/pages/content/return-policy";
+    }
+
+    @GetMapping("/privacy-policy")
+    public String privacyPolicyPage() {
+        return "web/pages/content/privacy-policy";
+    }
+
+    @GetMapping("/faq")
+    public String faqPage() {
+        return "web/pages/content/faq";
+    }
+
+    @GetMapping("/shopping-guide")
+    public String shoppingGuidePage() {
+        return "web/pages/content/shopping-guide";
     }
 }

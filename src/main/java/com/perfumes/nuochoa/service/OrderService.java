@@ -6,11 +6,12 @@ import com.perfumes.nuochoa.entity.UserAddress;
 import java.util.List;
 
 public interface OrderService {
-    Order createOrder(String username, UserAddress shippingAddress, String paymentMethod, String note, Integer pointsToUse);
+    Order createOrder(String username, UserAddress shippingAddress, String paymentMethod, String note, Integer pointsToUse, Long voucherId);
     List<Order> getOrdersByUsername(String username);
     Order getOrderById(Long orderId);
     void updateOrderStatus(Long orderId, String status);
     List<Order> getAllOrders();
     void deleteOrder(Long orderId);
     void cancelOrder(Long orderId, String username);
+    void revertUnpaidOrder(Long orderId, String username);
 }

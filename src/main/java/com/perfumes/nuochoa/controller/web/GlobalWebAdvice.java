@@ -34,8 +34,7 @@ public class GlobalWebAdvice {
         }
         return null;
     }
-
-    /** Cung cấp danh sách category cho header dropdown trên mọi trang */
+    
     @ModelAttribute("categories")
     public List<Category> populateCategories() {
         return categoryService.getActiveCategories();

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
+<head>
+    <title>Chính Sách Đổi Trả - 2T&C</title>
+    <!-- Có thể tái sử dụng CSS của trang about hoặc inline styles -->
+    <link rel="stylesheet" th:href="@{/web/css/pages/about.css}">
+</head>
+<body>
+
+<script>
+</script>
+
+<section>
+    <!-- Hero Banner (reusing about banner style) -->
+    <div class="about-hero-section" style="padding: 60px 0; min-height: auto;">
+        <div class="about-hero-content px-3">
+            <h1 class="gold-text">Chính Sách Đổi Trả</h1>
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto bg-white p-5 shadow-sm rounded-4 border-top border-gold border-3">
+                    <h3 class="elegant-title mb-4">Điều kiện đổi trả</h3>
+                    <p>Khách hàng có thể yêu cầu đổi trả sản phẩm trong vòng <strong>7 ngày</strong> kể từ ngày nhận hàng với các điều kiện sau:</p>
+                    <ul>
+                        <li class="mb-2">Sản phẩm còn nguyên seal, chưa qua sử dụng, chưa bóc tem bảo hành.</li>
+                        <li class="mb-2">Hộp sản phẩm không bị móp méo, trầy xước.</li>
+                        <li class="mb-2">Có đầy đủ hóa đơn mua hàng và phụ kiện đi kèm (nếu có).</li>
+                        <li class="mb-2">Lỗi phát sinh do nhà sản xuất (hỏng vòi xịt, rò rỉ dung dịch...).</li>
+                    </ul>
+
+                    <h3 class="elegant-title mb-4 mt-5">Quy trình đổi trả</h3>
+                    <ol>
+                        <li class="mb-3">
+                            <strong>Bước 1:</strong> Liên hệ với bộ phận CSKH qua Hotline hoặc Email, cung cấp mã đơn hàng và tình trạng sản phẩm (kèm video bóc hàng nếu có).
+                        </li>
+                        <li class="mb-3">
+                            <strong>Bước 2:</strong> 2T&C xác nhận điều kiện đổi trả và hướng dẫn quý khách gửi hàng về kho.
+                        </li>
+                        <li class="mb-3">
+                            <strong>Bước 3:</strong> Ngay sau khi nhận và kiểm tra hàng hoàn, 2T&C sẽ gửi sản phẩm mới hoặc hoàn tiền theo yêu cầu của quý khách trong vòng 3-5 ngày làm việc.
+                        </li>
+                    </ol>
+
+                    <h3 class="elegant-title mb-4 mt-5">Chi phí đổi trả</h3>
+                    <ul>
+                        <li class="mb-2"><strong>Miễn phí:</strong> Trong trường hợp sản phẩm lỗi do nhà sản xuất hoặc do quá trình vận chuyển.</li>
+                        <li class="mb-2"><strong>Khách hàng thanh toán phí:</strong> Trong trường hợp quý khách muốn đổi sang mùi hương khác (với điều kiện sản phẩm còn nguyên seal).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

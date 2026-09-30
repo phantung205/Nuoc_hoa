@@ -24,23 +24,11 @@
                     <li class="nav-item">
                         <a class="nav-link px-3" th:href="@{/products}">Bộ Sưu Tập</a>
                     </li>
-                    <li class="nav-item dropdown" th:if="${categories != null and !categories.empty}">
-                        <a class="nav-link dropdown-toggle px-3 d-flex align-items-center gap-1" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown">
-                            Danh Mục
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark bg-black border-gold mt-2">
-                            <li th:each="cat : ${categories}">
-                                <a class="dropdown-item" th:href="@{/products(categoryId=${cat.id})}" th:text="${cat.name}">Tên Danh Mục</a>
-                            </li>
-                            <li><hr class="dropdown-divider border-secondary"></li>
-                            <li><a class="dropdown-item gold-text" th:href="@{/products}"><i class="bi bi-grid-3x3-gap me-2"></i>Xem tất cả</a></li>
-                        </ul>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link px-3 text-warning" th:href="@{/promotions}"><i class="bi bi-tag-fill me-1"></i>Ưu Đãi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" th:href="@{/about}">Về Chúng Tôi</a>
+                        <a class="nav-link px-3" th:href="@{/vouchers}"><i class="bi bi-ticket-perforated-fill me-1"></i>Voucher</a>
                     </li>
                 </ul>
 
@@ -94,6 +82,20 @@
             </div>
         </div>
     </nav>
+
+    <!-- Secondary Category Navbar -->
+    <div class="category-navbar border-bottom border-gold shadow-sm" th:if="${categories != null and !categories.empty}">
+        <div class="container">
+            <ul class="category-nav-list text-uppercase fw-bold">
+                <li class="nav-item">
+                    <a class="nav-link text-decoration-none gold-text" th:href="@{/products}"><i class="bi bi-grid-fill me-1"></i> Tất cả</a>
+                </li>
+                <li class="nav-item" th:each="cat : ${categories}">
+                    <a class="nav-link text-decoration-none" th:href="@{/products(categoryId=${cat.id})}" th:text="${cat.name}">Tên Danh Mục</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </header>
 </body>
 </html>
