@@ -8,7 +8,13 @@
 
 <section class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0 text-dark">Quản Lý Đơn Hàng</h2>
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">Quản Lý Đơn Hàng</h2>
+            <p class="text-muted mb-0">
+                Danh sách các đơn hàng
+                <span class="badge bg-gold text-dark ms-2 fw-medium" th:text="'Tổng cộng: ' + ${#lists.size(orders)} + ' đơn hàng'">Tổng cộng: 0 đơn hàng</span>
+            </p>
+        </div>
     </div>
 
     <!-- Alerts -->
@@ -24,8 +30,8 @@
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle mb-0 datatable">
+                    <thead class="table-dark">
                         <tr>
                             <th class="ps-4">Mã Đơn</th>
                             <th>Khách Hàng</th>
@@ -80,3 +86,4 @@
 
 </body>
 </html>
+

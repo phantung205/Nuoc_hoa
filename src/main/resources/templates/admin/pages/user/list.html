@@ -11,7 +11,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold gold-accent mb-1">Quản Lý Người Dùng</h2>
-            <p class="text-muted mb-0">Danh sách tài khoản hệ thống</p>
+            <p class="text-muted mb-0">
+                Danh sách tài khoản hệ thống
+                <span class="badge bg-gold text-dark ms-2 fw-medium" th:text="'Tổng cộng: ' + ${#lists.size(users)} + ' tài khoản'">Tổng cộng: 0 tài khoản</span>
+            </p>
         </div>
         <a href="/admin/users/add" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Thêm Tài Khoản</a>
     </div>
@@ -24,9 +27,15 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
+    <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <div class="dashboard-card shadow-sm p-0 overflow-hidden">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0 datatable">
                 <thead class="table-dark">
                 <tr>
                     <th class="ps-4">ID</th>

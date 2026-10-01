@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'reports', ~{::div.admin-content}, ~{::link}, ~{::script.extra-js})}">
+<head>
+    <title>Báo Cáo Thống Kê - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/reports/reports.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <!-- Header -->
+    <div class="report-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold gold-accent mb-1"><i class="bi bi-bar-chart-line-fill me-2"></i>Báo Cáo Thống Kê</h2>
+                <p class="text-muted mb-0">Phân tích dữ liệu kinh doanh cửa hàng nước hoa 2T&C</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> In báo cáo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 1: TỔNG QUAN KPI ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="kpi-card kpi-revenue">
+                <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Tổng doanh thu</span>
+                    <span class="kpi-value" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="kpi-card kpi-month">
+                <div class="kpi-icon"><i class="bi bi-calendar-month"></i></div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Doanh thu tháng</span>
+                    <span class="kpi-value" th:text="${#numbers.formatDecimal(revenueThisMonth, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="kpi-card kpi-orders">
+                <div class="kpi-icon"><i class="bi bi-receipt-cutoff"></i></div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Tổng đơn hàng</span>
+                    <span class="kpi-value" th:text="${totalOrders}">0</span>
+                    <span class="kpi-sub" th:text="'Tháng này: ' + ${newOrdersThisMonth}">Tháng này: 0</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="kpi-card kpi-products">
+                <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Sản phẩm / Khách hàng</span>
+                    <span class="kpi-value"><span th:text="${totalProducts}">0</span> / <span th:text="${totalUsers}">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 2: BIỂU ĐỒ DOANH THU ===== -->
+    <div class="row g-4 mb-4">
+        <!-- Doanh thu 7 ngày -->
+        <div class="col-lg-7">
+            <div class="chart-card shadow-sm">
+                <div class="chart-header">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-graph-up me-2 text-success"></i>Doanh Thu 7 Ngày Gần Đây</h5>
+                </div>
+                <div class="chart-body">
+                    <canvas id="revenue7DaysChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đơn hàng theo trạng thái -->
+        <div class="col-lg-5">
+            <div class="chart-card shadow-sm">
+                <div class="chart-header">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i>Đơn Hàng Theo Trạng Thái</h5>
+                </div>
+                <div class="chart-body chart-body-doughnut">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 3: BIỂU ĐỒ DOANH THU THEO NĂM + SẢN PHẨM THEO DANH MỤC ===== -->
+    <div class="row g-4 mb-4">
+        <!-- Doanh thu 12 tháng -->
+        <div class="col-lg-8">
+            <div class="chart-card shadow-sm">
+                <div class="chart-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart me-2 text-warning"></i>Doanh Thu Theo Tháng</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0 small fw-semibold text-muted">Năm:</label>
+                        <select id="yearFilter" class="form-select form-select-sm" style="width: auto;">
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="revenueMonthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sản phẩm theo danh mục -->
+        <div class="col-lg-4">
+            <div class="chart-card shadow-sm">
+                <div class="chart-header">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Sản Phẩm Theo Danh Mục</h5>
+                </div>
+                <div class="chart-body chart-body-doughnut">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 4: TOP SẢN PHẨM BÁN CHẠY + BẢNG THỐNG KÊ TRẠNG THÁI ===== -->
+    <div class="row g-4 mb-4">
+        <!-- Top sản phẩm bán chạy -->
+        <div class="col-lg-7">
+            <div class="chart-card shadow-sm">
+                <div class="chart-header">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-trophy me-2 text-warning"></i>Top 10 Sản Phẩm Bán Chạy Nhất</h5>
+                </div>
+                <div class="chart-body">
+                    <canvas id="topProductsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng thống kê chi tiết -->
+        <div class="col-lg-5">
+            <div class="chart-card shadow-sm h-100">
+                <div class="chart-header">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-list-check me-2 text-secondary"></i>Chi Tiết Đơn Hàng</h5>
+                </div>
+                <div class="p-3">
+                    <table class="table table-bordered mb-0">
+                        <tbody>
+                            <tr th:each="entry : ${orderCountByStatus}">
+                                <td class="fw-semibold">
+                                    <span class="status-dot"
+                                          th:classappend="${entry.key == 'PENDING' ? 'dot-warning' :
+                                                            entry.key == 'CONFIRMED' ? 'dot-primary' :
+                                                            entry.key == 'SHIPPING' ? 'dot-info' :
+                                                            entry.key == 'DELIVERED' ? 'dot-success' : 'dot-danger'}"></span>
+                                    <span th:text="${entry.key == 'PENDING' ? 'Chờ xử lý' :
+                                                     entry.key == 'CONFIRMED' ? 'Đã xác nhận' :
+                                                     entry.key == 'SHIPPING' ? 'Đang giao hàng' :
+                                                     entry.key == 'DELIVERED' ? 'Đã giao hàng' : 'Đã hủy'}">Status</span>
+                                </td>
+                                <td class="text-end">
+                                    <span class="badge rounded-pill fs-6 px-3"
+                                          th:classappend="${entry.key == 'PENDING' ? 'bg-warning text-dark' :
+                                                            entry.key == 'CONFIRMED' ? 'bg-primary' :
+                                                            entry.key == 'SHIPPING' ? 'bg-info text-dark' :
+                                                            entry.key == 'DELIVERED' ? 'bg-success' : 'bg-danger'}"
+                                          th:text="${entry.value}">0</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-4">
+                        <h6 class="fw-bold text-muted mb-3"><i class="bi bi-bar-chart-steps me-1"></i> Top Sản Phẩm</h6>
+                        <div th:each="p, stat : ${topProducts}" class="top-product-item" th:if="${stat.count <= 5}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="top-rank" th:classappend="${stat.count <= 3 ? 'rank-gold' : ''}" th:text="${stat.count}">1</span>
+                                    <span class="small fw-semibold" th:text="${p['name']}">Product</span>
+                                </div>
+                                <span class="badge bg-success bg-opacity-75" th:text="${p['quantity']} + ' đã bán'">0</span>
+                            </div>
+                        </div>
+                        <div th:if="${#lists.isEmpty(topProducts)}" class="text-center text-muted py-3">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                            Chưa có dữ liệu
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script class="extra-js" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<!-- Inline chart data using Thymeleaf -->
+<script class="extra-js" th:inline="javascript">
+    window.CHART_DATA = {
+        revenue7Days: /*[[${revenueLast7Days}]]*/ [],
+        revenue12Months: /*[[${revenueLast12Months}]]*/ [],
+        orderStatus: /*[[${orderCountByStatus}]]*/ {},
+        categories: /*[[${productCountByCategory}]]*/ {},
+        topProducts: /*[[${topProducts}]]*/ [],
+        currentYear: /*[[${currentYear}]]*/ 2026
+    };
+</script>
+<script class="extra-js" th:src="@{/admin/js/pages/reports/reports.js}"></script>
+
+</body>
+</html>

@@ -8,6 +8,8 @@ import com.perfumes.nuochoa.entity.Role;
 import com.perfumes.nuochoa.entity.User;
 import com.perfumes.nuochoa.entity.UserProfile;
 import com.perfumes.nuochoa.repository.CartRepository;
+import com.perfumes.nuochoa.repository.CartItemRepository;
+import com.perfumes.nuochoa.repository.OrderRepository;
 import com.perfumes.nuochoa.repository.RoleRepository;
 import com.perfumes.nuochoa.repository.UserProfileRepository;
 import com.perfumes.nuochoa.repository.UserRepository;
@@ -33,17 +35,23 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserProfileRepository userProfileRepository;
     private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
+    private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            UserProfileRepository userProfileRepository,
                            CartRepository cartRepository,
+                           CartItemRepository cartItemRepository,
+                           OrderRepository orderRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userProfileRepository = userProfileRepository;
         this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.orderRepository = orderRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,7 +59,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void registerUser(RegisterRequest registerRequest) {
-        // 1. Kiểm tra mật khẩu xác nhận
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
             throw new IllegalArgumentException("Mật khẩu xác nhận không khớp");
         }
@@ -325,16 +332,27 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
-        // Xóa ảnh cứng của User (nếu có)
+                .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
+
+        // Check if user has orders
+        if (!orderRepository.findByUserId(id).isEmpty()) {
+            throw new RuntimeException("Không thể xóa tài khoản này vì đã có đơn hàng trong hệ thống!");
+        }
+
+        // Delete Cart and CartItems
+        cartRepository.findByUserId(id).ifPresent(cart -> {
+            cartItemRepository.deleteByCartId(cart.getId());
+            cartRepository.delete(cart);
+        });
+
+        // Xóa ảnh cứng của User (nếu có) và xóa Profile
         userProfileRepository.findById(id).ifPresent(profile -> {
             if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isEmpty()) {
                 deleteFile(profile.getAvatarUrl());
             }
+            userProfileRepository.delete(profile);
         });
 
         userRepository.delete(user);
     }
 }
-
-

@@ -11,7 +11,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold gold-accent mb-1">Quản Lý Banner</h2>
-            <p class="text-muted mb-0">Danh sách các banner hiển thị trên website</p>
+            <p class="text-muted mb-0">
+                Danh sách các banner hiển thị trên website
+                <span class="badge bg-gold text-dark ms-2 fw-medium" th:text="'Tổng cộng: ' + ${#lists.size(banners)} + ' banner'">Tổng cộng: 0 banner</span>
+            </p>
         </div>
         <a href="/admin/banners/add" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Thêm Banner</a>
     </div>
@@ -32,7 +35,7 @@
 
     <div class="dashboard-card shadow-sm p-0 overflow-hidden">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0 datatable">
                 <thead class="table-dark">
                 <tr>
                     <th class="ps-4">ID</th>
@@ -85,3 +88,4 @@
 
 </body>
 </html>
+

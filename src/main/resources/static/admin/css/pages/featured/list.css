@@ -1,0 +1,117 @@
+/* ===== FEATURED PRODUCTS ADMIN PAGE ===== */
+
+/* Gold accent for headings */
+.gold-accent {
+    color: #D4AF37;
+}
+
+.bg-gold {
+    background-color: #D4AF37 !important;
+}
+
+/* ===== PRODUCT THUMBNAIL ===== */
+.featured-product-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* ===== TAB FILTERS ===== */
+.featured-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.featured-tab {
+    padding: 8px 18px;
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: #555;
+}
+
+.featured-tab:hover {
+    border-color: #D4AF37;
+    color: #D4AF37;
+}
+
+.featured-tab.active {
+    background-color: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.featured-tab.tab-hot {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.featured-tab.tab-hot:hover,
+.featured-tab.tab-hot.active {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* ===== BADGE NỔI BẬT ===== */
+.badge-featured {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #D4AF37;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.6rem;
+}
+
+/* ===== VIEW COUNT BADGE ===== */
+.view-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+}
+
+/* ===== TABLE ===== */
+.dashboard-card {
+    border-radius: 12px;
+    background-color: #fff;
+    border: 1px solid #eee;
+}
+
+#featuredTable tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+#featuredTable tbody tr:hover {
+    background-color: rgba(212, 175, 55, 0.04);
+}
+
+#featuredTable tbody tr[data-featured="true"] {
+    background-color: rgba(212, 175, 55, 0.03);
+    border-left: 3px solid #D4AF37;
+}
+
+/* ===== INFO CARD ===== */
+.featured-info .card {
+    border-radius: 12px;
+    background-color: #f8f9fa;
+}
+
+.featured-info ul li strong {
+    color: #D4AF37;
+}

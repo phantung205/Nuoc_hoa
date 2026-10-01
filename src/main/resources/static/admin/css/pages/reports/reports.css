@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* ===== KPI Cards ===== */
+.kpi-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+}
+
+.kpi-revenue::before { background: linear-gradient(180deg, #D4AF37, #f0d060); }
+.kpi-month::before { background: linear-gradient(180deg, #10b981, #34d399); }
+.kpi-orders::before { background: linear-gradient(180deg, #3b82f6, #60a5fa); }
+.kpi-products::before { background: linear-gradient(180deg, #8b5cf6, #a78bfa); }
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.kpi-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.kpi-revenue .kpi-icon { background: rgba(212, 175, 55, 0.12); color: #D4AF37; }
+.kpi-month .kpi-icon { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+.kpi-orders .kpi-icon { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+.kpi-products .kpi-icon { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+
+.kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.kpi-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #212529;
+    margin-top: 2px;
+}
+
+.kpi-sub {
+    font-size: 0.78rem;
+    color: #10b981;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+/* ===== Chart Cards ===== */
+.chart-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    border-top: 3px solid #D4AF37;
+}
+
+.chart-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.chart-body {
+    padding: 20px;
+    position: relative;
+    min-height: 300px;
+}
+
+.chart-body-doughnut {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-body canvas {
+    max-height: 320px;
+}
+
+.chart-body-doughnut canvas {
+    max-height: 280px;
+    max-width: 280px;
+}
+
+/* ===== Status Dots ===== */
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.dot-warning { background: #ffc107; }
+.dot-primary { background: #0d6efd; }
+.dot-info { background: #0dcaf0; }
+.dot-success { background: #198754; }
+.dot-danger { background: #dc3545; }
+
+/* ===== Top Product Items ===== */
+.top-product-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.15s;
+}
+
+.top-product-item:last-child {
+    border-bottom: none;
+}
+
+.top-product-item:hover {
+    background: #f8f9fa;
+}
+
+.top-rank {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: #e9ecef;
+    color: #495057;
+}
+
+.top-rank.rank-gold {
+    background: linear-gradient(135deg, #D4AF37, #f0d060);
+    color: #fff;
+}
+
+/* ===== Gold accent text ===== */
+.gold-accent {
+    color: #D4AF37;
+}
+
+/* ===== Table ===== */
+.table-bordered {
+    border-color: #f0f0f0;
+}
+
+.table-bordered td {
+    padding: 12px 16px;
+    border-color: #f0f0f0;
+}
+
+/* ===== Print Styles ===== */
+@media print {
+    .sidebar, .admin-header, .btn {
+        display: none !important;
+    }
+    .main {
+        margin-left: 0 !important;
+        padding: 15px !important;
+    }
+    .chart-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd;
+    }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .kpi-value {
+        font-size: 1.1rem;
+    }
+    .chart-body {
+        min-height: 220px;
+    }
+    .chart-body-doughnut {
+        min-height: 220px;
+    }
+    .chart-body canvas {
+        max-height: 240px;
+    }
+}

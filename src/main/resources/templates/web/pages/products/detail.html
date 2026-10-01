@@ -99,6 +99,40 @@
             </div>
         </div>
     </div>
+    
+    <!-- Phần Sản Phẩm Gợi Ý -->
+    <div class="container my-5" th:if="${suggestedProducts != null && !suggestedProducts.empty}">
+        <h3 class="elegant-title fw-bold text-center mb-4 text-uppercase">Có Thể Bạn Sẽ Thích</h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+            <div class="col" th:each="p : ${suggestedProducts}">
+                <div class="card h-100 border-0 shadow-sm product-card">
+                    <!-- Ảnh sản phẩm -->
+                    <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none">
+                        <div class="position-relative overflow-hidden bg-light text-center p-3" style="height: 250px;">
+                            <img th:src="${p.mainImageUrl != null ? p.mainImageUrl : '/web/images/default-product.jpg'}" class="product-img img-fluid" style="object-fit: contain; max-height: 100%;" th:alt="${p.name}">
+                            <!-- Badge giảm giá -->
+                            <div class="position-absolute top-0 end-0 p-2" th:if="${p.discount != null && p.discount > 0}">
+                                <span class="badge bg-danger rounded-0">- [[${#numbers.formatDecimal(p.discount, 0, 'COMMA', 0, 'POINT')}]] ₫</span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Nội dung card -->
+                    <div class="card-body text-center d-flex flex-column">
+                        <p class="text-muted small mb-1 text-truncate" th:text="${p.brandName} + ' | ' + ${p.categoryName}"></p>
+                        <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
+                            <h6 class="card-title fw-bold mb-2 text-truncate" th:text="${p.name}"></h6>
+                        </a>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                                <span class="fw-bold gold-text fs-5" th:text="${p.discount != null && p.discount > 0 ? #numbers.formatDecimal(p.minPrice - p.discount, 0, 'COMMA', 0, 'POINT') + ' ₫' : #numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT') + ' ₫'}"></span>
+                                <small th:if="${p.discount != null && p.discount > 0}" class="text-muted text-decoration-line-through" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <script>

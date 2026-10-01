@@ -10,7 +10,7 @@
 
 <section class="home-section">
 
-    <!-- 1. Hero Slider (Dữ liệu lấy ĐỘNG từ DB) -->
+    <!-- 1. Hero Slider (Dynamic from DB) -->
     <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" th:if="${banners != null and !banners.empty}">
         <div class="carousel-indicators">
             <button th:each="banner, stat : ${banners}" type="button" data-bs-target="#heroCarousel" 
@@ -20,12 +20,15 @@
                     th:aria-label="'Slide ' + ${stat.count}"></button>
         </div>
         <div class="carousel-inner">
-            <div th:each="banner, stat : ${banners}" class="carousel-item" th:classappend="${stat.index == 0} ? 'active' : ''" data-bs-interval="4000">
+            <div th:each="banner, stat : ${banners}" class="carousel-item" th:classappend="${stat.index == 0} ? 'active' : ''" data-bs-interval="5000">
                 <img th:src="${banner.imageUrl}" class="d-block w-100" th:alt="${banner.title}">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5 class="gold-text" th:text="${banner.title}">Tiêu Đề</h5>
-                    <p th:if="${banner.description != null and !banner.description.isEmpty()}" th:text="${banner.description}">Miêu tả</p>
-                    <a th:if="${banner.link != null and !banner.link.isEmpty()}" th:href="${banner.link}" class="btn btn-gold mt-3">Khám Phá Ngay</a>
+                <div class="carousel-caption">
+                    <span class="hero-badge">✨ Khám Phá Ngay</span>
+                    <h1 class="hero-title elegant-title gold-text" th:text="${banner.title}">Tiêu Đề</h1>
+                    <p class="hero-subtitle" th:if="${banner.description != null and !banner.description.isEmpty()}" th:text="${banner.description}">Miêu tả</p>
+                    <a th:if="${banner.link != null and !banner.link.isEmpty()}" th:href="${banner.link}" class="btn btn-gold btn-lg hero-cta mt-3">
+                        Mua Ngay <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -39,7 +42,7 @@
         </button>
     </div>
     
-    <!-- Hero Slider (Fallback tĩnh khi không có banner nào trong DB) -->
+    <!-- Hero Slider (Static fallback) -->
     <div id="heroCarouselStatic" class="carousel slide carousel-fade" data-bs-ride="carousel" th:unless="${banners != null and !banners.empty}">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#heroCarouselStatic" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -47,13 +50,13 @@
             <button type="button" data-bs-target="#heroCarouselStatic" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
         <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="4000">
+            <div class="carousel-item active" data-bs-interval="5000">
                 <img th:src="@{/web/images/anh_slide1.jpg}" class="d-block w-100" alt="Slide 1">
             </div>
-            <div class="carousel-item" data-bs-interval="4000">
+            <div class="carousel-item" data-bs-interval="5000">
                 <img th:src="@{/web/images/anh_slide2.jpg}" class="d-block w-100" alt="Slide 2">
             </div>
-            <div class="carousel-item" data-bs-interval="4000">
+            <div class="carousel-item" data-bs-interval="5000">
                 <img th:src="@{/web/images/anh_slide3.jpg}" class="d-block w-100" alt="Slide 3">
             </div>
         </div>
@@ -67,25 +70,58 @@
         </button>
     </div>
 
-    <!-- 2. Category Section (Dữ liệu lấy ĐỘNG từ DB) -->
-    <div class="container mt-5 pt-4" th:if="${categories != null and !categories.empty}">
-        <div class="row text-center mb-4">
-            <h2 class="elegant-title fw-bold">Danh Mục Mùi Hương</h2>
+    <!-- USP Bar (Unique Selling Points) -->
+    <div class="usp-bar">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-6 col-md-3">
+                    <div class="usp-item">
+                        <i class="bi bi-patch-check-fill"></i>
+                        <span>100% Chính Hãng</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="usp-item">
+                        <i class="bi bi-truck"></i>
+                        <span>Giao Hàng Nhanh</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="usp-item">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <span>Đổi Trả 7 Ngày</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="usp-item">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Thanh Toán An Toàn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Category Section -->
+    <div class="container section-spacing" th:if="${categories != null and !categories.empty}">
+        <div class="section-header text-center">
+            <span class="section-tag">Khám Phá</span>
+            <h2 class="section-title elegant-title">Danh Mục Mùi Hương</h2>
             <div class="decorative-line mx-auto"></div>
         </div>
         <div class="row g-4 justify-content-center">
             <div th:each="cat, stat : ${categories}" class="col-md-4 col-sm-6">
                 <a th:href="@{/products(categoryId=${cat.id})}" class="text-decoration-none">
-                    <div class="category-card-pro position-relative rounded overflow-hidden shadow">
+                    <div class="category-card-pro position-relative rounded-4 overflow-hidden shadow">
                         <div class="category-card-bg" th:classappend="'category-bg-' + (${stat.index} % 3)"></div>
                         <div class="category-card-overlay"></div>
                         <div class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" style="z-index: 2;">
-                            <div class="category-icon mb-4">
+                            <div class="category-icon mb-3">
                                 <i class="bi bi-droplet-fill"></i>
                             </div>
-                            <h3 class="elegant-title text-white mb-2 fs-2" th:text="${cat.name}">Tên Danh Mục</h3>
-                            <div class="decorative-line mb-4" style="width: 40px; margin-top: 5px;"></div>
-                            <span class="category-explore-btn">Khám Phá <i class="bi bi-chevron-right ms-1" style="font-size: 0.75rem;"></i></span>
+                            <h3 class="elegant-title text-white mb-2 fs-3" th:text="${cat.name}">Tên Danh Mục</h3>
+                            <div class="decorative-line mb-3" style="width: 40px; margin-top: 5px;"></div>
+                            <span class="category-explore-btn">Khám Phá <i class="bi bi-arrow-right ms-1"></i></span>
                         </div>
                     </div>
                 </a>
@@ -93,16 +129,57 @@
         </div>
     </div>
 
-    <!-- 3. Brand Section (Dữ liệu lấy ĐỘNG từ DB) -->
-    <div class="container mt-5 pt-4" th:if="${brands != null and !brands.empty}">
-        <div class="row text-center mb-4">
-            <h2 class="elegant-title fw-bold">Thương Hiệu Nổi Bật</h2>
+    <!-- 3. Featured Products -->
+    <div class="bg-light-section">
+        <div class="container section-spacing">
+            <div class="section-header text-center">
+                <span class="section-tag">Bán Chạy</span>
+                <h2 class="section-title elegant-title">Sản Phẩm Nổi Bật</h2>
+                <div class="decorative-line mx-auto"></div>
+                <p class="section-desc">Những mùi hương được yêu thích nhất trong tháng</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-4 col-sm-6" th:each="p, stat : ${products}" th:if="${stat.index < 8}">
+                    <div class="card product-card border-0 shadow-sm h-100">
+                        <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
+                            <div class="position-relative overflow-hidden">
+                                <span th:if="${p.discount != null &amp;&amp; p.discount > 0}" class="product-badge">
+                                    <i class="bi bi-lightning-fill me-1"></i>GIẢM GIÁ
+                                </span>
+                                <img th:src="${p.mainImageUrl != null ? p.mainImageUrl : '/web/images/default-product.jpg'}" class="card-img-top product-img" th:alt="${p.name}">
+                                <div class="product-overlay">
+                                    <span class="btn btn-sm btn-gold rounded-pill">Xem Chi Tiết</span>
+                                </div>
+                            </div>
+                            <div class="card-body text-center d-flex flex-column">
+                                <p class="product-category mb-1" th:text="${p.categoryName}">Category</p>
+                                <h5 class="product-name" th:text="${p.name}">Product Name</h5>
+                                <p class="product-price gold-text fw-bold mt-auto" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Price</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a th:href="@{/products}" class="btn btn-gold btn-lg px-5 py-3 rounded-pill">
+                    Xem Tất Cả Sản Phẩm <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Brand Section -->
+    <div class="container section-spacing" th:if="${brands != null and !brands.empty}">
+        <div class="section-header text-center">
+            <span class="section-tag">Đối Tác</span>
+            <h2 class="section-title elegant-title">Thương Hiệu Nổi Bật</h2>
             <div class="decorative-line mx-auto"></div>
         </div>
         <div class="row g-4 align-items-center justify-content-center">
             <div th:each="brand : ${brands}" class="col-6 col-md-3 col-lg-2 text-center">
                 <a th:href="@{/products(brandId=${brand.id})}" class="text-decoration-none" th:title="${brand.name}">
-                    <div class="brand-card d-flex align-items-center justify-content-center bg-white border rounded">
+                    <div class="brand-card d-flex align-items-center justify-content-center">
                         <img th:if="${brand.logo != null and !brand.logo.empty}" th:src="${brand.logo}" th:alt="${brand.name}" class="img-fluid brand-logo-img">
                         <span th:if="${brand.logo == null or brand.logo.empty}" class="fw-bold text-dark text-uppercase" th:text="${brand.name}">Tên Brand</span>
                     </div>
@@ -111,73 +188,52 @@
         </div>
     </div>
 
-    <!-- 4. Featured Products Area (Mẫu sản phẩm tĩnh) -->
-    <div class="container mt-5 pt-5 mb-5">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="elegant-title fw-bold">Sản Phẩm Nổi Bật</h2>
-                <div class="decorative-line mx-auto"></div>
-                <p class="text-muted mt-3">Những mùi hương được yêu thích nhất trong tháng</p>
-            </div>
-            <div class="col-md-3 col-sm-6 mb-4" th:each="p, stat : ${products}" th:if="${stat.index < 8}">
-                <div class="card product-card border-0 shadow-sm h-100">
-                    <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
-                        <div class="position-relative">
-                            <span th:if="${p.discount != null && p.discount > 0}" class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1">GIẢM GIÁ</span>
-                            <img th:src="${p.mainImageUrl != null ? p.mainImageUrl : '/web/images/default-product.jpg'}" class="card-img-top" th:alt="${p.name}" style="height: 250px; object-fit: cover;">
-                        </div>
-                        <div class="card-body text-center d-flex flex-column">
-                            <h5 class="card-title mb-1" th:text="${p.name}">Product Name</h5>
-                            <p class="card-text text-muted small mb-2" th:text="${p.categoryName}">Category</p>
-                            <p class="price gold-text fw-bold mb-3 mt-auto" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Price</p>
-                            <a th:href="@{/products/{id}(id=${p.id})}" class="btn btn-outline-dark btn-sm w-100">Xem Chi Tiết</a>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-12 text-center mt-4">
-                <a th:href="@{/products}" class="btn btn-gold px-5 py-2">Xem Tất Cả Sản Phẩm <i class="bi bi-arrow-right ms-2"></i></a>
-            </div>
-        </div>
-    </div>
-
     <!-- 5. Brand Story Section -->
-    <div class="bg-black text-light py-5 mt-5">
+    <div class="brand-story-section">
         <div class="container py-5">
             <div class="row align-items-center">
                 <div class="col-md-6 mb-4 mb-md-0">
-                    <img th:src="@{/web/images/cauchuyen.jpg}" class="img-fluid rounded shadow" alt="Brand Story">
+                    <div class="story-image-wrapper">
+                        <img th:src="@{/web/images/cauchuyen.jpg}" class="img-fluid rounded-4 shadow-lg" alt="Brand Story">
+                        <div class="story-image-accent"></div>
+                    </div>
                 </div>
                 <div class="col-md-6 px-md-5">
-                    <h2 class="elegant-title gold-text mb-4">Câu Chuyện 2T&C</h2>
-                    <p class="lead fw-light mb-4" style="line-height: 1.8;">"Mỗi giọt hương là một câu chuyện, một cảm xúc và một kỷ niệm không thể xóa nhòa."</p>
-                    <p class="text-white mb-4" style="line-height: 1.8;">Được thành lập với niềm đam mê bất tận về thế giới mùi hương, 2T&C tự hào là điểm đến đẳng cấp cho những ai tìm kiếm sự tinh tế. Chúng tôi cam kết mang đến 100% sản phẩm chính hãng từ các thương hiệu danh tiếng nhất toàn cầu.</p>
-                    <a th:href="@{/about}" class="btn btn-outline-light px-4 py-2">Tìm Hiểu Thêm</a>
+                    <span class="section-tag mb-3 d-inline-block">Về Chúng Tôi</span>
+                    <h2 class="elegant-title gold-text mb-4 display-6">Câu Chuyện 2T&C</h2>
+                    <blockquote class="story-quote">
+                        "Mỗi giọt hương là một câu chuyện, một cảm xúc và một kỷ niệm không thể xóa nhòa."
+                    </blockquote>
+                    <p class="text-white-50 mb-4" style="line-height: 1.9;">Được thành lập với niềm đam mê bất tận về thế giới mùi hương, 2T&C tự hào là điểm đến đẳng cấp cho những ai tìm kiếm sự tinh tế. Chúng tôi cam kết mang đến 100% sản phẩm chính hãng từ các thương hiệu danh tiếng nhất toàn cầu.</p>
+                    <a th:href="@{/about}" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                        Tìm Hiểu Thêm <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 6. Newsletter / Login prompt -->
-    <div class="container my-5 py-5 text-center">
+    <!-- 6. CTA / Membership -->
+    <div class="container section-spacing">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div sec:authorize="isAnonymous()" class="p-5 bg-light rounded shadow-sm border-top border-gold border-3">
-                    <i class="bi bi-envelope-paper gold-text display-4 mb-3 d-block"></i>
-                    <h3 class="elegant-title mb-3">Tham Gia Thành Viên 2T&C</h3>
-                    <p class="text-muted mb-4">Đăng ký ngay để nhận thông tin về các bộ sưu tập mới và ưu đãi đặc quyền lên tới 20% cho đơn hàng đầu tiên.</p>
-                    <div class="d-flex justify-content-center gap-3">
-                        <a th:href="@{/auth/login}" class="btn btn-dark px-5">Đăng Nhập</a>
-                        <a th:href="@{/auth/register}" class="btn btn-gold px-5">Đăng Ký</a>
+            <div class="col-lg-8 col-md-10">
+                <div sec:authorize="isAnonymous()" class="cta-card text-center">
+                    <div class="cta-glow"></div>
+                    <i class="bi bi-gem gold-text display-4 mb-3 d-block"></i>
+                    <h3 class="elegant-title mb-3 fs-2">Tham Gia Thành Viên 2T&C</h3>
+                    <p class="text-muted mb-4 px-md-5">Đăng ký ngay để nhận thông tin về các bộ sưu tập mới và ưu đãi đặc quyền lên tới <strong class="gold-text">20%</strong> cho đơn hàng đầu tiên.</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a th:href="@{/auth/login}" class="btn btn-dark btn-lg px-5 rounded-pill">Đăng Nhập</a>
+                        <a th:href="@{/auth/register}" class="btn btn-gold btn-lg px-5 rounded-pill">Đăng Ký Ngay</a>
                     </div>
                 </div>
 
-                <div sec:authorize="isAuthenticated()" class="p-5 bg-light rounded shadow-sm border-top border-gold border-3">
+                <div sec:authorize="isAuthenticated()" class="cta-card text-center">
+                    <div class="cta-glow"></div>
                     <i class="bi bi-stars gold-text display-4 mb-3 d-block"></i>
-                    <h3 class="elegant-title mb-3">Chào mừng trở lại!</h3>
+                    <h3 class="elegant-title mb-3 fs-2">Chào mừng trở lại!</h3>
                     <p class="text-muted mb-4">Khám phá các ưu đãi đặc biệt dành riêng cho thành viên VIP của 2T&C ngày hôm nay.</p>
-                    <a th:href="@{/profile}" class="btn btn-dark px-5">Vào Trang Cá Nhân</a>
+                    <a th:href="@{/profile}" class="btn btn-dark btn-lg px-5 rounded-pill">Vào Trang Cá Nhân</a>
                 </div>
             </div>
         </div>

@@ -1,43 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="sidebar(activeMenu)" class="sidebar bg-black text-light d-flex flex-column">
-    <div class="sidebar-brand p-4 text-center border-bottom border-secondary">
+<div th:fragment="sidebar(activeMenu)" class="sidebar bg-black text-light d-flex flex-column" style="height: 100vh; overflow-y: auto;">
+    <div class="sidebar-brand p-4 text-center border-bottom border-secondary border-opacity-25">
         <h2 class="elegant-title gold-text mb-0 fs-3"><i class="bi bi-droplet-fill me-2"></i>2T&C</h2>
-        <span class="sidebar-management-label">MANAGEMENT</span>
+        <span class="sidebar-management-label text-secondary small fw-bold">MANAGEMENT</span>
     </div>
     
-    <div class="sidebar-menu flex-grow-1 p-3 mt-3">
-        <div class="mb-2 ps-3 sidebar-section-label">MENU CHÍNH</div>
-        <ul class="nav flex-column gap-2">
+    <div class="sidebar-menu flex-grow-1 p-3 mt-2">
+        
+        <!-- TỔNG QUAN -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">TỔNG QUAN</div>
+        <ul class="nav flex-column gap-2 mb-4">
             <li class="nav-item">
                 <a th:href="@{/admin/dashboard}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'dashboard' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-grid-1x2-fill me-2"></i> Tổng Quan
+                    <i class="bi bi-grid-1x2-fill me-2"></i> Bảng điều khiển
+                </a>
+            </li>
+        </ul>
+
+        <!-- HỆ THỐNG -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">HỆ THỐNG</div>
+        <ul class="nav flex-column gap-2 mb-4">
+            <li class="nav-item">
+                <a th:href="@{/admin/reports}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'reports' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-bar-chart-line-fill me-2"></i> Báo cáo thống kê
                 </a>
             </li>
             <li class="nav-item">
                 <a th:href="@{/admin/users}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'users' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-people-fill me-2"></i> Tài Khoản
+                    <i class="bi bi-people-fill me-2"></i> Tài khoản
                 </a>
             </li>
+        </ul>
+
+        <!-- QUẢN LÝ NỘI DUNG -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">QUẢN LÝ NỘI DUNG</div>
+        <ul class="nav flex-column gap-2 mb-4">
             <li class="nav-item">
                 <a th:href="@{/admin/products}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'products' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-box-seam-fill me-2"></i> Sản Phẩm
+                    <i class="bi bi-box-seam-fill me-2"></i> Sản phẩm
                 </a>
             </li>
             <li class="nav-item">
                 <a th:href="@{/admin/categories}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'categories' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-tags-fill me-2"></i> Danh Mục
+                    <i class="bi bi-folder-fill me-2"></i> Danh mục
                 </a>
             </li>
             <li class="nav-item">
                 <a th:href="@{/admin/brands}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'bands' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-award-fill me-2"></i> Thương Hiệu
-                </a>
-            </li>
-            <li class="nav-item">
-                <a th:href="@{/admin/orders}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'orders' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-cart-check-fill me-2"></i> Đơn Hàng
+                    <i class="bi bi-award-fill me-2"></i> Thương hiệu
                 </a>
             </li>
             <li class="nav-item">
@@ -46,28 +58,29 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/admin/vouchers}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'vouchers' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
-                    <i class="bi bi-ticket-perforated-fill me-2"></i> Mã Giảm Giá
+                <a th:href="@{/admin/products/featured}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'featured' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-fire me-2"></i> Sản phẩm nổi bật
                 </a>
             </li>
         </ul>
 
-        <div class="mb-2 ps-3 mt-4 sidebar-section-label">CỬA HÀNG</div>
-        <ul class="nav flex-column gap-2">
+        <!-- GIAO DỊCH -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">GIAO DỊCH</div>
+        <ul class="nav flex-column gap-2 mb-4">
             <li class="nav-item">
-                <a th:href="@{/}" class="nav-link text-light rounded px-3 py-2 hover-bg-dark" target="_blank">
-                    <i class="bi bi-globe me-2"></i> Xem Website
+                <a th:href="@{/admin/orders}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'orders' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-receipt me-2"></i> Đơn hàng
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/vouchers}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'vouchers' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-ticket-perforated-fill me-2"></i> Voucher
                 </a>
             </li>
         </ul>
-    </div>
-    
-    <div class="sidebar-logout p-3 border-top border-secondary">
-        <form th:action="@{/auth/logout}" method="post">
-            <button type="submit" class="btn btn-outline-gold w-100 rounded">
-                <i class="bi bi-box-arrow-right me-2"></i> Đăng Xuất
-            </button>
-        </form>
+
+
+
     </div>
 </div>
 </body>

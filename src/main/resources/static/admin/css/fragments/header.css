@@ -1,0 +1,22 @@
+.admin-header {
+    position: sticky;
+    top: 15px;
+    z-index: 1000;
+    background-color: #ffffff;
+    border-radius: 15px;
+    margin: 15px 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.header-right .btn {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.header-right .user-greeting {
+    font-size: 0.95rem;
+}
+
+body {
+    background-color: #f4f6f9; /* Nền xám nhạt để header trắng nổi bật */
+}

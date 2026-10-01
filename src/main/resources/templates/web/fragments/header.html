@@ -2,13 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-<header th:fragment="main-header" class="main-header sticky-top">
+<header th:fragment="main-header" class="main-header">
+
+    <!-- Top Info Bar -->
+    <div class="header-topbar d-none d-lg-block">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-4">
+                    <span><i class="bi bi-telephone-fill me-1"></i> 0986 384 205</span>
+                    <span><i class="bi bi-envelope-fill me-1"></i> tung19820052@gmail.com</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="https://www.facebook.com" class="topbar-social"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.instagram.com/" class="topbar-social"><i class="bi bi-instagram"></i></a>
+                    <a href="https://www.youtube.com/" class="topbar-social"><i class="bi bi-youtube"></i></a>
+                    <span class="topbar-divider"></span>
+                    <span><i class="bi bi-truck me-1"></i> Miễn phí vận chuyển đơn từ 500K</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Navbar -->
-    <nav class="navbar navbar-expand-xl navbar-dark bg-black py-3 border-bottom border-gold shadow-sm">
+    <nav class="navbar navbar-expand-xl navbar-dark sticky-top">
         <div class="container">
             <!-- Logo -->
-            <a class="navbar-brand elegant-title gold-text fw-bold fs-3" th:href="@{/}">
-                <i class="bi bi-droplet-fill me-2"></i>2T&C
+            <a class="navbar-brand elegant-title gold-text fw-bold" th:href="@{/}">
+                <i class="bi bi-droplet-fill me-2 logo-icon"></i><span class="logo-text">2T&C</span>
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
@@ -17,27 +37,50 @@
 
             <div class="collapse navbar-collapse" id="navbarMain">
                 <!-- Menu (Centered) -->
-                <ul class="navbar-nav mx-auto mb-2 mb-xl-0 text-uppercase fw-semibold fs-7">
+                <ul class="navbar-nav mx-auto mb-2 mb-xl-0 text-uppercase fw-semibold">
                     <li class="nav-item">
-                        <a class="nav-link px-3" th:href="@{/}">Trang chủ</a>
+                        <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1 d-xl-none"></i>Trang chủ</a>
+                    </li>
+
+                    <!-- Bộ Sưu Tập with Category Dropdown -->
+                    <li class="nav-item dropdown mega-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-grid me-1 d-xl-none"></i>Bộ Sưu Tập
+                        </a>
+                        <div class="dropdown-menu mega-menu">
+                            <div class="mega-menu-inner">
+                                <div class="mega-menu-section">
+                                    <h6 class="mega-menu-title"><i class="bi bi-grid-fill me-2"></i>Danh Mục</h6>
+                                    <a class="dropdown-item" th:href="@{/products}">
+                                        <i class="bi bi-collection me-2"></i>Tất cả sản phẩm
+                                    </a>
+                                    <a class="dropdown-item" th:each="cat : ${categories}"
+                                       th:href="@{/products(categoryId=${cat.id})}" th:text="${cat.name}">Tên Danh Mục</a>
+                                </div>
+                                <div class="mega-menu-section" th:if="${brands != null and !brands.empty}">
+                                    <h6 class="mega-menu-title"><i class="bi bi-star-fill me-2"></i>Thương Hiệu</h6>
+                                    <a class="dropdown-item" th:each="brand, stat : ${brands}" th:if="${stat.index < 6}"
+                                       th:href="@{/products(brandId=${brand.id})}" th:text="${brand.name}">Tên Brand</a>
+                                    <a class="dropdown-item see-all-link" th:href="@{/products}">Xem tất cả →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link promo-link" th:href="@{/promotions}"><i class="bi bi-tag-fill me-1"></i>Ưu Đãi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" th:href="@{/products}">Bộ Sưu Tập</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3 text-warning" th:href="@{/promotions}"><i class="bi bi-tag-fill me-1"></i>Ưu Đãi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3" th:href="@{/vouchers}"><i class="bi bi-ticket-perforated-fill me-1"></i>Voucher</a>
+                        <a class="nav-link" th:href="@{/vouchers}"><i class="bi bi-ticket-perforated-fill me-1"></i>Voucher</a>
                     </li>
                 </ul>
 
-                <!-- Right Section (Search & Auth) -->
-                <div class="d-flex align-items-center gap-3">
-                    <!-- Search Form -->
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3 header-actions">
+                    <!-- Search Form (Visible on all devices) -->
                     <form class="d-flex header-search m-0" th:action="@{/products}" method="get">
                         <div class="input-group input-group-sm">
-                            <input type="text" name="keyword" class="form-control bg-dark text-light border-secondary" placeholder="Tìm kiếm...">
+                            <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm...">
                             <button class="btn btn-gold" type="submit"><i class="bi bi-search"></i></button>
                         </div>
                     </form>
@@ -46,33 +89,43 @@
 
                     <!-- Cart -->
                     <a th:href="@{/cart}" class="btn btn-link text-white text-decoration-none p-0 position-relative cart-icon" title="Giỏ Hàng">
-                        <i class="bi bi-cart3 fs-4"></i>
+                        <i class="bi bi-bag fs-5"></i>
                     </a>
+
+                    <div class="header-divider d-none d-xl-block"></div>
 
                     <!-- Auth Section -->
                     <div class="auth-section d-flex align-items-center">
                         <div sec:authorize="isAnonymous()" class="d-flex align-items-center flex-nowrap gap-2">
-                            <a th:href="@{/auth/login}" class="text-white text-decoration-none fs-7 hover-gold text-nowrap">Đăng nhập</a>
-                            <a th:href="@{/auth/register}" class="btn btn-gold btn-sm rounded-pill px-3 fs-7 fw-bold text-nowrap">Đăng ký</a>
+                            <a th:href="@{/auth/login}" class="btn btn-outline-gold btn-sm rounded-pill px-3 text-nowrap">Đăng nhập</a>
+                            <a th:href="@{/auth/register}" class="btn btn-gold btn-sm rounded-pill px-3 fw-bold text-nowrap">Đăng ký</a>
                         </div>
 
                         <div sec:authorize="isAuthenticated()" class="dropdown">
-                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle p-0 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                                <img th:if="${globalUserProfile != null && globalUserProfile.avatarUrl != null && !globalUserProfile.avatarUrl.empty}" 
-                                     th:src="${globalUserProfile.avatarUrl}" 
-                                     class="header-avatar rounded-circle border border-gold shadow-sm">
-                                <i th:unless="${globalUserProfile != null && globalUserProfile.avatarUrl != null && !globalUserProfile.avatarUrl.empty}" 
-                                   class="bi bi-person-circle fs-4 gold-text"></i>
-                                <span sec:authentication="name" class="fw-semibold text-nowrap"></span>
+                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle p-0 d-flex align-items-center gap-2 user-btn" type="button" data-bs-toggle="dropdown">
+                                <div class="header-avatar-wrapper">
+                                    <img th:if="${globalUserProfile != null && globalUserProfile.avatarUrl != null && !globalUserProfile.avatarUrl.empty}" 
+                                         th:src="${globalUserProfile.avatarUrl}" 
+                                         class="header-avatar rounded-circle">
+                                    <i th:unless="${globalUserProfile != null && globalUserProfile.avatarUrl != null && !globalUserProfile.avatarUrl.empty}" 
+                                       class="bi bi-person-circle fs-4 gold-text"></i>
+                                </div>
+                                <span sec:authentication="name" class="fw-semibold text-nowrap d-none d-xl-inline"></span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark bg-black border-gold mt-2 shadow">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark user-dropdown mt-2 shadow-lg">
+                                <li class="dropdown-header">
+                                    <span class="gold-text fw-bold" sec:authentication="name">User</span>
+                                </li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
                                 <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Trang Cá Nhân</a></li>
                                 <li><a class="dropdown-item" th:href="@{/orders}"><i class="bi bi-bag me-2"></i>Đơn hàng</a></li>
-                                <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item gold-text" th:href="@{/admin}"><i class="bi bi-speedometer2 me-2"></i>Trang Quản Trị</a></li>
+                                <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item gold-text" th:href="@{/admin}"><i class="bi bi-shield-lock me-2"></i>Trang Quản Trị</a></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li>
                                     <form th:action="@{/auth/logout}" method="post" class="px-3 py-1 m-0">
-                                        <button type="submit" class="btn btn-outline-light btn-sm w-100 rounded-pill">Đăng xuất</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100 rounded-pill">
+                                            <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
+                                        </button>
                                     </form>
                                 </li>
                             </ul>
@@ -83,19 +136,7 @@
         </div>
     </nav>
 
-    <!-- Secondary Category Navbar -->
-    <div class="category-navbar border-bottom border-gold shadow-sm" th:if="${categories != null and !categories.empty}">
-        <div class="container">
-            <ul class="category-nav-list text-uppercase fw-bold">
-                <li class="nav-item">
-                    <a class="nav-link text-decoration-none gold-text" th:href="@{/products}"><i class="bi bi-grid-fill me-1"></i> Tất cả</a>
-                </li>
-                <li class="nav-item" th:each="cat : ${categories}">
-                    <a class="nav-link text-decoration-none" th:href="@{/products(categoryId=${cat.id})}" th:text="${cat.name}">Tên Danh Mục</a>
-                </li>
-            </ul>
-        </div>
-    </div>
 </header>
+
 </body>
 </html>

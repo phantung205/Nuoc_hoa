@@ -24,6 +24,10 @@ public class Product {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    /** Đánh dấu sản phẩm được admin đẩy lên nổi bật */
+    @Column(name = "is_featured")
+    private Boolean isFeatured = false;
+
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
@@ -71,6 +75,14 @@ public class Product {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Boolean getIsFeatured() {
+        return isFeatured;
+    }
+
+    public void setIsFeatured(Boolean isFeatured) {
+        this.isFeatured = isFeatured;
     }
 
     public Brand getBrand() {

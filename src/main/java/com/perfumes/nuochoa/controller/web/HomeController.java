@@ -3,6 +3,7 @@ package com.perfumes.nuochoa.controller.web;
 import com.perfumes.nuochoa.service.BrandService;
 import com.perfumes.nuochoa.service.CategoryService;
 import com.perfumes.nuochoa.service.ProductService;
+import com.perfumes.nuochoa.service.ProductViewService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,19 +17,24 @@ public class HomeController {
     private final BrandService brandService;
     private final ProductService productService;
     private final BannerService bannerService;
+    private final ProductViewService productViewService;
 
-    public HomeController(CategoryService categoryService, BrandService brandService, ProductService productService, BannerService bannerService) {
+    public HomeController(CategoryService categoryService, BrandService brandService,
+                          ProductService productService, BannerService bannerService,
+                          ProductViewService productViewService) {
         this.categoryService = categoryService;
         this.brandService = brandService;
         this.productService = productService;
         this.bannerService = bannerService;
+        this.productViewService = productViewService;
     }
 
     @GetMapping({"/", "/home"})
     public String homePage(Model model) {
         model.addAttribute("categories", categoryService.getActiveCategories());
         model.addAttribute("brands", brandService.getActiveBrands());
-        model.addAttribute("products", productService.getAllActiveProducts());
+        // Sản phẩm nổi bật: ưu tiên admin đẩy lên → rồi đến nhiều lượt xem nhất (tối đa 8)
+        model.addAttribute("products", productViewService.getTop8FeaturedProducts());
         model.addAttribute("banners", bannerService.getActiveBanners());
         return "web/index";
     }

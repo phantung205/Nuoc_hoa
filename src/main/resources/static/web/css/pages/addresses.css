@@ -1,2 +1,9 @@
 .profile-avatar { width: 150px; height: 150px; object-fit: cover; }
-
+.map-container { 
+    height: 250px; 
+    width: 100%; 
+    border-radius: 8px; 
+    margin-bottom: 15px; 
+    border: 1px solid #dee2e6; 
+    z-index: 1; 
+}

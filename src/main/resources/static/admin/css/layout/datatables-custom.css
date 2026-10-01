@@ -1,0 +1,73 @@
+/* Tùy chỉnh giao diện DataTables để không bị dính vào viền của .dashboard-card (do padding 0) */
+
+.dataTables_wrapper .row:first-child {
+    padding: 20px 24px 15px; /* Khoảng cách cho phần chọn số lượng và tìm kiếm */
+    align-items: center;
+}
+
+.dataTables_wrapper .row:last-child {
+    padding: 15px 24px 20px; /* Khoảng cách cho phần thông tin và phân trang */
+    align-items: center;
+    background-color: #f8f9fa; /* Màu nền nhẹ cho phần footer bảng */
+    border-top: 1px solid #dee2e6;
+    margin: 0;
+}
+
+.dataTables_wrapper .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Tùy chỉnh ô tìm kiếm và menu số lượng */
+.dataTables_length select {
+    border-radius: 6px;
+    padding: 4px 30px 4px 10px !important;
+    margin: 0 8px;
+    border: 1px solid #ced4da;
+}
+.dataTables_length select:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    outline: none;
+}
+
+.dataTables_filter input {
+    border-radius: 6px;
+    padding: 5px 12px;
+    border: 1px solid #ced4da;
+    margin-left: 10px;
+}
+.dataTables_filter input:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    outline: none;
+}
+
+/* Tùy chỉnh nút phân trang */
+.dataTables_paginate .pagination {
+    margin-bottom: 0;
+    justify-content: flex-end;
+}
+.dataTables_paginate .page-item.active .page-link {
+    background-color: #111;
+    border-color: #111;
+    color: #D4AF37;
+    font-weight: bold;
+}
+.dataTables_paginate .page-link {
+    color: #333;
+    border-radius: 4px;
+    margin: 0 3px;
+    border: 1px solid #dee2e6;
+}
+.dataTables_paginate .page-link:hover {
+    background-color: #f1f1f1;
+    color: #111;
+}
+
+/* Loại bỏ padding mặc định bị lỗi nếu có */
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}

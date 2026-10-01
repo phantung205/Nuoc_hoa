@@ -1,88 +1,278 @@
 <!DOCTYPE html>
-<!-- Gọi layout admin, truyền title, chữ 'dashboard' để làm sáng menu, và nội dung thẻ div.admin-content -->
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'dashboard', ~{::div.admin-content},~{::link},~{})}">
 <head>
-    <title>Admin Dashboard - Nước Hoa Shop</title>
+    <title>Bảng Điều Khiển - 2T&C Admin</title>
     <link rel="stylesheet" th:href="@{/admin/css/dashboard.css}">
 </head>
 <body>
 
-<!-- Khối div này sẽ được nhúng thẳng vào bên trong <div class="main"> của base.html -->
 <div class="admin-content">
+    <!-- Header -->
     <div class="dashboard-header mb-4">
-        <h2 class="fw-bold gold-accent">Tổng Quan Hệ Thống</h2>
-        <p class="text-muted">Quản lý cửa hàng nước hoa cao cấp của bạn</p>
+        <h2 class="fw-bold gold-accent"><i class="bi bi-speedometer2 me-2"></i>Bảng Điều Khiển</h2>
+        <p class="text-muted">Tổng quan hoạt động kinh doanh cửa hàng nước hoa 2T&C</p>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="dashboard-card shadow-sm">
-                <div class="card-icon">
-                    <!-- Placeholder SVG for Users -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </div>
-                <div class="card-info">
-                    <h3>TỔNG SỐ TÀI KHOẢN</h3>
-                    <div class="number gold-text" th:text="${totalUsers}">0</div>
-                </div>
-                <div class="card-action mt-3">
-                    <a th:href="@{/admin/users}" class="btn-link">Quản lý người dùng &rarr;</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="dashboard-card shadow-sm">
-                <div class="card-icon">
-                    <!-- Placeholder SVG for Products -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                </div>
-                <div class="card-info">
-                    <h3>SẢN PHẨM</h3>
-                    <div class="number gold-text">0</div>
-                </div>
-                <div class="card-action mt-3">
-                    <a th:href="@{/admin/products}" class="btn-link">Quản lý sản phẩm &rarr;</a>
+    <!-- ===== ROW 1: THỐNG KÊ HÔM NAY ===== -->
+    <div class="section-label mb-3">
+        <i class="bi bi-calendar-day me-1"></i> THỐNG KÊ HÔM NAY
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-revenue">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-gold">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Doanh thu hôm nay</span>
+                        <span class="stat-value" th:text="${#numbers.formatDecimal(revenueToday, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="dashboard-card shadow-sm">
-                <div class="card-icon">
-                    <!-- Placeholder SVG for Orders -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-orders">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-blue">
+                        <i class="bi bi-bag-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Đơn hàng mới</span>
+                        <span class="stat-value" th:text="${newOrdersToday}">0</span>
+                    </div>
                 </div>
-                <div class="card-info">
-                    <h3>ĐƠN HÀNG</h3>
-                    <div class="number gold-text">0</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-monthly">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-green">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Doanh thu tháng này</span>
+                        <span class="stat-value" th:text="${#numbers.formatDecimal(revenueThisMonth, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                    </div>
                 </div>
-                <div class="card-action mt-3">
-                    <a th:href="@{/admin/orders}" class="btn-link">Quản lý đơn hàng &rarr;</a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-users">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-purple">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Khách hàng mới</span>
+                        <span class="stat-value" th:text="${newUsersToday}">0</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Recent Activity Placeholder -->
-    <div class="row">
-        <div class="col-12">
+
+    <!-- ===== ROW 2: TỔNG QUAN HỆ THỐNG ===== -->
+    <div class="section-label mb-3">
+        <i class="bi bi-grid-3x3-gap me-1"></i> TỔNG QUAN HỆ THỐNG
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
             <div class="dashboard-card shadow-sm">
-                <h4 class="mb-4">Hoạt Động Gần Đây</h4>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="card-info-label">TỔNG DOANH THU</h3>
+                        <div class="number gold-text" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                    </div>
+                    <div class="card-icon-lg bg-gradient-gold">
+                        <i class="bi bi-currency-exchange"></i>
+                    </div>
+                </div>
+                <div class="card-footer-link">
+                    <a th:href="@{/admin/reports}" class="btn-link"><i class="bi bi-bar-chart me-1"></i>Xem báo cáo →</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="card-info-label">ĐƠN HÀNG</h3>
+                        <div class="number gold-text" th:text="${totalOrders}">0</div>
+                    </div>
+                    <div class="card-icon-lg bg-gradient-blue">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                </div>
+                <div class="card-footer-link">
+                    <span class="small text-muted">
+                        <span class="badge bg-warning text-dark" th:text="'Chờ: ' + ${pendingOrders}">Chờ: 0</span>
+                        <span class="badge bg-info text-dark" th:text="'Giao: ' + ${shippingOrders}">Giao: 0</span>
+                        <span class="badge bg-success" th:text="'Xong: ' + ${deliveredOrders}">Xong: 0</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="card-info-label">SẢN PHẨM</h3>
+                        <div class="number gold-text" th:text="${totalProducts}">0</div>
+                    </div>
+                    <div class="card-icon-lg bg-gradient-green">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                </div>
+                <div class="card-footer-link">
+                    <span class="small text-muted" th:text="'Đang bán: ' + ${activeProducts}">Đang bán: 0</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="dashboard-card shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="card-info-label">TÀI KHOẢN</h3>
+                        <div class="number gold-text" th:text="${totalUsers}">0</div>
+                    </div>
+                    <div class="card-icon-lg bg-gradient-purple">
+                        <i class="bi bi-people"></i>
+                    </div>
+                </div>
+                <div class="card-footer-link">
+                    <span class="small text-muted" th:text="'Hoạt động: ' + ${activeUsers}">Hoạt động: 0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 3: QUICK STATS ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="mini-card text-center shadow-sm">
+                <i class="bi bi-award-fill text-warning fs-3"></i>
+                <div class="fw-bold mt-1" th:text="${totalBrands}">0</div>
+                <small class="text-muted">Thương hiệu</small>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="mini-card text-center shadow-sm">
+                <i class="bi bi-folder-fill text-primary fs-3"></i>
+                <div class="fw-bold mt-1" th:text="${totalCategories}">0</div>
+                <small class="text-muted">Danh mục</small>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="mini-card text-center shadow-sm">
+                <i class="bi bi-ticket-perforated-fill text-success fs-3"></i>
+                <div class="fw-bold mt-1" th:text="${totalVouchers}">0</div>
+                <small class="text-muted">Voucher</small>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="mini-card text-center shadow-sm">
+                <i class="bi bi-hourglass-split text-warning fs-3"></i>
+                <div class="fw-bold mt-1" th:text="${pendingOrders}">0</div>
+                <small class="text-muted">Chờ xử lý</small>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="mini-card text-center shadow-sm">
+                <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                <div class="fw-bold mt-1" th:text="${confirmedOrders}">0</div>
+                <small class="text-muted">Đã xác nhận</small>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="mini-card text-center shadow-sm">
+                <i class="bi bi-x-circle-fill text-danger fs-3"></i>
+                <div class="fw-bold mt-1" th:text="${cancelledOrders}">0</div>
+                <small class="text-muted">Đã hủy</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 4: TOP SẢN PHẨM + ĐƠN HÀNG GẦN ĐÂY ===== -->
+    <div class="row g-4">
+        <!-- Top sản phẩm bán chạy -->
+        <div class="col-lg-5">
+            <div class="dashboard-card shadow-sm h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-fire me-2 text-danger"></i>Top Sản Phẩm Bán Chạy</h5>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-dark">
                             <tr>
-                                <th>Khách Hàng</th>
-                                <th>Hành Động</th>
-                                <th>Thời Gian</th>
-                                <th>Trạng Thái</th>
+                                <th class="ps-3">STT</th>
+                                <th>Sản phẩm</th>
+                                <th class="text-end pe-3">Đã bán</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr th:each="p, stat : ${topProducts}">
+                                <td class="ps-3">
+                                    <span th:if="${stat.count <= 3}" class="badge bg-warning text-dark" th:text="${stat.count}">1</span>
+                                    <span th:unless="${stat.count <= 3}" class="text-muted" th:text="${stat.count}">4</span>
+                                </td>
+                                <td class="fw-semibold" th:text="${p['name']}">Product</td>
+                                <td class="text-end pe-3">
+                                    <span class="badge bg-success bg-opacity-75 px-2 py-1" th:text="${p['quantity']}">0</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(topProducts)}">
+                                <td colspan="3" class="text-center text-muted py-4">Chưa có dữ liệu bán hàng</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đơn hàng gần đây -->
+        <div class="col-lg-7">
+            <div class="dashboard-card shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Đơn Hàng Gần Đây</h5>
+                    <a th:href="@{/admin/orders}" class="btn btn-sm btn-outline-secondary rounded-pill">Xem tất cả</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-dark">
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-4">Chưa có dữ liệu</td>
+                                <th class="ps-3">Mã</th>
+                                <th>Khách hàng</th>
+                                <th>Thanh toán</th>
+                                <th class="text-end">Tổng tiền</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-end pe-3">Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${recentOrders}">
+                                <td class="ps-3 fw-bold">#<span th:text="${order['id']}">1</span></td>
+                                <td th:text="${order['customerName']}">Khách</td>
+                                <td>
+                                    <span class="badge rounded-pill"
+                                          th:classappend="${order['payments'] == 'COD' ? 'bg-secondary' : 'bg-info text-dark'}"
+                                          th:text="${order['payments']}">COD</span>
+                                </td>
+                                <td class="text-end fw-semibold gold-text" th:text="${#numbers.formatDecimal(order['finalAmount'], 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill px-2 py-1"
+                                          th:classappend="${order['status'] == 'PENDING' ? 'bg-warning text-dark' : 
+                                                            order['status'] == 'CONFIRMED' ? 'bg-primary' :
+                                                            order['status'] == 'SHIPPING' ? 'bg-info text-dark' :
+                                                            order['status'] == 'DELIVERED' ? 'bg-success' : 'bg-danger'}"
+                                          th:text="${order['status'] == 'PENDING' ? 'Chờ xử lý' :
+                                                     order['status'] == 'CONFIRMED' ? 'Đã xác nhận' :
+                                                     order['status'] == 'SHIPPING' ? 'Đang giao' :
+                                                     order['status'] == 'DELIVERED' ? 'Đã giao' : 'Đã hủy'}">Status</span>
+                                </td>
+                                <td class="text-end pe-3 text-muted small" th:text="${order['createdAt']}">01/10/2026</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(recentOrders)}">
+                                <td colspan="6" class="text-center text-muted py-4">Chưa có đơn hàng nào</td>
                             </tr>
                         </tbody>
                     </table>

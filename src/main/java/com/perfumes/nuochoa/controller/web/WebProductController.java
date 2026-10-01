@@ -3,9 +3,13 @@ package com.perfumes.nuochoa.controller.web;
 import com.perfumes.nuochoa.dto.ProductResponseDTO;
 import com.perfumes.nuochoa.entity.Brand;
 import com.perfumes.nuochoa.entity.Category;
+import com.perfumes.nuochoa.security.CustomUserDetails;
 import com.perfumes.nuochoa.service.BrandService;
 import com.perfumes.nuochoa.service.CategoryService;
 import com.perfumes.nuochoa.service.ProductService;
+import com.perfumes.nuochoa.service.ProductViewService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +27,14 @@ public class WebProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final ProductViewService productViewService;
 
-    public WebProductController(ProductService productService, CategoryService categoryService, BrandService brandService) {
+    public WebProductController(ProductService productService, CategoryService categoryService,
+                                BrandService brandService, ProductViewService productViewService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.brandService = brandService;
+        this.productViewService = productViewService;
     }
 
 
@@ -88,7 +95,48 @@ public class WebProductController {
     @GetMapping("/{id}")
     public String productDetail(@PathVariable Long id, Model model) {
         ProductResponseDTO product = productService.getProductById(id);
+
+        // Ghi nhận lượt xem: Nếu user đã đăng nhập → cộng 1 điểm xem (mỗi user chỉ tính 1 lần)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            productViewService.recordView(userDetails.getUser().getId(), id);
+        }
+        
+        List<ProductResponseDTO> allProducts = productService.getAllActiveProducts();
+        
+        // Logic lấy sản phẩm gợi ý theo thứ tự ưu tiên: Cùng danh mục -> Cùng thương hiệu -> Giá bán gần nhất
+        java.util.Comparator<ProductResponseDTO> suggestionComparator = (p1, p2) -> {
+            // 1. Ưu tiên cùng thể loại (danh mục)
+            boolean p1SameCat = p1.getCategoryName() != null && p1.getCategoryName().equals(product.getCategoryName());
+            boolean p2SameCat = p2.getCategoryName() != null && p2.getCategoryName().equals(product.getCategoryName());
+            if (p1SameCat != p2SameCat) {
+                return p1SameCat ? -1 : 1;
+            }
+
+            // 2. Ưu tiên cùng thương hiệu
+            boolean p1SameBrand = p1.getBrandName() != null && p1.getBrandName().equals(product.getBrandName());
+            boolean p2SameBrand = p2.getBrandName() != null && p2.getBrandName().equals(product.getBrandName());
+            if (p1SameBrand != p2SameBrand) {
+                return p1SameBrand ? -1 : 1;
+            }
+
+            // 3. Gần giá bán nhất
+            Double currentPrice = product.getMinPrice() != null ? product.getMinPrice() : 0.0;
+            Double p1Price = p1.getMinPrice() != null ? p1.getMinPrice() : 0.0;
+            Double p2Price = p2.getMinPrice() != null ? p2.getMinPrice() : 0.0;
+            
+            return Double.compare(Math.abs(p1Price - currentPrice), Math.abs(p2Price - currentPrice));
+        };
+
+        List<ProductResponseDTO> suggestedProducts = allProducts.stream()
+                .filter(p -> !p.getId().equals(id))
+                .sorted(suggestionComparator)
+                .limit(4)
+                .collect(Collectors.toList());
+
         model.addAttribute("product", product);
+        model.addAttribute("suggestedProducts", suggestedProducts);
         return "web/pages/products/detail";
     }
 }
