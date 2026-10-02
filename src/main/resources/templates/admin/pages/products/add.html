@@ -25,7 +25,8 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Tên Sản Phẩm <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control bg-light" th:field="*{name}" required placeholder="Nhập tên sản phẩm...">
+                    <input type="text" class="form-control bg-light" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" th:field="*{name}" required placeholder="Nhập tên sản phẩm...">
+                    <div class="invalid-feedback fw-semibold" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Giảm Giá (VNĐ)</label>
@@ -35,18 +36,20 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Thương Hiệu</label>
-                    <select class="form-select bg-light" th:field="*{brandId}">
+                    <label class="form-label fw-bold">Thương Hiệu <span class="text-danger">*</span></label>
+                    <select class="form-select bg-light" th:classappend="${#fields.hasErrors('brandId')} ? 'is-invalid' : ''" th:field="*{brandId}" required>
                         <option value="">-- Chọn Thương Hiệu --</option>
                         <option th:each="b : ${brands}" th:value="${b.id}" th:text="${b.name}"></option>
                     </select>
+                    <div class="invalid-feedback fw-semibold" th:if="${#fields.hasErrors('brandId')}" th:errors="*{brandId}"></div>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Danh Mục</label>
-                    <select class="form-select bg-light" th:field="*{categoryId}">
+                    <label class="form-label fw-bold">Danh Mục <span class="text-danger">*</span></label>
+                    <select class="form-select bg-light" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''" th:field="*{categoryId}" required>
                         <option value="">-- Chọn Danh Mục --</option>
                         <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
                     </select>
+                    <div class="invalid-feedback fw-semibold" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
                 </div>
             </div>
 

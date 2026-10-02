@@ -67,9 +67,9 @@
                             <div class="d-flex flex-wrap gap-3">
                                 <th:block th:each="v, stat : ${product.variants}">
                                     <input type="radio" class="btn-check variant-radio" name="variantId" th:id="'variant_' + ${v.id}" th:value="${v.id}" th:checked="${stat.index == 0}" th:data-price="${v.price}" th:data-stock="${v.stock}">
-                                    <label class="btn btn-outline-dark px-4 py-2" th:for="'variant_' + ${v.id}">
-                                        <span class="fw-bold d-block" th:text="${#numbers.formatDecimal(v.volume, 0, 'COMMA', 0, 'POINT')} + ' ml'">100 ml</span>
-                                        <small class="text-muted" th:text="${v.concentration == 1 ? 'EDT' : (v.concentration == 2 ? 'EDP' : 'Parfum')}">EDP</small>
+                                    <label class="btn btn-outline-dark px-4 py-2 text-center" th:for="'variant_' + ${v.id}" style="min-width: 100px;">
+                                        <span class="fw-bold d-block fs-5 mb-1" th:text="${#numbers.formatDecimal(v.volume, 0, 'COMMA', 0, 'POINT')} + ' ml'">100 ml</span>
+                                        <span class="d-block fw-semibold" style="font-size: 0.85rem;" th:text="${v.concentration == 1 ? 'EDT' : (v.concentration == 2 ? 'EDP' : 'Parfum')}">EDP</span>
                                     </label>
                                 </th:block>
                             </div>

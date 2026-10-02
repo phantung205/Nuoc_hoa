@@ -25,12 +25,12 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb small">
                         <li class="breadcrumb-item"><a th:href="@{/}" class="gold-text">Trang chủ</a></li>
-                        <li class="breadcrumb-item active" th:text="${pageTitle != null ? pageTitle : 'Tất Cả Sản Phẩm'}">Sản phẩm</li>
+                        <li class="breadcrumb-item active">Bộ sưu tập</li>
                     </ol>
                 </nav>
-                <h2 class="elegant-title fw-bold" th:text="${pageTitle != null ? pageTitle : 'Tất Cả Sản Phẩm'}">Tất Cả Sản Phẩm</h2>
+                <h2 class="elegant-title fw-bold">Bộ Sưu Tập Nước Hoa</h2>
                 <div class="decorative-line"></div>
-                <p class="text-muted mt-2" th:text="${pageDescription != null ? pageDescription : 'Khám phá bộ sưu tập nước hoa cao cấp từ các thương hiệu hàng đầu thế giới'}"></p>
+                <p class="text-muted mt-2">Khám phá bộ sưu tập nước hoa cao cấp từ các thương hiệu hàng đầu thế giới. Tuyển chọn những mùi hương đặc biệt nhất dành riêng cho bạn.</p>
             </div>
         </div>
 
@@ -53,7 +53,7 @@
                             </label>
                             <div th:each="cat : ${categories}" th:if="${categories != null}">
                                 <label class="filter-checkbox">
-                                    <input type="radio" name="categoryFilter" th:value="${cat.name}" th:checked="${currentCategoryId != null && currentCategoryId == cat.id}"> 
+                                    <input type="radio" name="categoryFilter" th:value="${cat.name}" th:checked="${currentCategoryId != null && currentCategoryId.toString() == cat.id.toString()}"> 
                                     <span th:text="${cat.name}"></span>
                                 </label>
                             </div>
@@ -69,7 +69,7 @@
                             </label>
                             <div th:each="brand : ${brands}" th:if="${brands != null}">
                                 <label class="filter-checkbox">
-                                    <input type="radio" name="brandFilter" th:value="${brand.name}" th:checked="${currentBrandId != null && currentBrandId == brand.id}"> 
+                                    <input type="radio" name="brandFilter" th:value="${brand.name}" th:checked="${currentBrandId != null && currentBrandId.toString() == brand.id.toString()}"> 
                                     <span th:text="${brand.name}"></span>
                                 </label>
                             </div>

@@ -47,40 +47,27 @@ public class WebProductController {
 
         List<ProductResponseDTO> products = productService.getAllActiveProducts();
 
-        // Lọc theo category nếu có
+        // Chỉ set pageTitle và pageDescription, KHÔNG LỌC products ở backend
+        // để Javascript ở frontend có thể thực hiện lọc (khi bấm Tất cả sẽ hiện lại hết)
         if (categoryId != null) {
             Category category = categoryService.getCategoryById(categoryId);
             if (category != null) {
-                products = products.stream()
-                        .filter(p -> p.getCategoryName() != null && p.getCategoryName().equalsIgnoreCase(category.getName()))
-                        .collect(Collectors.toList());
                 model.addAttribute("pageTitle", "Danh Mục: " + category.getName());
                 model.addAttribute("pageDescription", "Tuyển chọn các dòng " + category.getName().toLowerCase() + " đặc biệt.");
             }
         }
 
-        // Lọc theo brand nếu có
         if (brandId != null) {
             Brand brand = brandService.getBrandById(brandId);
             if (brand != null) {
-                products = products.stream()
-                        .filter(p -> p.getBrandName() != null && p.getBrandName().equalsIgnoreCase(brand.getName()))
-                        .collect(Collectors.toList());
                 model.addAttribute("pageTitle", "Thương Hiệu: " + brand.getName());
                 model.addAttribute("pageDescription", "Khám phá các sản phẩm đẳng cấp từ " + brand.getName());
             }
         }
 
-        // Lọc theo keyword nếu có
         if (keyword != null && !keyword.trim().isEmpty()) {
-            String kw = keyword.trim().toLowerCase();
-            products = products.stream()
-                    .filter(p -> p.getName().toLowerCase().contains(kw)
-                            || (p.getBrandName() != null && p.getBrandName().toLowerCase().contains(kw))
-                            || (p.getCategoryName() != null && p.getCategoryName().toLowerCase().contains(kw)))
-                    .collect(Collectors.toList());
             model.addAttribute("pageTitle", "Kết quả tìm kiếm: \"" + keyword + "\"");
-            model.addAttribute("pageDescription", "Tìm thấy " + products.size() + " sản phẩm phù hợp.");
+            model.addAttribute("pageDescription", "Tìm thấy các sản phẩm phù hợp với từ khóa của bạn.");
         }
 
         model.addAttribute("products", products);

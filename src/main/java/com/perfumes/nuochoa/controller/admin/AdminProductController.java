@@ -8,6 +8,8 @@ import com.perfumes.nuochoa.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -36,7 +38,7 @@ public class AdminProductController {
     public String showCreateForm(Model model) {
         if (!model.containsAttribute("product")) {
             ProductRequestDTO requestDTO = new ProductRequestDTO();
-            // Mặc định tạo sẵn 1 biến thể trống trên Form cho người dùng nhập
+            // Máº·c Ä‘á»‹nh táº¡o sáºµn 1 biáº¿n thá»ƒ trá»‘ng trÃªn Form cho ngÆ°á»i dÃ¹ng nháº­p
             requestDTO.getVariants().add(new ProductVariantDTO());
             model.addAttribute("product", requestDTO);
         }
@@ -46,15 +48,24 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String createProduct(@ModelAttribute("product") ProductRequestDTO requestDTO,
+    public String createProduct(@Valid @ModelAttribute("product") ProductRequestDTO requestDTO,
+                                BindingResult bindingResult,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getActiveCategories());
+            model.addAttribute("brands", brandService.getActiveBrands());
+            return "admin/pages/products/add";
+        }
+        
         try {
             productService.createProduct(requestDTO);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm mới thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi thêm sản phẩm: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("product", requestDTO);
-            return "redirect:/admin/products/add";
+            model.addAttribute("errorMessage", "Lỗi khi thêm sản phẩm: " + e.getMessage());
+            model.addAttribute("categories", categoryService.getActiveCategories());
+            model.addAttribute("brands", brandService.getActiveBrands());
+            return "admin/pages/products/add";
         }
         return "redirect:/admin/products";
     }
@@ -62,8 +73,8 @@ public class AdminProductController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         if (!model.containsAttribute("product")) {
-            // Cần DTO để map lên form, hoặc dùng lại ProductRequestDTO
-            // Để đơn giản, ta sẽ gọi một hàm trong service để lấy ra ProductRequestDTO
+            // Cáº§n DTO Ä‘á»ƒ map lÃªn form, hoáº·c dÃ¹ng láº¡i ProductRequestDTO
+            // Äá»ƒ Ä‘Æ¡n giáº£n, ta sáº½ gá»i má»™t hÃ m trong service Ä‘á»ƒ láº¥y ra ProductRequestDTO
             ProductRequestDTO requestDTO = productService.getProductRequestDTOById(id);
             
             if (requestDTO.getVariants().isEmpty()) {
@@ -76,30 +87,39 @@ public class AdminProductController {
         return "admin/pages/products/edit";
     }
 
-    /** 5. Xử lý cập nhật sản phẩm */
+    /** 5. Xá»­ lÃ½ cáº­p nháº­t sáº£n pháº©m */
     @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
-                                @ModelAttribute("product") ProductRequestDTO requestDTO,
+                                @Valid @ModelAttribute("product") ProductRequestDTO requestDTO,
+                                BindingResult bindingResult,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getActiveCategories());
+            model.addAttribute("brands", brandService.getActiveBrands());
+            return "admin/pages/products/edit";
+        }
+
         try {
             productService.updateProduct(id, requestDTO);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật sản phẩm thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi cập nhật: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("product", requestDTO);
-            return "redirect:/admin/products/edit/" + id;
+            model.addAttribute("errorMessage", "Lỗi khi cập nhật sản phẩm: " + e.getMessage());
+            model.addAttribute("categories", categoryService.getActiveCategories());
+            model.addAttribute("brands", brandService.getActiveBrands());
+            return "admin/pages/products/edit";
         }
         return "redirect:/admin/products";
     }
 
-    /** 6. Xóa sản phẩm (Ẩn sản phẩm khỏi hệ thống) */
+    /** 6. XÃ³a sáº£n pháº©m (áº¨n sáº£n pháº©m khá»i há»‡ thá»‘ng) */
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             productService.deleteProduct(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa sản phẩm thành công!");
+            redirectAttributes.addFlashAttribute("successMessage", "ÄÃ£ xÃ³a sáº£n pháº©m thÃ nh cÃ´ng!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi xóa sản phẩm: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lá»—i khi xÃ³a sáº£n pháº©m: " + e.getMessage());
         }
         return "redirect:/admin/products";
     }

@@ -1,19 +1,27 @@
 package com.perfumes.nuochoa.dto;
 
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductRequestDTO {
     private Long id;
+    @NotBlank(message = "TÃªn sáº£n pháº©m khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+    @Size(max = 200, message = "TÃªn sáº£n pháº©m khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ 200 kÃ½ tá»±")
     private String name;
     private String description;
     private Double discount;
     private Boolean isActive = true;
+    @NotNull(message = "Vui lÃ²ng chá»n thÆ°Æ¡ng hiá»‡u")
     private Long brandId;
+    @NotNull(message = "Vui lÃ²ng chá»n danh má»¥c")
     private Long categoryId;
 
+    @Valid
+    @NotEmpty(message = "Phải có ít nhất một biến thể (Dung tích & Nồng độ)")
     private List<ProductVariantDTO> variants = new ArrayList<>();
 
 

@@ -2,12 +2,22 @@ package com.perfumes.nuochoa.dto;
 
 
 
+import jakarta.validation.constraints.*;
+
 public class ProductVariantDTO {
     private Long id;
+    @NotBlank(message = "SKU không được để trống")
+    @Size(max = 50, message = "SKU không được vượt quá 50 ký tự")
     private String sku;
+    @NotNull(message = "Vui lòng nhập dung tích")
+    @Min(value = 0, message = "Dung tích phải lớn hơn 0")
     private Double volume;
     private Double concentration;
+    @NotNull(message = "Vui lòng nhập giá")
+    @Min(value = 0, message = "Giá phải lớn hơn 0")
     private Double price;
+    @NotNull(message = "Vui lòng nhập tồn kho")
+    @Min(value = 0, message = "Tồn kho không được âm")
     private Integer stock;
 
 
