@@ -51,4 +51,22 @@ public class ProductResponseDTO {
 
     public List<String> getImageUrls() { return imageUrls; }
     public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
+
+    public String getVolumeList() {
+        if (variants == null) return "";
+        return variants.stream()
+                .filter(v -> v.getVolume() != null)
+                .map(v -> String.valueOf(v.getVolume()))
+                .distinct()
+                .collect(java.util.stream.Collectors.joining(","));
+    }
+
+    public String getConcentrationList() {
+        if (variants == null) return "";
+        return variants.stream()
+                .filter(v -> v.getConcentration() != null)
+                .map(v -> String.valueOf(v.getConcentration()))
+                .distinct()
+                .collect(java.util.stream.Collectors.joining(","));
+    }
 }

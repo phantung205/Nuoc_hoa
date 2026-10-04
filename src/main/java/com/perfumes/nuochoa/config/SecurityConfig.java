@@ -57,8 +57,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Tắt CSRF cho API chatbot và webhook SePay
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chat/**", "/api/webhook/**", "/webhook/**"))
+            // Tắt CSRF cho API chatbot, webhook SePay, wishlist và review
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chat/**", "/api/webhook/**", "/webhook/**", "/api/wishlist/**", "/api/reviews/**"))
 
             .authenticationProvider(authenticationProvider())
 
@@ -70,7 +70,7 @@ public class SecurityConfig {
 
                 // Trang công khai: trang chủ, sản phẩm, chatbot, webhook, đăng ký/đăng nhập
                 .requestMatchers("/", "/home", "/products/**", "/categories/**",
-                                 "/brands/**", "/api/chat/**", "/api/webhook/**", "/webhook/**", "/api/orders/status/**", "/auth/**").permitAll()
+                                 "/brands/**", "/api/chat/**", "/api/webhook/**", "/webhook/**", "/api/orders/status/**", "/auth/**", "/api/wishlist/**", "/api/reviews/**").permitAll()
 
                 // Trang Admin: chỉ tài khoản có quyền ADMIN
                 .requestMatchers("/admin/**").hasRole("ADMIN")

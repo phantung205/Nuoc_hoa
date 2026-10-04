@@ -4,6 +4,8 @@
       th:fragment="main-layout(title, extraCss, extraJs, content)">
     <head>
         <meta charset="UTF-8">
+        <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}"/>
         <!-- Tiêu đề sẽ thay đổi linh hoạt theo từng trang -->
         <title th:replace="${title}">Tên Mặc Định</title>
 

@@ -7,9 +7,12 @@
 
     <!-- Khung cửa sổ chat -->
     <div id="chat-popup" class="chat-container">
-        <div class="chat-header">
+        <div class="chat-header d-flex justify-content-between align-items-center">
             <span><i class="bi bi-stars me-2"></i> 2T&C AI</span>
-            <button class="close-btn" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
+            <div>
+                <button class="close-btn me-2" onclick="clearChat()" title="Xóa đoạn chat"><i class="bi bi-trash"></i></button>
+                <button class="close-btn" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
+            </div>
         </div>
         <div id="chat-logs" class="chat-logs"></div>
         <div class="chat-input-area">

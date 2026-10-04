@@ -1,13 +1,11 @@
 package com.perfumes.nuochoa.controller.web;
 
 import com.perfumes.nuochoa.dto.ProductResponseDTO;
+import com.perfumes.nuochoa.dto.ReviewDTO;
 import com.perfumes.nuochoa.entity.Brand;
 import com.perfumes.nuochoa.entity.Category;
 import com.perfumes.nuochoa.security.CustomUserDetails;
-import com.perfumes.nuochoa.service.BrandService;
-import com.perfumes.nuochoa.service.CategoryService;
-import com.perfumes.nuochoa.service.ProductService;
-import com.perfumes.nuochoa.service.ProductViewService;
+import com.perfumes.nuochoa.service.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,13 +26,18 @@ public class WebProductController {
     private final CategoryService categoryService;
     private final BrandService brandService;
     private final ProductViewService productViewService;
+    private final WishlistService wishlistService;
+    private final ReviewService reviewService;
 
     public WebProductController(ProductService productService, CategoryService categoryService,
-                                BrandService brandService, ProductViewService productViewService) {
+                                BrandService brandService, ProductViewService productViewService,
+                                WishlistService wishlistService, ReviewService reviewService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.brandService = brandService;
         this.productViewService = productViewService;
+        this.wishlistService = wishlistService;
+        this.reviewService = reviewService;
     }
 
 
@@ -85,11 +88,34 @@ public class WebProductController {
 
         // Ghi nhận lượt xem: Nếu user đã đăng nhập → cộng 1 điểm xem (mỗi user chỉ tính 1 lần)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long currentUserId = null;
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof CustomUserDetails) {
             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-            productViewService.recordView(userDetails.getUser().getId(), id);
+            currentUserId = userDetails.getUser().getId();
+            productViewService.recordView(currentUserId, id);
         }
-        
+
+        // ===== WISHLIST =====
+        boolean isWishlisted = false;
+        if (currentUserId != null) {
+            isWishlisted = wishlistService.isWishlisted(currentUserId, id);
+        }
+        long wishlistCount = wishlistService.countByProduct(id);
+        model.addAttribute("isWishlisted", isWishlisted);
+        model.addAttribute("wishlistCount", wishlistCount);
+
+        // ===== REVIEWS =====
+        List<ReviewDTO> reviews = reviewService.getApprovedReviewsByProduct(id);
+        Double averageRating = reviewService.getAverageRating(id);
+        long reviewCount = reviewService.getReviewCount(id);
+        boolean hasReviewed = currentUserId != null && reviewService.hasUserReviewed(currentUserId, id);
+
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("reviewCount", reviewCount);
+        model.addAttribute("hasReviewed", hasReviewed);
+
+        // ===== SẢN PHẨM GỢI Ý =====
         List<ProductResponseDTO> allProducts = productService.getAllActiveProducts();
         
         // Logic lấy sản phẩm gợi ý theo thứ tự ưu tiên: Cùng danh mục -> Cùng thương hiệu -> Giá bán gần nhất
