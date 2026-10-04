@@ -113,6 +113,17 @@ public class AdminProductController {
     }
 
     /** 6. XÃ³a sáº£n pháº©m (áº¨n sáº£n pháº©m khá»i há»‡ thá»‘ng) */
+    @GetMapping("/toggle/{id}")
+    public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            productService.toggleStatus(id);
+            redirectAttributes.addFlashAttribute("successMessage", "C?p nh?t tr?ng th�i s?n ph?m th�nh c�ng!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "L?i: " + e.getMessage());
+        }
+        return "redirect:/admin/products";
+    }
+
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

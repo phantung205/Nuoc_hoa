@@ -72,6 +72,7 @@ public class AdminController {
 
         // Đơn hàng theo trạng thái
         model.addAttribute("orderCountByStatus", dashboardService.getOrderCountByStatus());
+        model.addAttribute("revenueByStatus", dashboardService.getRevenueByStatus());
 
         // Sản phẩm theo danh mục
         model.addAttribute("productCountByCategory", dashboardService.getProductCountByCategory());

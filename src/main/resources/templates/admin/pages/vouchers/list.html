@@ -65,8 +65,9 @@
                         <span th:text="${v.usageCount}"></span> / <span th:text="${v.usageLimit != null ? v.usageLimit : '∞'}"></span>
                     </td>
                     <td>
-                        <span th:if="${v.isActive}" class="badge bg-success bg-opacity-75"><i class="bi bi-check-circle me-1"></i>Hoạt động</span>
-                        <span th:unless="${v.isActive}" class="badge bg-danger bg-opacity-75"><i class="bi bi-x-circle me-1"></i>Đã khóa</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" style="cursor: pointer;" th:checked="${v.isActive}" th:onchange="'window.location.href=\'/admin/vouchers/toggle/' + ${v.id} + '\''" title="Bật/tắt kích hoạt">
+                        </div>
                     </td>
                     <td class="text-end pe-4">
                         <a th:href="@{/admin/vouchers/edit/{id}(id=${v.id})}" class="btn btn-sm btn-outline-primary rounded-pill px-3">

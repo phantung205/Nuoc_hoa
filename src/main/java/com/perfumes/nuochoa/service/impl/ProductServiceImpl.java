@@ -281,6 +281,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    public void toggleStatus(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm có ID: " + id));
+        product.setIsActive(!product.getIsActive());
+        productRepository.save(product);
+    }
+
+    @Override
+    @Transactional
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm để xóa"));

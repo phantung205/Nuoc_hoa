@@ -15,11 +15,13 @@ public interface VoucherService {
     Voucher getVoucherById(Long id);
     Voucher createVoucher(Voucher voucher);
     Voucher updateVoucher(Long id, Voucher voucher);
+    void toggleStatus(Long id);
     void deleteVoucher(Long id);
 
     void claimVoucher(Long voucherId, String username);
     java.util.List<com.perfumes.nuochoa.entity.UserVoucher> getUserVouchers(Long userId);
 
 }
+
 
 

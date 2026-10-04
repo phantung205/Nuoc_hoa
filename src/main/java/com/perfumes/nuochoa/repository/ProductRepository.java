@@ -15,4 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     long countByIsActiveTrue();
     long countByCategoryId(Long categoryId);
+    List<Product> findByCategoryId(Long categoryId);
+    List<Product> findByBrandId(Long brandId);
+    long countByBrandId(Long brandId);
 }

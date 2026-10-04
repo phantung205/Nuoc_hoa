@@ -145,30 +145,40 @@
                 </div>
                 <div class="p-3">
                     <table class="table table-bordered mb-0">
-                        <tbody>
-                            <tr th:each="entry : ${orderCountByStatus}">
-                                <td class="fw-semibold">
-                                    <span class="status-dot"
-                                          th:classappend="${entry.key == 'PENDING' ? 'dot-warning' :
-                                                            entry.key == 'CONFIRMED' ? 'dot-primary' :
-                                                            entry.key == 'SHIPPING' ? 'dot-info' :
-                                                            entry.key == 'DELIVERED' ? 'dot-success' : 'dot-danger'}"></span>
-                                    <span th:text="${entry.key == 'PENDING' ? 'Chờ xử lý' :
-                                                     entry.key == 'CONFIRMED' ? 'Đã xác nhận' :
-                                                     entry.key == 'SHIPPING' ? 'Đang giao hàng' :
-                                                     entry.key == 'DELIVERED' ? 'Đã giao hàng' : 'Đã hủy'}">Status</span>
-                                </td>
-                                <td class="text-end">
-                                    <span class="badge rounded-pill fs-6 px-3"
-                                          th:classappend="${entry.key == 'PENDING' ? 'bg-warning text-dark' :
-                                                            entry.key == 'CONFIRMED' ? 'bg-primary' :
-                                                            entry.key == 'SHIPPING' ? 'bg-info text-dark' :
-                                                            entry.key == 'DELIVERED' ? 'bg-success' : 'bg-danger'}"
-                                          th:text="${entry.value}">0</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                          <thead class="table-light">
+                              <tr>
+                                  <th>Trạng Thái</th>
+                                  <th class="text-end">Doanh Thu</th>
+                                  <th class="text-center">Số Lượng</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr th:each="entry : ${orderCountByStatus}">
+                                  <td class="fw-semibold align-middle">
+                                      <span class="status-dot"
+                                            th:classappend="${entry.key == 'PENDING' ? 'dot-warning' :
+                                                              entry.key == 'CONFIRMED' ? 'dot-primary' :
+                                                              entry.key == 'SHIPPING' ? 'dot-info' :
+                                                              entry.key == 'DELIVERED' ? 'dot-success' : 'dot-danger'}"></span>
+                                      <span th:text="${entry.key == 'PENDING' ? 'Chờ xử lý' :
+                                                       entry.key == 'CONFIRMED' ? 'Đã xác nhận' :
+                                                       entry.key == 'SHIPPING' ? 'Đang giao hàng' :
+                                                       entry.key == 'DELIVERED' ? 'Đã giao hàng' : 'Đã hủy'}">Status</span>
+                                  </td>
+                                  <td class="text-end align-middle fw-bold text-success">
+                                      <span th:text="${#numbers.formatDecimal(revenueByStatus[entry.key], 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                  </td>
+                                  <td class="text-center align-middle">
+                                      <span class="badge rounded-pill px-3"
+                                            th:classappend="${entry.key == 'PENDING' ? 'bg-warning text-dark' :
+                                                              entry.key == 'CONFIRMED' ? 'bg-primary' :
+                                                              entry.key == 'SHIPPING' ? 'bg-info text-dark' :
+                                                              entry.key == 'DELIVERED' ? 'bg-success' : 'bg-danger'}"
+                                            th:text="${entry.value}">0</span>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
 
                     <div class="mt-4">
                         <h6 class="fw-bold text-muted mb-3"><i class="bi bi-bar-chart-steps me-1"></i> Top Sản Phẩm</h6>

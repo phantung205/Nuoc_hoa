@@ -155,6 +155,13 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     @Transactional
+    public void toggleStatus(Long id) {
+        Voucher voucher = getVoucherById(id);
+        voucher.setIsActive(!voucher.getIsActive());
+        voucherRepository.save(voucher);
+    }
+
+    @Override
     public void deleteVoucher(Long id) {
         if (!voucherRepository.existsById(id)) {
             throw new RuntimeException("Không tìm thấy voucher với ID: " + id);

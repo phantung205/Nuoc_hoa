@@ -77,6 +77,17 @@ public class AdminVoucherController {
         return "redirect:/admin/vouchers";
     }
 
+    @GetMapping("/toggle/{id}")
+    public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            voucherService.toggleStatus(id);
+            redirectAttributes.addFlashAttribute("successMessage", "C?p nh?t tr?ng thái voucher thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "L?i: " + e.getMessage());
+        }
+        return "redirect:/admin/vouchers";
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteVoucher(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -88,3 +99,4 @@ public class AdminVoucherController {
         return "redirect:/admin/vouchers";
     }
 }
+

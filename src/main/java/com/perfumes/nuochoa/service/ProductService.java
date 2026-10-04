@@ -12,5 +12,6 @@ public interface ProductService {
     ProductResponseDTO createProduct(ProductRequestDTO requestDTO);
     ProductRequestDTO getProductRequestDTOById(Long id);
     ProductResponseDTO updateProduct(Long id, ProductRequestDTO requestDTO);
+    void toggleStatus(Long id);
     void deleteProduct(Long id);
 }

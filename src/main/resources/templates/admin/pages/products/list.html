@@ -59,8 +59,9 @@
                     <td th:text="${p.brandName}">Brand</td>
                     <td class="fw-bold text-success" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">1,000,000 đ</td>
                     <td>
-                        <span th:if="${p.isActive}" class="badge bg-success bg-opacity-75"><i class="bi bi-check-circle me-1"></i>Đang hiện</span>
-                        <span th:unless="${p.isActive}" class="badge bg-secondary bg-opacity-75"><i class="bi bi-eye-slash-fill me-1"></i>Đang ẩn</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" style="cursor: pointer;" th:checked="${p.isActive}" th:onchange="'window.location.href=\'/admin/products/toggle/' + ${p.id} + '\''" title="Bật/tắt kích hoạt">
+                        </div>
                     </td>
                     <td class="text-end pe-4">
                         <a th:href="@{/admin/products/edit/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary rounded-pill px-3">

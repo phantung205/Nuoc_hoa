@@ -26,4 +26,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @org.springframework.data.jpa.repository.Query("SELECT SUM(o.finalAmount) FROM Order o WHERE o.status != 'CANCELLED' AND o.createdAt BETWEEN :start AND :end")
     Double getRevenueBetweenDates(@org.springframework.data.repository.query.Param("start") java.time.LocalDateTime start, @org.springframework.data.repository.query.Param("end") java.time.LocalDateTime end);
+    @org.springframework.data.jpa.repository.Query("SELECT SUM(o.finalAmount) FROM Order o WHERE o.status = :status")
+    Double getRevenueByStatus(@org.springframework.data.repository.query.Param("status") String status);
 }

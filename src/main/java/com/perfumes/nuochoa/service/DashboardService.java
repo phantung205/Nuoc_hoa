@@ -32,6 +32,7 @@ public interface DashboardService {
     List<Map<String, Object>> getRevenueByYear(int year);
     // Order count by status: returns map of status -> count
     Map<String, Long> getOrderCountByStatus();
+    Map<String, Double> getRevenueByStatus();
     // Product count by category: returns map of category_name -> count
     Map<String, Long> getProductCountByCategory();
     // Top selling products: returns list of [product_name, total_quantity_sold]

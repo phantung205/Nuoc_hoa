@@ -50,10 +50,9 @@
                     <td class="ps-4 fw-bold text-muted" th:text="${'#' + c.id}">#1</td>
                     <td class="fw-semibold" th:text="${c.name}">Category Name</td>
                     <td>
-                        <a th:href="@{/admin/categories/toggle/{id}(id=${c.id})}" class="text-decoration-none">
-                            <span th:if="${c.isActive}" class="badge bg-success bg-opacity-75"><i class="bi bi-check-circle me-1"></i>Đang hiện</span>
-                            <span th:unless="${c.isActive}" class="badge bg-secondary bg-opacity-75"><i class="bi bi-eye-slash-fill me-1"></i>Đang ẩn</span>
-                        </a>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" style="cursor: pointer;" th:checked="${c.isActive}" th:onchange="'window.location.href=\'/admin/categories/toggle/' + ${c.id} + '\''" title="Bật/tắt kích hoạt">
+                        </div>
                     </td>
                     <td class="text-end pe-4">
                         <a th:href="@{/admin/categories/edit/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary rounded-pill px-3">

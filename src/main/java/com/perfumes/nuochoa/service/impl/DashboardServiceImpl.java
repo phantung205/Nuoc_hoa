@@ -200,6 +200,17 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    public Map<String, Double> getRevenueByStatus() {
+        Map<String, Double> result = new LinkedHashMap<>();
+        String[] statuses = {"PENDING", "CONFIRMED", "SHIPPING", "DELIVERED", "CANCELLED"};
+        for (String status : statuses) {
+            Double rev = orderRepository.getRevenueByStatus(status);
+            result.put(status, rev != null ? rev : 0.0);
+        }
+        return result;
+    }
+
+    @Override
     public Map<String, Long> getProductCountByCategory() {
         Map<String, Long> result = new LinkedHashMap<>();
         List<Category> categories = categoryRepository.findAll();

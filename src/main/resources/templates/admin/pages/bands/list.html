@@ -56,10 +56,9 @@
                     <td class="fw-semibold" th:text="${b.name}">Brand Name</td>
                     <td th:text="${b.originCountry}">Quốc gia</td>
                     <td>
-                        <a th:href="@{/admin/brands/toggle/{id}(id=${b.id})}" class="text-decoration-none">
-                            <span th:if="${b.isActive}" class="badge bg-success bg-opacity-75"><i class="bi bi-check-circle me-1"></i>Đang hiện</span>
-                            <span th:unless="${b.isActive}" class="badge bg-secondary bg-opacity-75"><i class="bi bi-eye-slash-fill me-1"></i>Đang ẩn</span>
-                        </a>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" style="cursor: pointer;" th:checked="${b.isActive}" th:onchange="'window.location.href=\'/admin/brands/toggle/' + ${b.id} + '\''" title="Bật/tắt kích hoạt">
+                        </div>
                     </td>
                     <td class="text-end pe-4">
                         <a th:href="@{/admin/brands/edit/{id}(id=${b.id})}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
