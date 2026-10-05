@@ -119,30 +119,26 @@
             <!-- PHẦN ẢNH SẢN PHẨM -->
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2 mt-5">
                 <h5 class="fw-bold mb-0">Ảnh Sản Phẩm</h5>
-                <button type="button" class="btn btn-sm btn-outline-dark" onclick="addImage()">
-                    <i class="bi bi-plus-circle me-1"></i> Thêm Ảnh
-                </button>
             </div>
             
             <div class="alert alert-info py-2 alert-sm-text">
-                <i class="bi bi-info-circle-fill me-1"></i> Bắt buộc phải có ít nhất 1 ảnh. Chọn nút tròn để đặt làm ảnh đại diện.
+                <i class="bi bi-info-circle-fill me-1"></i> Bắt buộc phải có ảnh chính (đại diện). Bạn có thể chọn nhiều ảnh phụ bằng cách giữ phím Ctrl/Shift khi chọn (tùy chọn).
             </div>
 
             <div id="images-container">
-                <div class="image-item border rounded p-3 mb-3 bg-light position-relative">
-                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 image-remove-btn" onclick="removeImage(this)">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <label class="form-label fw-bold variant-label">Chọn file ảnh <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control form-control-sm" name="imageFiles" accept="image/*" required>
+                <div class="border rounded p-3 mb-3 bg-light">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold variant-label">Ảnh Chính (Đại diện) <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control form-control-sm" name="mainImageFile" accept="image/*" required>
+                            <small class="text-muted">Ảnh này sẽ hiển thị đầu tiên ở trang sản phẩm.</small>
                         </div>
-                        <div class="col-md-4 mt-3 mt-md-0">
-                            <div class="form-check mt-md-4">
-                                <input class="form-check-input primary-image-radio" type="radio" name="primaryImageIndex" value="0" checked>
-                                <label class="form-check-label fw-bold text-success">Ảnh Đại Diện</label>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold variant-label">Ảnh Phụ (Tùy chọn, chọn nhiều)</label>
+                            <input type="file" class="form-control form-control-sm" name="subImageFiles" accept="image/*" multiple>
+                            <small class="text-muted">Giữ Ctrl hoặc Shift để chọn nhiều ảnh phụ cùng lúc.</small>
                         </div>
                     </div>
                 </div>
@@ -222,62 +218,9 @@
         variantIndex = items.length;
     }
 
-    function updateImageIndices() {
-        const items = document.querySelectorAll('.image-item');
-        const removeBtns = document.querySelectorAll('.image-remove-btn');
-        
-        // Block deletion if only 1 item left
-        if (items.length <= 1) {
-            removeBtns.forEach(btn => btn.style.display = 'none');
-        } else {
-            removeBtns.forEach(btn => btn.style.display = 'block');
-        }
-        
-        // Update radio values sequentially
-        const radios = document.querySelectorAll('.primary-image-radio');
-        radios.forEach((radio, index) => {
-            radio.value = index;
-        });
-
-        // Ensure at least one is checked
-        if (!document.querySelector('.primary-image-radio:checked') && radios.length > 0) {
-            radios[0].checked = true;
-        }
-    }
-
-    function addImage() {
-        const container = document.getElementById('images-container');
-        const html = `
-            <div class="image-item border rounded p-3 mb-3 bg-light position-relative">
-                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 image-remove-btn" onclick="removeImage(this)">
-                    <i class="bi bi-trash"></i>
-                </button>
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <label class="form-label fw-bold variant-label">Chọn file ảnh <span class="text-danger">*</span></label>
-                        <input type="file" class="form-control form-control-sm" name="imageFiles" accept="image/*" required>
-                    </div>
-                    <div class="col-md-4 mt-3 mt-md-0">
-                        <div class="form-check mt-md-4">
-                            <input class="form-check-input primary-image-radio" type="radio" name="primaryImageIndex" value="0">
-                            <label class="form-check-label fw-bold text-success">Ảnh Đại Diện</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-        updateImageIndices();
-    }
-
-    function removeImage(btn) {
-        btn.closest('.image-item').remove();
-        updateImageIndices();
-    }
-
     // Call once on load
     document.addEventListener("DOMContentLoaded", function() {
-        updateImageIndices();
+        // Init variant logic if needed
     });
 </script>
 

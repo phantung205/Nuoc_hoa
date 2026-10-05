@@ -9,28 +9,29 @@ import java.util.List;
 
 public class ProductRequestDTO {
     private Long id;
-    @NotBlank(message = "TÃªn sáº£n pháº©m khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-    @Size(max = 200, message = "TÃªn sáº£n pháº©m khÃ´ng Ä‘Æ°á»£c vÆ°á»£t quÃ¡ 200 kÃ½ tá»±")
+    @NotBlank(message = "Tên sản phẩm không được để trống")
+    @Size(max = 200, message = "Tên sản phẩm không được vượt quá 200 ký tự")
     private String name;
     private String description;
     private Double discount;
     private Boolean isActive = true;
-    @NotNull(message = "Vui lÃ²ng chá»n thÆ°Æ¡ng hiá»‡u")
+    @NotNull(message = "Vui lòng chọn thương hiệu")
     private Long brandId;
-    @NotNull(message = "Vui lÃ²ng chá»n danh má»¥c")
+    @NotNull(message = "Vui lòng chọn danh mục")
     private Long categoryId;
 
     @Valid
     @NotEmpty(message = "Phải có ít nhất một biến thể (Dung tích & Nồng độ)")
     private List<ProductVariantDTO> variants = new ArrayList<>();
 
-
+    // Fields for Edit Page
     private List<MultipartFile> imageFiles = new ArrayList<>();
-
     private List<String> existingImageUrls = new ArrayList<>();
-
-
     private Integer primaryImageIndex = 0;
+
+    // Fields for Add Page
+    private MultipartFile mainImageFile;
+    private List<MultipartFile> subImageFiles = new ArrayList<>();
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -64,4 +65,10 @@ public class ProductRequestDTO {
 
     public Integer getPrimaryImageIndex() { return primaryImageIndex; }
     public void setPrimaryImageIndex(Integer primaryImageIndex) { this.primaryImageIndex = primaryImageIndex; }
+
+    public MultipartFile getMainImageFile() { return mainImageFile; }
+    public void setMainImageFile(MultipartFile mainImageFile) { this.mainImageFile = mainImageFile; }
+
+    public List<MultipartFile> getSubImageFiles() { return subImageFiles; }
+    public void setSubImageFiles(List<MultipartFile> subImageFiles) { this.subImageFiles = subImageFiles; }
 }

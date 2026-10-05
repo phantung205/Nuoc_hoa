@@ -102,20 +102,26 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        // 3. Xử lý lưu các file ảnh chung cho toàn bộ sản phẩm
-        if (requestDTO.getImageFiles() != null && !requestDTO.getImageFiles().isEmpty()) {
-            List<MultipartFile> files = requestDTO.getImageFiles();
-            for (int i = 0; i < files.size(); i++) {
-                MultipartFile file = files.get(i);
-                if (!file.isEmpty()) {
+        // 3. Xử lý ảnh chính (Main Image)
+        if (requestDTO.getMainImageFile() != null && !requestDTO.getMainImageFile().isEmpty()) {
+            String fileName = saveProductImageFile(requestDTO.getMainImageFile());
+            ProductImage mainImage = new ProductImage();
+            mainImage.setImageUrl("/uploads/products/" + fileName);
+            mainImage.setProduct(savedProduct);
+            mainImage.setIsPrimary(true);
+            imageRepository.save(mainImage);
+        }
+
+        // 4. Xử lý ảnh phụ (Sub Images)
+        if (requestDTO.getSubImageFiles() != null && !requestDTO.getSubImageFiles().isEmpty()) {
+            for (MultipartFile file : requestDTO.getSubImageFiles()) {
+                if (file != null && !file.isEmpty()) {
                     String fileName = saveProductImageFile(file);
-
-                    ProductImage image = new ProductImage();
-                    image.setImageUrl("/uploads/products/" + fileName);
-                    image.setProduct(savedProduct);
-                    image.setIsPrimary(i == requestDTO.getPrimaryImageIndex());
-
-                    imageRepository.save(image);
+                    ProductImage subImage = new ProductImage();
+                    subImage.setImageUrl("/uploads/products/" + fileName);
+                    subImage.setProduct(savedProduct);
+                    subImage.setIsPrimary(false);
+                    imageRepository.save(subImage);
                 }
             }
         }
@@ -134,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setDescription(product.getDescription());
         dto.setDiscount(product.getDiscount());
         dto.setIsActive(product.getIsActive());
-
+        
         if (product.getBrand() != null) {
             dto.setBrandId(product.getBrand().getId());
         }
