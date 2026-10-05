@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
@@ -125,6 +125,7 @@
                                 <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Trang Cá Nhân</a></li>
                                 <li><a class="dropdown-item" th:href="@{/orders}"><i class="bi bi-bag me-2"></i>Đơn hàng</a></li>
                                 <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item gold-text" th:href="@{/admin}"><i class="bi bi-shield-lock me-2"></i>Trang Quản Trị</a></li>
+                                <li sec:authorize="hasRole('STAFF')"><a class="dropdown-item gold-text" th:href="@{/staff}"><i class="bi bi-person-workspace me-2"></i>Trang Quản Lý</a></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li>
                                     <form th:action="@{/auth/logout}" method="post" class="px-3 py-1 m-0">

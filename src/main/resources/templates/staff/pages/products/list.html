@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{staff/layout/base :: staff-layout(~{::title}, 'products', ~{::div.admin-content}, ~{::link}, ~{})}">
+<head>
+    <title>Quản Lý Sản Phẩm - 2T&C Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/css/pages/products/list.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold gold-accent mb-1">Quản Lý Sản Phẩm</h2>
+            <p class="text-muted mb-0">
+                Danh sách các sản phẩm nước hoa
+                <span class="badge bg-gold text-dark ms-2 fw-medium" th:text="'Tổng cộng: ' + ${#lists.size(products)} + ' sản phẩm'">Tổng cộng: 0 sản phẩm</span>
+            </p>
+        </div>
+        <a href="/staff/products/add" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Thêm Sản Phẩm</a>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="dashboard-card shadow-sm p-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 datatable">
+                <thead class="table-dark">
+                <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Ảnh</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Danh Mục</th>
+                    <th>Thương Hiệu</th>
+                    <th>Giá Thấp Nhất</th>
+                    <th>Trạng Thái</th>
+                    <th class="text-end pe-4">Hành Động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${products}">
+                    <td class="ps-4 fw-bold text-muted" th:text="${'#' + p.id}">#1</td>
+                    <td>
+                        <img th:if="${p.mainImageUrl != null}" th:src="${p.mainImageUrl}" alt="Ảnh SP" class="img-thumbnail admin-product-thumb-table">
+                        <span th:unless="${p.mainImageUrl != null}" class="text-muted fst-italic">Không có ảnh</span>
+                    </td>
+                    <td class="fw-semibold" th:text="${p.name}">Product Name</td>
+                    <td th:text="${p.categoryName}">Category</td>
+                    <td th:text="${p.brandName}">Brand</td>
+                    <td class="fw-bold text-success" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">1,000,000 đ</td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" style="cursor: pointer;" th:checked="${p.isActive}" th:onchange="'window.location.href=\'/admin/products/toggle/' + ${p.id} + '\''" title="Bật/tắt kích hoạt">
+                        </div>
+                    </td>
+                    <td class="text-end pe-4">
+                        <a th:href="@{/staff/products/edit/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form th:action="@{/staff/products/delete/{id}(id=${p.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này sẽ làm ẩn sản phẩm khỏi hệ thống.')">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="8" class="text-center py-5 text-muted">Không có dữ liệu sản phẩm.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+

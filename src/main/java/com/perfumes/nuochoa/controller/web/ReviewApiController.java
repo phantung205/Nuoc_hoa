@@ -1,4 +1,4 @@
-package com.perfumes.nuochoa.controller.api;
+package com.perfumes.nuochoa.controller.web;
 
 import com.perfumes.nuochoa.security.CustomUserDetails;
 import com.perfumes.nuochoa.service.ReviewService;
@@ -30,7 +30,7 @@ public class ReviewApiController {
 
         if (currentUser == null) {
             response.put("success", false);
-            response.put("message", "Vui lòng đăng nhập để đánh giá");
+            response.put("message", "Vui lÃ²ng Ä‘Äƒng nháº­p Ä‘á»ƒ Ä‘Ã¡nh giÃ¡");
             return ResponseEntity.status(401).body(response);
         }
 
@@ -38,7 +38,7 @@ public class ReviewApiController {
             Long userId = currentUser.getUser().getId();
             reviewService.addReview(userId, productId, rating, comment);
             response.put("success", true);
-            response.put("message", "Đánh giá của bạn đã được gửi thành công!");
+            response.put("message", "ÄÃ¡nh giÃ¡ cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c gá»­i thÃ nh cÃ´ng!");
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             response.put("success", false);
@@ -47,3 +47,4 @@ public class ReviewApiController {
         }
     }
 }
+

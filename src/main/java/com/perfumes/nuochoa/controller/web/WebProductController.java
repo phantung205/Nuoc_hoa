@@ -109,11 +109,13 @@ public class WebProductController {
         Double averageRating = reviewService.getAverageRating(id);
         long reviewCount = reviewService.getReviewCount(id);
         boolean hasReviewed = currentUserId != null && reviewService.hasUserReviewed(currentUserId, id);
+        boolean hasPurchased = currentUserId != null && reviewService.hasUserPurchasedProduct(currentUserId, id);
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("hasReviewed", hasReviewed);
+        model.addAttribute("hasPurchased", hasPurchased);
 
         // ===== SẢN PHẨM GỢI Ý =====
         List<ProductResponseDTO> allProducts = productService.getAllActiveProducts();

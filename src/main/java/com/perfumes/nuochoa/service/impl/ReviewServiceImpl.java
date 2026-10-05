@@ -17,20 +17,26 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final UserProfileRepository userProfileRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
     public ReviewServiceImpl(ProductReviewRepository reviewRepository,
                              UserRepository userRepository,
                              ProductRepository productRepository,
-                             UserProfileRepository userProfileRepository) {
+                             UserProfileRepository userProfileRepository,
+                             OrderDetailRepository orderDetailRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.userProfileRepository = userProfileRepository;
+        this.orderDetailRepository = orderDetailRepository;
     }
 
     @Override
     @Transactional
     public ReviewDTO addReview(Long userId, Long productId, Integer rating, String comment) {
+        if (!orderDetailRepository.existsByUserIdAndProductId(userId, productId)) {
+            throw new RuntimeException("Bạn cần mua sản phẩm này trước khi đánh giá");
+        }
         if (reviewRepository.existsByUserIdAndProductId(userId, productId)) {
             throw new RuntimeException("Bạn đã đánh giá sản phẩm này rồi");
         }
@@ -96,6 +102,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
+    }
+
+    @Override
+    public boolean hasUserPurchasedProduct(Long userId, Long productId) {
+        return orderDetailRepository.existsByUserIdAndProductId(userId, productId);
     }
 
     private ReviewDTO mapToDTO(ProductReview review) {

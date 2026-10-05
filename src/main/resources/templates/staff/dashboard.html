@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{staff/layout/base :: staff-layout(~{::title}, 'dashboard', ~{::div.admin-content},~{::link},~{})}">
+<head>
+    <title>Bảng Điều Khiển - 2T&C Staff</title>
+    <link rel="stylesheet" th:href="@{/admin/css/dashboard.css}">
+</head>
+<body>
+
+<div class="admin-content">
+    <!-- Header -->
+    <div class="dashboard-header mb-4">
+        <h2 class="fw-bold gold-accent"><i class="bi bi-speedometer2 me-2"></i>Tổng quan Staff</h2>
+        <p class="text-muted">Tổng quan hệ thống dành cho nhân viên</p>
+    </div>
+
+    <!-- ===== ROW 1: TỔNG QUAN ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-orders">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-blue">
+                        <i class="bi bi-bag-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Đơn hàng mới hôm nay</span>
+                        <span class="stat-value" th:text="${newOrdersToday}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-users">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-purple">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Tổng sản phẩm</span>
+                        <span class="stat-value" th:text="${totalProducts}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-card-monthly">
+                <div class="stat-card-body">
+                    <div class="stat-icon bg-gradient-green">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Đơn hàng tháng này</span>
+                        <span class="stat-value" th:text="${newOrdersThisMonth}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ROW 2: TRẠNG THÁI ĐƠN HÀNG ===== -->
+    <div class="section-label mb-3">
+        <i class="bi bi-box-seam me-1"></i> TRẠNG THÁI ĐƠN HÀNG
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="dashboard-card border-left-warning shadow-sm py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Chờ xác nhận</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${pendingOrders}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="dashboard-card border-left-info shadow-sm py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Đã xác nhận</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${confirmedOrders}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="dashboard-card border-left-primary shadow-sm py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Đang giao</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${shippingOrders}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="dashboard-card border-left-success shadow-sm py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đã giao</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${deliveredOrders}">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

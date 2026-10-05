@@ -236,9 +236,9 @@
 
                         <!-- Danh sách + Form đánh giá -->
                         <div class="col-md-8">
-                            <!-- Form viết đánh giá (chỉ hiện khi đăng nhập và chưa đánh giá) -->
+                            <!-- Form viết đánh giá (chỉ hiện khi đăng nhập, đã mua và chưa đánh giá) -->
                             <div sec:authorize="isAuthenticated()">
-                                <div th:if="${!hasReviewed}" class="review-form-container mb-4">
+                                <div th:if="${hasPurchased and !hasReviewed}" class="review-form-container mb-4">
                                     <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square me-2"></i>Viết Đánh Giá</h6>
                                     <form id="reviewForm">
                                         <input type="hidden" name="productId" th:value="${product.id}">
@@ -263,6 +263,9 @@
                                 </div>
                                 <div th:if="${hasReviewed}" class="alert alert-success rounded-3 mb-4">
                                     <i class="bi bi-check-circle me-2"></i>Bạn đã đánh giá sản phẩm này. Cảm ơn bạn!
+                                </div>
+                                <div th:if="${!hasPurchased and !hasReviewed}" class="alert alert-light border rounded-3 mb-4 text-center">
+                                    <i class="bi bi-bag-x me-2"></i>Bạn cần mua sản phẩm này trước khi có thể viết đánh giá.
                                 </div>
                             </div>
 

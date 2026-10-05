@@ -74,6 +74,7 @@ public class SecurityConfig {
 
                 // Trang Admin: chỉ tài khoản có quyền ADMIN
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/staff/**").hasAnyRole("ADMIN", "STAFF")
 
                 // Tất cả còn lại (giỏ hàng, thanh toán, hồ sơ...): phải đăng nhập
                 .anyRequest().authenticated()

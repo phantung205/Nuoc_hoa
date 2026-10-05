@@ -13,4 +13,5 @@ public interface ReviewService {
     boolean hasUserReviewed(Long userId, Long productId);
     void toggleApproval(Long reviewId);
     void deleteReview(Long reviewId);
+    boolean hasUserPurchasedProduct(Long userId, Long productId);
 }

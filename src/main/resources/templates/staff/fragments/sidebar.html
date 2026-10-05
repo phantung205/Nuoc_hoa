@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar(activeMenu)" class="sidebar bg-black text-light d-flex flex-column" style="height: 100vh; overflow-y: auto;">
+    <div class="sidebar-brand p-4 text-center border-bottom border-secondary border-opacity-25">
+        <h2 class="elegant-title gold-text mb-0 fs-3"><i class="bi bi-droplet-fill me-2"></i>2T&C</h2>
+        <span class="sidebar-STAFF-label text-secondary small fw-bold">STAFF</span>
+    </div>
+    
+    <div class="sidebar-menu flex-grow-1 p-3 mt-2">
+        
+        <!-- TỔNG QUAN -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">TỔNG QUAN</div>
+        <ul class="nav flex-column gap-2 mb-4">
+            <li class="nav-item">
+                <a th:href="@{/staff/dashboard}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'dashboard' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-grid-1x2-fill me-2"></i> Bảng điều khiển
+                </a>
+            </li>
+        </ul>
+
+        
+
+        <!-- QUẢN LÝ NỘI DUNG -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">QUẢN LÝ NỘI DUNG</div>
+        <ul class="nav flex-column gap-2 mb-4">
+            <li class="nav-item">
+                <a th:href="@{/staff/products}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'products' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-box-seam-fill me-2"></i> Sản phẩm
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/staff/categories}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'categories' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-folder-fill me-2"></i> Danh mục
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/staff/brands}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'bands' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-award-fill me-2"></i> Thương hiệu
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/staff/banners}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'banners' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-images me-2"></i> Banner
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/staff/products/featured}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'featured' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-fire me-2"></i> Sản phẩm nổi bật
+                </a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/staff/reviews}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'reviews' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-chat-square-text-fill me-2"></i> Đánh giá
+                </a>
+            </li>
+        </ul>
+
+        <!-- GIAO DỊCH -->
+        <div class="mb-2 ps-3 sidebar-section-label text-secondary small fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">GIAO DỊCH</div>
+        <ul class="nav flex-column gap-2 mb-4">
+            <li class="nav-item">
+                <a th:href="@{/staff/orders}" class="nav-link text-light rounded px-3 py-2" th:classappend="${activeMenu == 'orders' ? 'active-menu bg-gold text-dark fw-bold' : 'hover-bg-dark'}">
+                    <i class="bi bi-receipt me-2"></i> Đơn hàng
+                </a>
+            </li>
+            
+        </ul>
+
+
+
+    </div>
+</div>
+</body>
+</html>
+
+
+

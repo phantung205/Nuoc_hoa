@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'users', ~{::div.admin-content}, ~{::link}, ~{})}">
 <head>
@@ -54,6 +54,7 @@
                     <td>
                         <span th:if="${u.role != null && u.role.name == 'ADMIN'}" class="badge bg-danger">ADMIN</span>
                         <span th:if="${u.role != null && u.role.name == 'USER'}" class="badge bg-secondary">USER</span>
+                        <span th:if="${u.role != null && u.role.name == 'STAFF'}" class="badge bg-warning text-dark">STAFF</span>
                     </td>
                     <td>
                         <span th:if="${u.status == 'ACTIVE'}" class="badge bg-success bg-opacity-75"><i class="bi bi-check-circle me-1"></i>Hoạt động</span>
@@ -82,3 +83,4 @@
 
 </body>
 </html>
+

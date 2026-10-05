@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'users', ~{::div.admin-content}, ~{::link}, ~{})}">
 <head>
@@ -91,6 +91,7 @@
                     <select class="form-select bg-light" th:field="*{role}">
                         <option value="USER">Khách Hàng (USER)</option>
                         <option value="ADMIN">Quản Trị Viên (ADMIN)</option>
+                        <option value="STAFF">Nhân Viên (STAFF)</option>
                     </select>
                 </div>
                 <div class="col-md-6 mt-3 mt-md-0">
