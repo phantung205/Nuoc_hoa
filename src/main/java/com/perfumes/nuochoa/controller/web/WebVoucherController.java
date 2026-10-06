@@ -68,12 +68,12 @@ public class WebVoucherController {
                                @AuthenticationPrincipal CustomUserDetails currentUser,
                                RedirectAttributes redirectAttributes) {
         if (currentUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Vui long dang nhap de nhan voucher!");
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng nhập để nhận voucher!");
             return "redirect:/auth/login";
         }
         try {
             voucherService.claimVoucher(voucherId, currentUser.getUser().getUsername());
-            redirectAttributes.addFlashAttribute("successMessage", "Nhan voucher thanh cong!");
+            redirectAttributes.addFlashAttribute("successMessage", "Nhận voucher thành công!");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }

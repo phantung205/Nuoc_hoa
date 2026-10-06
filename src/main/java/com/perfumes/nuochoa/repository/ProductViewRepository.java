@@ -35,4 +35,8 @@ public interface ProductViewRepository extends JpaRepository<ProductView, Long> 
            "GROUP BY pv.product.id " +
            "ORDER BY viewCount DESC")
     List<Object[]> findTopViewedProductIds();
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("DELETE FROM ProductView e WHERE e.user.id = :userId")
+    void deleteByUserId(@org.springframework.data.repository.query.Param("userId") Long userId);
 }

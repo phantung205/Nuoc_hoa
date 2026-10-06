@@ -81,9 +81,9 @@ public class AdminVoucherController {
     public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             voucherService.toggleStatus(id);
-            redirectAttributes.addFlashAttribute("successMessage", "C?p nh?t tr?ng th�i voucher th�nh c�ng!");
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái voucher thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "L?i: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
         return "redirect:/admin/vouchers";
     }
@@ -99,4 +99,3 @@ public class AdminVoucherController {
         return "redirect:/admin/vouchers";
     }
 }
-

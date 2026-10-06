@@ -3,7 +3,7 @@
       th:replace="~{admin/layout/base :: admin-layout(~{::title}, 'reviews', ~{::div.admin-content}, ~{::link}, ~{::script})}">
 <head>
     <title>Quản Lý Đánh Giá - 2T&amp;C Admin</title>
-    <link rel="stylesheet" th:href="@{/admin/css/layout/datatables-custom.css}">
+    <link rel="stylesheet" th:href="@{/common/css/datatables-custom.css}">
 </head>
 <body>
 
@@ -165,30 +165,7 @@
     </div>
 </div>
 
-<script>
-    function showReviewDetail(button) {
-        const reviewer = button.getAttribute('data-reviewer');
-        const product = button.getAttribute('data-product');
-        const rating = parseInt(button.getAttribute('data-rating'));
-        const comment = button.getAttribute('data-comment');
-        const date = button.getAttribute('data-date');
-
-        document.getElementById('modalReviewerName').innerHTML = '<i class="bi bi-person-circle me-1"></i>' + reviewer;
-        document.getElementById('modalProductName').textContent = product;
-        document.getElementById('modalReviewDate').textContent = date;
-        document.getElementById('modalReviewComment').textContent = comment;
-
-        let starsHtml = '';
-        for (let i = 1; i <= 5; i++) {
-            if (i <= rating) {
-                starsHtml += '<i class="bi bi-star-fill me-1"></i>';
-            } else {
-                starsHtml += '<i class="bi bi-star me-1"></i>';
-            }
-        }
-        document.getElementById('modalReviewStars').innerHTML = starsHtml;
-    }
-</script>
+<script th:src="@{/admin/js/pages/reviews/list.js}"></script>
 
 </body>
 </html>

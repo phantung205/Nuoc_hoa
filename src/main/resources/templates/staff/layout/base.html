@@ -9,13 +9,11 @@
     <!-- CSS dùng chung cho toàn bộ khu vực Admin -->
     <link rel="stylesheet" th:href="@{/common/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/common/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/common/css/dataTables.bootstrap5.min.css}">
+    <link rel="stylesheet" th:href="@{/common/css/datatables-custom.css}">
+
     <link rel="stylesheet" th:href="@{/admin/css/fragments/sidebar.css}">
     <link rel="stylesheet" th:href="@{/admin/css/fragments/header.css}">
-
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" th:href="@{/admin/css/layout/datatables-custom.css}">
 
     <!-- css riêng -->
     <th:block th:if="${extraCss != null}" th:replace="${extraCss}"></th:block>
@@ -40,10 +38,10 @@
         </div>
 
         <!-- JS dùng chung -->
-        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script th:src="@{/common/js/jquery-3.7.0.min.js}"></script>
         <script th:src="@{/common/js/bootstrap.bundle.min.js}"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+        <script th:src="@{/common/js/jquery.dataTables.min.js}"></script>
+        <script th:src="@{/common/js/dataTables.bootstrap5.min.js}"></script>
         <script th:src="@{/admin/js/layout/datatables-init.js}"></script>
 
         <!-- js riêng -->

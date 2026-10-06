@@ -13,4 +13,9 @@ public interface UserVoucherRepository extends JpaRepository<UserVoucher, Long> 
     @org.springframework.data.jpa.repository.Modifying
     @org.springframework.data.jpa.repository.Query("DELETE FROM UserVoucher u WHERE u.voucher.id = :voucherId")
     void deleteByVoucherId(@org.springframework.data.repository.query.Param("voucherId") Long voucherId);
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("DELETE FROM UserVoucher e WHERE e.user.id = :userId")
+    void deleteByUserId(@org.springframework.data.repository.query.Param("userId") Long userId);
 }
+

@@ -39,13 +39,26 @@ public class UserServiceImpl implements UserService {
     private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final com.perfumes.nuochoa.repository.ProductViewRepository productViewRepository;
+    private final com.perfumes.nuochoa.repository.UserAddressRepository userAddressRepository;
+    private final com.perfumes.nuochoa.repository.UserVoucherRepository userVoucherRepository;
+    private final com.perfumes.nuochoa.repository.WishlistRepository wishlistRepository;
+    private final com.perfumes.nuochoa.repository.PointTransactionRepository pointTransactionRepository;
+    private final com.perfumes.nuochoa.repository.ProductReviewRepository productReviewRepository;
+
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            UserProfileRepository userProfileRepository,
                            CartRepository cartRepository,
                            CartItemRepository cartItemRepository,
                            OrderRepository orderRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           com.perfumes.nuochoa.repository.ProductViewRepository productViewRepository,
+                           com.perfumes.nuochoa.repository.UserAddressRepository userAddressRepository,
+                           com.perfumes.nuochoa.repository.UserVoucherRepository userVoucherRepository,
+                           com.perfumes.nuochoa.repository.WishlistRepository wishlistRepository,
+                           com.perfumes.nuochoa.repository.PointTransactionRepository pointTransactionRepository,
+                           com.perfumes.nuochoa.repository.ProductReviewRepository productReviewRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userProfileRepository = userProfileRepository;
@@ -53,6 +66,12 @@ public class UserServiceImpl implements UserService {
         this.cartItemRepository = cartItemRepository;
         this.orderRepository = orderRepository;
         this.passwordEncoder = passwordEncoder;
+        this.productViewRepository = productViewRepository;
+        this.userAddressRepository = userAddressRepository;
+        this.userVoucherRepository = userVoucherRepository;
+        this.wishlistRepository = wishlistRepository;
+        this.pointTransactionRepository = pointTransactionRepository;
+        this.productReviewRepository = productReviewRepository;
     }
 
 
@@ -344,6 +363,14 @@ public class UserServiceImpl implements UserService {
             cartItemRepository.deleteByCartId(cart.getId());
             cartRepository.delete(cart);
         });
+
+        // Xóa các dữ liệu liên quan
+        productViewRepository.deleteByUserId(id);
+        userAddressRepository.deleteByUserId(id);
+        userVoucherRepository.deleteByUserId(id);
+        wishlistRepository.deleteByUserId(id);
+        pointTransactionRepository.deleteByUserId(id);
+        productReviewRepository.deleteByUserId(id);
 
         // Xóa ảnh cứng của User (nếu có) và xóa Profile
         userProfileRepository.findById(id).ifPresent(profile -> {

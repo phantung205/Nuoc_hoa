@@ -20,4 +20,9 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, Lo
 
     @Query("SELECT AVG(r.rating) FROM ProductReview r WHERE r.product.id = :productId AND r.isApproved = true")
     Double getAverageRatingByProductId(Long productId);
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("DELETE FROM ProductReview e WHERE e.user.id = :userId")
+    void deleteByUserId(@org.springframework.data.repository.query.Param("userId") Long userId);
 }
+
