@@ -104,45 +104,47 @@
                         </div>
                     </div>
                 </div>
+                <!-- ===== SẢN PHẨM GỢI Ý ===== -->
+                <div class="suggested-section mt-5 pt-4 border-top" th:if="${suggestedProducts != null and not #lists.isEmpty(suggestedProducts)}">
+                    <div class="mb-4">
+                        <h4 class="elegant-title fw-bold">Có Thể Bạn Sẽ Thích</h4>
+                        <p class="text-muted small">Dựa trên danh mục và thương hiệu bạn yêu thích</p>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+                        <div class="col" th:each="p : ${suggestedProducts}">
+                            <div class="card h-100 border-0 shadow-sm product-card">
+                                <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none">
+                                    <div class="position-relative overflow-hidden bg-light text-center p-3" style="height: 200px;">
+                                        <img th:src="${p.mainImageUrl != null ? p.mainImageUrl : '/web/images/default-product.jpg'}"
+                                             class="img-fluid" style="object-fit: contain; max-height: 100%;" th:alt="${p.name}">
+                                        <div class="position-absolute top-0 end-0 p-2" th:if="${p.discount != null and p.discount > 0}">
+                                            <span class="badge bg-danger rounded-pill">-[[${#numbers.formatDecimal(p.discount, 0, 'COMMA', 0, 'POINT')}]] ₫</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="card-body text-center d-flex flex-column p-3">
+                                    <p class="text-muted small mb-1 text-truncate" th:text="${p.brandName} + ' | ' + ${p.categoryName}"></p>
+                                    <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
+                                        <h6 class="card-title fw-bold mb-2 text-truncate" style="font-size: 0.9rem;" th:text="${p.name}"></h6>
+                                    </a>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                                            <span class="fw-bold gold-text" style="font-size: 0.95rem;"
+                                                  th:text="${p.minPrice != null ? (p.discount != null and p.discount > 0 ? #numbers.formatDecimal(p.minPrice - p.discount, 0, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')) + ' ₫' : 'Liên hệ'}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
 </section>
 
-<script>
-    function removeFromWishlist(btn) {
-        const productId = btn.getAttribute('data-product-id');
-        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content || '';
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content || '';
-
-        fetch('/api/wishlist/toggle?productId=' + productId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                [csrfHeader]: csrfToken
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                // Animate and remove card
-                const card = btn.closest('.col');
-                card.style.transition = 'all 0.4s ease';
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.8)';
-                setTimeout(() => {
-                    card.remove();
-                    // Check if empty
-                    const remaining = document.querySelectorAll('.product-card').length;
-                    if (remaining === 0) {
-                        location.reload();
-                    }
-                }, 400);
-            }
-        })
-        .catch(err => console.error('Error:', err));
-    }
-</script>
+<script th:src="@{/web/js/pages/personal_page.js}"></script>
 
 </body>
 </html>

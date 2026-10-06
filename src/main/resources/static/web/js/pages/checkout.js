@@ -136,3 +136,252 @@ function confirmCancel() {
         if (form) form.submit();
     }
 }
+
+
+/* ==============================================================
+   3. MAP PICKER LOGIC
+   ============================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    let globalMap = null;
+    let globalMarker = null;
+    let currentAddressInput = null;
+    let tempAddress = "";
+    let isFromSearch = false;
+
+    const receiverInput = document.getElementById('receiverAddress');
+    if (receiverInput) {
+        receiverInput.addEventListener('click', function() {
+            currentAddressInput = this;
+            tempAddress = this.value;
+            document.getElementById('selected-address-text').textContent = tempAddress || "Vui lòng click trên bản đồ để chọn vị trí...";
+            
+            // Hiện modal map
+            let mapModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('mapPickerModal'));
+            mapModal.show();
+        });
+    }
+
+    const mapPickerModal = document.getElementById('mapPickerModal');
+    if (mapPickerModal) {
+        mapPickerModal.addEventListener('shown.bs.modal', function () {
+            if (!globalMap) {
+                globalMap = L.map('global-map', {zoomControl: false}).setView([21.0285, 105.8542], 13);
+                L.control.zoom({ position: 'bottomright' }).addTo(globalMap);
+                
+                L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+                    maxZoom: 20,
+                    subdomains:['mt0','mt1','mt2','mt3'],
+                    attribution: '&copy; Google Maps'
+                }).addTo(globalMap);
+    
+                globalMap.on('click', function(e) {
+                    if (isFromSearch) return; // Bỏ qua click này vì nó bắt nguồn từ search
+    
+                    if (globalMarker) globalMap.removeLayer(globalMarker);
+                    globalMarker = L.marker(e.latlng).addTo(globalMap);
+                    
+                    document.getElementById('selected-address-text').innerHTML = '<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Đang tải địa chỉ...';
+                    
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=vi-VN,vi`)
+                        .then(res => {
+                            if (!res.ok) throw new Error("Nominatim error");
+                            return res.json();
+                        })
+                        .then(data => {
+                            if(data && data.display_name) {
+                                tempAddress = data.display_name;
+                                document.getElementById('selected-address-text').textContent = tempAddress;
+                            } else {
+                                throw new Error("No display_name");
+                            }
+                        })
+                        .catch(err => {
+                            fetch(`https://photon.komoot.io/reverse?lon=${e.latlng.lng}&lat=${e.latlng.lat}`)
+                                .then(r => r.json())
+                                .then(d => {
+                                    if (d.features && d.features.length > 0) {
+                                        let p = d.features[0].properties;
+                                        let arr = [];
+                                        if (p.name) arr.push(p.name);
+                                        if (p.housenumber) arr.push(p.housenumber);
+                                        if (p.street) arr.push(p.street);
+                                        if (p.district) arr.push(p.district);
+                                        if (p.city) arr.push(p.city);
+                                        tempAddress = arr.join(", ");
+                                        document.getElementById('selected-address-text').textContent = tempAddress;
+                                    } else {
+                                        document.getElementById('selected-address-text').textContent = "Không thể lấy chi tiết địa chỉ.";
+                                    }
+                                })
+                                .catch(err2 => {
+                                    document.getElementById('selected-address-text').textContent = "Lỗi mạng hoặc bị chặn kết nối API.";
+                                });
+                        });
+                });
+            }
+            globalMap.invalidateSize();
+        });
+    }
+
+    const btnMapSearch = document.getElementById('btnMapSearch');
+    if (btnMapSearch) {
+        btnMapSearch.addEventListener('click', function() {
+            let query = document.getElementById('mapSearchInput').value;
+            if (!query) return;
+            
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+            let resultsList = document.getElementById('mapSearchResults');
+            
+            function renderResults(items) {
+                btnMapSearch.innerHTML = '<i class="bi bi-search"></i>';
+                resultsList.innerHTML = '';
+                
+                if (items && items.length > 0) {
+                    items.forEach(item => {
+                        let li = document.createElement('li');
+                        li.className = 'list-group-item list-group-item-action text-truncate map-result-item';
+                        li.style.cursor = 'pointer';
+                        li.title = item.name;
+                        li.textContent = item.name;
+                        li.dataset.lat = item.lat;
+                        li.dataset.lon = item.lon;
+                        li.dataset.name = item.name;
+                        resultsList.appendChild(li);
+                    });
+                    resultsList.style.display = 'block';
+                } else {
+                    let li = document.createElement('li');
+                    li.className = 'list-group-item text-muted';
+                    li.textContent = 'Không tìm thấy kết quả.';
+                    resultsList.appendChild(li);
+                    resultsList.style.display = 'block';
+                }
+            }
+            
+            if (!resultsList.dataset.bound) {
+                resultsList.dataset.bound = "true";
+                resultsList.addEventListener('pointerdown', function(e) {
+                    let li = e.target.closest('li.map-result-item');
+                    if (!li) return;
+                    
+                    e.preventDefault();
+                    isFromSearch = true;
+                    setTimeout(() => isFromSearch = false, 500);
+                    
+                    try {
+                        let lat = parseFloat(li.dataset.lat);
+                        let lng = parseFloat(li.dataset.lon);
+                        let name = li.dataset.name;
+                        
+                        globalMap.setView([lat, lng], 16, { animate: false });
+                        
+                        if (globalMarker) globalMap.removeLayer(globalMarker);
+                        globalMarker = L.marker([lat, lng]).addTo(globalMap);
+                        
+                        tempAddress = name;
+                        document.getElementById('selected-address-text').textContent = tempAddress;
+                        
+                        resultsList.style.display = 'none';
+                    } catch (err) {
+                        console.error(err);
+                        alert("Lỗi bản đồ: " + err.message);
+                    }
+                });
+            }
+            
+            fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&limit=5&countrycodes=vn&accept-language=vi-VN,vi`)
+                .then(res => {
+                    if(!res.ok) throw new Error("Nominatim failed");
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && data.length > 0) {
+                        renderResults(data.map(d => ({name: d.display_name, lat: d.lat, lon: d.lon})));
+                    } else {
+                        throw new Error("Nominatim 0 results");
+                    }
+                })
+                .catch(err => {
+                    fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`)
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.features && d.features.length > 0) {
+                                renderResults(d.features.map(f => {
+                                    let p = f.properties;
+                                    let arr = [];
+                                    if (p.name) arr.push(p.name);
+                                    if (p.housenumber) arr.push(p.housenumber);
+                                    if (p.street) arr.push(p.street);
+                                    if (p.district) arr.push(p.district);
+                                    if (p.city) arr.push(p.city);
+                                    return {
+                                        name: arr.join(", ") || p.name,
+                                        lat: f.geometry.coordinates[1],
+                                        lon: f.geometry.coordinates[0]
+                                    };
+                                }));
+                            } else {
+                                renderResults([]);
+                            }
+                        })
+                        .catch(e => {
+                            renderResults([]);
+                        });
+                });
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#mapSearchResults') && !e.target.closest('#mapSearchInput') && !e.target.closest('#btnMapSearch')) {
+            let res = document.getElementById('mapSearchResults');
+            if(res) res.style.display = 'none';
+        }
+    });
+
+    const mapSearchInput = document.getElementById('mapSearchInput');
+    if (mapSearchInput) {
+        mapSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (btnMapSearch) btnMapSearch.click();
+            }
+        });
+    }
+
+    const btnConfirmAddress = document.getElementById('btnConfirmAddress');
+    if (btnConfirmAddress) {
+        btnConfirmAddress.addEventListener('click', function() {
+            if (currentAddressInput && tempAddress) {
+                currentAddressInput.value = tempAddress;
+            }
+            bootstrap.Modal.getInstance(document.getElementById('mapPickerModal')).hide();
+        });
+    }
+});
+
+/* ==============================================================
+   4. VOUCHER SEARCH & SUBMIT LOGIC
+   ============================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    var searchInput = document.getElementById('searchVoucher');
+    if(searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            var term = this.value.toLowerCase();
+            var items = document.querySelectorAll('.voucher-item');
+            for (var i = 0; i < items.length; i++) {
+                var code = items[i].getAttribute('data-code').toLowerCase();
+                items[i].style.display = code.indexOf(term) >= 0 ? 'block' : 'none';
+            }
+        });
+    }
+});
+
+function submitVoucher(code) {
+    if (code) {
+        document.getElementById('hiddenVoucherCode').value = code;
+    } else {
+        var val = document.getElementById('visibleVoucherCode').value;
+        document.getElementById('hiddenVoucherCode').value = val;
+    }
+    document.getElementById('applyVoucherForm').submit();
+}

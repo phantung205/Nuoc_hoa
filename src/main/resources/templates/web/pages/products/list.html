@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{web/layout/base :: main-layout(~{::title}, ~{::link}, ~{::script}, ~{::section})}">
 <head>
@@ -14,7 +14,7 @@
         currentBrandId: [[${currentBrandId}]]
     };
 </script>
-<script th:src="@{/web/js/pages/products.js}"></script>
+<script th:src="@{/web/js/pages/product/list.js}"></script>
 
 <section class="products-list-section py-5">
     <div class="container mt-4">
@@ -129,6 +129,8 @@
                             <option value="name-desc">Tên Z-A</option>
                             <option value="price-asc">Giá tăng dần</option>
                             <option value="price-desc">Giá giảm dần</option>
+                            <option value="wishlist-desc">Yêu thích nhiều nhất</option>
+                            <option value="rating-desc">Đánh giá sao cao nhất</option>
                         </select>
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-secondary btn-sm active" id="viewGrid"><i class="bi bi-grid-3x3-gap-fill"></i></button>
@@ -146,7 +148,9 @@
                          th:data-price="${p.minPrice}" 
                          th:data-discount="${p.discount}"
                          th:data-volumes="${p.volumeList}"
-                         th:data-concentrations="${p.concentrationList}">
+                         th:data-concentrations="${p.concentrationList}"
+                         th:data-wishlist-count="${p.wishlistCount}"
+                         th:data-rating="${p.averageRating}">
                         <div class="card product-card border-0 shadow-sm h-100">
                             <a th:href="@{/products/{id}(id=${p.id})}" class="text-decoration-none text-dark">
                                 <div class="position-relative product-img-wrapper">

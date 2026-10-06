@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('productGrid');
     const productItems = document.querySelectorAll('.product-item');
     const productCount = document.getElementById('productCount');
@@ -129,6 +129,14 @@
                 case 'name-desc': return (b.dataset.name || '').localeCompare(a.dataset.name || '', 'vi');
                 case 'price-asc': return priceA - priceB;
                 case 'price-desc': return priceB - priceA;
+                case 'wishlist-desc': 
+                    let wA = parseInt(a.dataset.wishlistCount) || 0;
+                    let wB = parseInt(b.dataset.wishlistCount) || 0;
+                    return wB - wA;
+                case 'rating-desc': 
+                    let rA = parseFloat(a.dataset.rating) || 0;
+                    let rB = parseFloat(b.dataset.rating) || 0;
+                    return rB - rA;
                 default: return 0;
             }
         });
@@ -225,6 +233,21 @@
     if (sortSelect) sortSelect.addEventListener('change', applyFilters);
     if (filterDiscount) filterDiscount.addEventListener('change', applyFilters);
     if (applyPriceBtn) applyPriceBtn.addEventListener('click', applyFilters);
+
+    const viewGrid = document.getElementById('viewGrid');
+    const viewList = document.getElementById('viewList');
+    if (viewGrid && viewList) {
+        viewGrid.addEventListener('click', function() {
+            if (productGrid) productGrid.classList.remove('list-view');
+            viewGrid.classList.add('active');
+            viewList.classList.remove('active');
+        });
+        viewList.addEventListener('click', function() {
+            if (productGrid) productGrid.classList.add('list-view');
+            viewList.classList.add('active');
+            viewGrid.classList.remove('active');
+        });
+    }
 
     document.querySelectorAll('input[name="categoryFilter"], input[name="brandFilter"]').forEach(el => {
         el.addEventListener('change', applyFilters);

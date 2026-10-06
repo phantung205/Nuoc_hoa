@@ -49,6 +49,10 @@ public class WebProductController {
             Model model) {
 
         List<ProductResponseDTO> products = productService.getAllActiveProducts();
+        for (ProductResponseDTO p : products) {
+            p.setWishlistCount(wishlistService.countByProduct(p.getId()));
+            p.setAverageRating(reviewService.getAverageRating(p.getId()));
+        }
 
         // Chỉ set pageTitle và pageDescription, KHÔNG LỌC products ở backend
         // để Javascript ở frontend có thể thực hiện lọc (khi bấm Tất cả sẽ hiện lại hết)

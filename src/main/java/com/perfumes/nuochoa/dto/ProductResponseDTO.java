@@ -17,7 +17,15 @@ public class ProductResponseDTO {
     private Double minPrice;
     private List<ProductVariantDTO> variants;
     private List<String> imageUrls;
+    
+    private Long wishlistCount;
+    private Double averageRating;
 
+    public Long getWishlistCount() { return wishlistCount; }
+    public void setWishlistCount(Long wishlistCount) { this.wishlistCount = wishlistCount; }
+
+    public Double getAverageRating() { return averageRating; }
+    public void setAverageRating(Double averageRating) { this.averageRating = averageRating; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
