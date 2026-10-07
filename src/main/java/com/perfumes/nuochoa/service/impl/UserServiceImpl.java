@@ -294,6 +294,7 @@ public class UserServiceImpl implements UserService {
         profile.setPhone(request.getPhone());
         profile.setDateOfBirth(request.getDateOfBirth());
         profile.setGender(request.getGender());
+        profile.setLoyaltyPoints(request.getLoyaltyPoints() != null ? request.getLoyaltyPoints() : 0);
 
         if (avatarFile != null && !avatarFile.isEmpty()) {
             String savedFileName = saveAvatarFile(avatarFile);
@@ -335,6 +336,9 @@ public class UserServiceImpl implements UserService {
         profile.setPhone(request.getPhone());
         profile.setDateOfBirth(request.getDateOfBirth());
         profile.setGender(request.getGender());
+        if (request.getLoyaltyPoints() != null) {
+            profile.setLoyaltyPoints(request.getLoyaltyPoints());
+        }
 
         if (avatarFile != null && !avatarFile.isEmpty()) {
             if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isEmpty()) {

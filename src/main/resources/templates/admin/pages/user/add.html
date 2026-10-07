@@ -70,6 +70,11 @@
                 <input type="file" class="form-control form-control-sm bg-light" name="avatarFile" accept="image/*">
             </div>
 
+            <div class="mb-4">
+                <label class="form-label fw-bold">Điểm Tích Lũy</label>
+                <input type="number" class="form-control bg-light" th:field="*{loyaltyPoints}" min="0" value="0">
+            </div>
+
             <h5 class="fw-bold mb-3 border-bottom pb-2 mt-4">Phân Quyền & Trạng Thái</h5>
             <div class="row mb-4">
                 <div class="col-md-6">

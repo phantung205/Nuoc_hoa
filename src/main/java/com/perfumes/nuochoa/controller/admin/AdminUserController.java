@@ -77,6 +77,7 @@ public class AdminUserController {
             userRequest.setDateOfBirth(profile.getDateOfBirth());
             userRequest.setGender(profile.getGender());
             userRequest.setAvatarUrl(profile.getAvatarUrl());
+            userRequest.setLoyaltyPoints(profile.getLoyaltyPoints());
         }
 
         model.addAttribute("userRequest", userRequest);
