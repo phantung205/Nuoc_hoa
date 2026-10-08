@@ -2,16 +2,16 @@
 
 /* ===== TOP BAR ===== */
 .header-topbar {
-    background-color: #0a0a0a;
+    background-color: var(--color-secondary);
     padding: 8px 0;
     font-size: 0.78rem;
     color: rgba(255, 255, 255, 0.65);
     letter-spacing: 0.3px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.15);
 }
 
 .header-topbar i {
-    color: #D4AF37;
+    color: var(--color-primary);
     font-size: 0.72rem;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .topbar-social:hover {
-    color: #D4AF37;
+    color: var(--color-primary);
     transform: translateY(-1px);
 }
 
@@ -36,15 +36,15 @@
 
 /* ===== MAIN NAVBAR ===== */
 .main-header .navbar {
-    background-color: #111111;
+    background-color: var(--color-secondary);
     padding: 12px 0;
     transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
 }
 
 .main-header .navbar.scrolled {
     padding: 8px 0;
-    background-color: rgba(17, 17, 17, 0.98);
+    background-color: rgba(var(--color-secondary-rgb), 0.98);
     backdrop-filter: blur(10px);
 }
 
@@ -64,12 +64,12 @@
 }
 
 @keyframes dropGlow {
-    0%, 100% { filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.3)); }
-    50% { filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6)); }
+    0%, 100% { filter: drop-shadow(0 0 3px rgba(var(--color-primary-rgb), 0.3)); }
+    50% { filter: drop-shadow(0 0 8px rgba(var(--color-primary-rgb), 0.6)); }
 }
 
 .logo-text {
-    background: linear-gradient(135deg, #D4AF37 0%, #f5e6a3 50%, #D4AF37 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 50%, var(--color-primary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -77,7 +77,7 @@
 
 /* ===== NAV LINKS ===== */
 .border-gold {
-    border-color: #D4AF37 !important;
+    border-color: var(--color-primary) !important;
 }
 
 .fs-7 {
@@ -85,7 +85,7 @@
 }
 
 .main-header .navbar-nav .nav-link {
-    color: #e0e0e0;
+    color: var(--color-accent);
     transition: all 0.3s ease;
     position: relative;
     letter-spacing: 1px;
@@ -95,7 +95,7 @@
 
 .main-header .navbar-nav .nav-link:hover,
 .main-header .navbar-nav .nav-link.active {
-    color: #D4AF37;
+    color: var(--color-primary);
 }
 
 .main-header .navbar-nav .nav-link::after {
@@ -106,7 +106,7 @@
     transform: translateX(-50%);
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+    background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
     transition: width 0.3s ease;
 }
 
@@ -123,7 +123,7 @@
 
 /* Promo link pulse */
 .promo-link {
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
     position: relative;
 }
 
@@ -155,8 +155,8 @@
     width: 100%;
     border: none !important;
     border-radius: 0 0 12px 12px !important;
-    background-color: #1a1a1a !important;
-    border-top: 2px solid #D4AF37 !important;
+    background-color: var(--color-secondary) !important;
+    border-top: 2px solid var(--color-primary) !important;
     padding: 0 !important;
     margin-top: 0 !important;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
@@ -182,18 +182,18 @@
 }
 
 .mega-menu-title {
-    color: #D4AF37;
+    color: var(--color-primary);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 14px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
     font-weight: 700;
 }
 
 .mega-menu .dropdown-item {
-    color: #ccc;
+    color: var(--color-accent);
     padding: 7px 12px;
     border-radius: 6px;
     font-size: 0.85rem;
@@ -201,13 +201,13 @@
 }
 
 .mega-menu .dropdown-item:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-    color: #D4AF37;
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
     padding-left: 18px;
 }
 
 .mega-menu .see-all-link {
-    color: #D4AF37;
+    color: var(--color-primary);
     font-weight: 600;
     font-size: 0.8rem;
     margin-top: 6px;
@@ -228,7 +228,7 @@
 
 .header-search .form-control:focus {
     box-shadow: none;
-    border-color: #D4AF37;
+    border-color: var(--color-primary);
     background-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -239,7 +239,7 @@
 .header-search .btn {
     border-radius: 0 24px 24px 0;
     padding: 8px 16px;
-    border: 1px solid #D4AF37;
+    border: 1px solid var(--color-primary);
 }
 
 /* ===== HEADER ACTIONS ===== */
@@ -256,22 +256,22 @@
 
 .cart-icon:hover {
     transform: scale(1.15);
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
 }
 
 /* ===== AUTH BUTTONS ===== */
 .btn-outline-gold {
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    color: #D4AF37;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.5);
+    color: var(--color-primary);
     background: transparent;
     transition: all 0.3s ease;
     font-size: 0.8rem;
 }
 
 .btn-outline-gold:hover {
-    border-color: #D4AF37;
-    background-color: rgba(212, 175, 55, 0.1);
-    color: #D4AF37;
+    border-color: var(--color-primary);
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
 }
 
 /* ===== USER DROPDOWN ===== */
@@ -283,18 +283,18 @@
     width: 34px;
     height: 34px;
     object-fit: cover;
-    border: 2px solid #D4AF37;
+    border: 2px solid var(--color-primary);
     padding: 1px;
 }
 
 .user-btn:hover .header-avatar {
-    border-color: #f5e6a3;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 12px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .user-dropdown {
-    background-color: #1a1a1a !important;
-    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    background-color: var(--color-secondary) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.25) !important;
     border-radius: 12px !important;
     overflow: hidden;
     min-width: 220px;
@@ -312,8 +312,8 @@
 }
 
 .user-dropdown .dropdown-item:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-    color: #D4AF37;
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
     padding-left: 24px;
 }
 
@@ -324,7 +324,7 @@
 
 /* ===== SHARED UTILITY ===== */
 .gold-text {
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
 }
 
 .elegant-title {
@@ -332,8 +332,8 @@
 }
 
 .btn-gold {
-    background: linear-gradient(135deg, #D4AF37, #c9a22e);
-    color: #111;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary));
+    color: var(--color-secondary);
     border: none;
     transition: all 0.3s ease;
     font-weight: 600;
@@ -341,10 +341,10 @@
 }
 
 .btn-gold:hover {
-    background: linear-gradient(135deg, #e0be4a, #D4AF37);
-    color: #111;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary));
+    color: var(--color-secondary);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .hover-gold {
@@ -352,7 +352,7 @@
 }
 
 .hover-gold:hover {
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
 }
 
 .profile-avatar {

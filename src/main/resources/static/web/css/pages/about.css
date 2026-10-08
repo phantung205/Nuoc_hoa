@@ -41,14 +41,14 @@
 .about-section .elegant-title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #222;
+    color: var(--color-secondary);
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 .about-section p {
-    color: #555;
+    color: var(--color-secondary);
     line-height: 1.8;
     font-size: 1.05rem;
     margin-bottom: 20px;
@@ -68,7 +68,7 @@
     right: 0;
     width: 80%;
     height: 80%;
-    border: 3px solid #D4AF37;
+    border: 3px solid var(--color-primary);
     z-index: -1;
 }
 
@@ -80,9 +80,9 @@
 
 /* Core Values Section */
 .values-section {
-    background-color: #fcfbf9;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    background-color: var(--color-background);
+    border-top: 1px solid var(--color-accent);
+    border-bottom: 1px solid var(--color-accent);
 }
 
 .value-card {
@@ -103,8 +103,8 @@
 .value-icon {
     width: 70px;
     height: 70px;
-    background-color: #f8f5ee;
-    color: #D4AF37;
+    background-color: var(--color-background);
+    color: var(--color-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -115,7 +115,7 @@
 }
 
 .value-card:hover .value-icon {
-    background-color: #D4AF37;
+    background-color: var(--color-primary);
     color: #fff;
 }
 
@@ -123,18 +123,18 @@
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 15px;
-    color: #222;
+    color: var(--color-secondary);
 }
 
 .value-card p {
     font-size: 0.95rem;
-    color: #666;
+    color: var(--color-accent);
     margin-bottom: 0;
 }
 
 /* CTA Section */
 .cta-section {
-    background: linear-gradient(rgba(212, 175, 55, 0.9), rgba(212, 175, 55, 0.9)), url('/web/images/anh_slide2.jpg') center/cover fixed;
+    background: linear-gradient(rgba(var(--color-primary-rgb), 0.9), rgba(var(--color-primary-rgb), 0.9)), url('/web/images/anh_slide2.jpg') center/cover fixed;
     padding: 100px 0;
     text-align: center;
     color: #fff;
@@ -167,7 +167,7 @@
 
 .btn-outline-light-custom:hover {
     background: #fff;
-    color: #D4AF37;
+    color: var(--color-primary);
 }
 
 /* Responsive */

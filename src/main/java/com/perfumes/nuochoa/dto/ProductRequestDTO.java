@@ -24,12 +24,11 @@ public class ProductRequestDTO {
     @NotEmpty(message = "Phải có ít nhất một biến thể (Dung tích & Nồng độ)")
     private List<ProductVariantDTO> variants = new ArrayList<>();
 
-    // Fields for Edit Page
+
     private List<MultipartFile> imageFiles = new ArrayList<>();
     private List<String> existingImageUrls = new ArrayList<>();
     private Integer primaryImageIndex = 0;
 
-    // Fields for Add Page
     private MultipartFile mainImageFile;
     private List<MultipartFile> subImageFiles = new ArrayList<>();
 

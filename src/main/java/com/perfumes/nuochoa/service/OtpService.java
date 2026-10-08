@@ -54,7 +54,6 @@ public class OtpService {
         return false;
     }
 
-    /** Xóa OTP của email khỏi bộ nhớ (dùng khi cần hủy OTP thủ công). */
     public void clearOtp(String email) {
         otpStorage.remove(email);
     }

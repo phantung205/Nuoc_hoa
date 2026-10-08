@@ -27,7 +27,6 @@ public class WebWishlistController {
         this.productService = productService;
     }
 
-    /** AJAX: Toggle wishlist (add/remove) */
     @PostMapping("/api/wishlist/toggle")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> toggleWishlist(
@@ -49,15 +48,13 @@ public class WebWishlistController {
         return ResponseEntity.ok(response);
     }
 
-    /** Page: Show user's wishlist */
     @GetMapping("/profile/wishlist")
     public String showWishlist(@AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
         Long userId = currentUser.getUser().getId();
         List<ProductResponseDTO> wishlistProducts = wishlistService.getWishlistProducts(userId);
         model.addAttribute("wishlistProducts", wishlistProducts);
         model.addAttribute("user", currentUser.getUser());
-        
-        // --- LOGIC GỢI Ý SẢN PHẨM (Có thể bạn sẽ thích) ---
+
         List<ProductResponseDTO> allProducts = productService.getAllActiveProducts();
         
         Set<Long> wishlistProductIds = wishlistProducts.stream()

@@ -31,7 +31,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     position: relative;
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--color-background);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -40,16 +40,16 @@
 
 .voucher-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+    box-shadow: 0 15px 35px rgba(var(--color-primary-rgb), 0.15);
 }
 
 .voucher-header {
-    background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-    color: #D4AF37;
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary) 100%);
+    color: var(--color-primary);
     padding: 25px 20px;
     text-align: center;
     position: relative;
-    border-bottom: 2px dashed #e0e0e0;
+    border-bottom: 2px dashed var(--color-accent);
 }
 
 /* Semi-circles on the side to simulate a ticket */
@@ -60,7 +60,7 @@
     bottom: -10px;
     width: 20px;
     height: 20px;
-    background-color: #f8f9fa; /* Should match the page background if possible, assuming light bg */
+    background-color: var(--color-background); /* Should match the page background if possible, assuming light bg */
     border-radius: 50%;
 }
 .voucher-header::before {
@@ -93,13 +93,13 @@
 }
 
 .voucher-code-box {
-    background: #f8f5ee;
-    border: 1px dashed #D4AF37;
+    background: var(--color-background);
+    border: 1px dashed var(--color-primary);
     padding: 10px;
     text-align: center;
     font-weight: bold;
     font-size: 1.2rem;
-    color: #222;
+    color: var(--color-secondary);
     border-radius: 6px;
     margin-bottom: 20px;
     letter-spacing: 2px;
@@ -114,21 +114,21 @@
 
 .voucher-info-list li {
     font-size: 0.95rem;
-    color: #555;
+    color: var(--color-secondary);
     margin-bottom: 10px;
     display: flex;
     align-items: flex-start;
 }
 
 .voucher-info-list li i {
-    color: #D4AF37;
+    color: var(--color-primary);
     margin-right: 10px;
     margin-top: 3px;
 }
 
 .voucher-task-section {
-    background: #fafafa;
-    border-top: 1px solid #eee;
+    background: var(--color-background);
+    border-top: 1px solid var(--color-accent);
     padding: 15px 20px;
 }
 
@@ -136,14 +136,14 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     font-weight: 700;
-    color: #888;
+    color: var(--color-accent);
     margin-bottom: 8px;
     letter-spacing: 1px;
 }
 
 .task-desc {
     font-size: 1rem;
-    color: #222;
+    color: var(--color-secondary);
     font-weight: 500;
     margin-bottom: 0;
     display: flex;

@@ -14,7 +14,6 @@ public class ReviewDTO {
     private Boolean isApproved;
     private LocalDateTime createdAt;
 
-    // ALL getters and setters manually
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getUserId() { return userId; }

@@ -10,14 +10,14 @@
 }
 
 .btn-gold-admin {
-    background-color: #D4AF37;
-    border-color: #D4AF37;
-    color: #111;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-secondary);
     font-weight: bold;
 }
 
 .btn-gold-admin:hover {
-    background-color: #b5952f;
-    border-color: #b5952f;
-    color: #111;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-secondary);
 }

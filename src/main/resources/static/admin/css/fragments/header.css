@@ -18,5 +18,5 @@
 }
 
 body {
-    background-color: #f4f6f9; /* Nền xám nhạt để header trắng nổi bật */
+    background-color: var(--color-background); /* Nền xám nhạt để header trắng nổi bật */
 }

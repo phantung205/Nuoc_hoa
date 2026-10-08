@@ -99,7 +99,6 @@ public class WebProductController {
             productViewService.recordView(currentUserId, id);
         }
 
-        // ===== WISHLIST =====
         boolean isWishlisted = false;
         if (currentUserId != null) {
             isWishlisted = wishlistService.isWishlisted(currentUserId, id);
@@ -108,7 +107,6 @@ public class WebProductController {
         model.addAttribute("isWishlisted", isWishlisted);
         model.addAttribute("wishlistCount", wishlistCount);
 
-        // ===== REVIEWS =====
         List<ReviewDTO> reviews = reviewService.getApprovedReviewsByProduct(id);
         Double averageRating = reviewService.getAverageRating(id);
         long reviewCount = reviewService.getReviewCount(id);
@@ -121,7 +119,6 @@ public class WebProductController {
         model.addAttribute("hasReviewed", hasReviewed);
         model.addAttribute("hasPurchased", hasPurchased);
 
-        // ===== SẢN PHẨM GỢI Ý =====
         List<ProductResponseDTO> allProducts = productService.getAllActiveProducts();
         
         // Logic lấy sản phẩm gợi ý theo thứ tự ưu tiên: Cùng danh mục -> Cùng thương hiệu -> Giá bán gần nhất

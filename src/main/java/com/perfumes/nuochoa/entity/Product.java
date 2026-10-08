@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 @Table(name = "products")
 public class Product {
 
-    // ===================== FIELDS =====================
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,11 +2,11 @@
 
 /* Gold accent for headings */
 .gold-accent {
-    color: #D4AF37;
+    color: var(--color-primary);
 }
 
 .bg-gold {
-    background-color: #D4AF37 !important;
+    background-color: var(--color-primary) !important;
 }
 
 /* ===== PRODUCT THUMBNAIL ===== */
@@ -15,7 +15,7 @@
     height: 50px;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-accent);
 }
 
 /* ===== TAB FILTERS ===== */
@@ -34,18 +34,18 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.25s ease;
-    color: #555;
+    color: var(--color-secondary);
 }
 
 .featured-tab:hover {
-    border-color: #D4AF37;
-    color: #D4AF37;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .featured-tab.active {
-    background-color: #111;
+    background-color: var(--color-secondary);
     color: #fff;
-    border-color: #111;
+    border-color: var(--color-secondary);
 }
 
 .featured-tab.tab-hot {
@@ -67,7 +67,7 @@
     justify-content: center;
     width: 20px;
     height: 20px;
-    background-color: #D4AF37;
+    background-color: var(--color-primary);
     color: #fff;
     border-radius: 50%;
     font-size: 0.6rem;
@@ -79,18 +79,18 @@
     align-items: center;
     gap: 4px;
     padding: 4px 12px;
-    background-color: #f0f0f0;
+    background-color: var(--color-background);
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #555;
+    color: var(--color-secondary);
 }
 
 /* ===== TABLE ===== */
 .dashboard-card {
     border-radius: 12px;
     background-color: #fff;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-accent);
 }
 
 #featuredTable tbody tr {
@@ -98,20 +98,20 @@
 }
 
 #featuredTable tbody tr:hover {
-    background-color: rgba(212, 175, 55, 0.04);
+    background-color: rgba(var(--color-primary-rgb), 0.04);
 }
 
 #featuredTable tbody tr[data-featured="true"] {
-    background-color: rgba(212, 175, 55, 0.03);
-    border-left: 3px solid #D4AF37;
+    background-color: rgba(var(--color-primary-rgb), 0.03);
+    border-left: 3px solid var(--color-primary);
 }
 
 /* ===== INFO CARD ===== */
 .featured-info .card {
     border-radius: 12px;
-    background-color: #f8f9fa;
+    background-color: var(--color-background);
 }
 
 .featured-info ul li strong {
-    color: #D4AF37;
+    color: var(--color-primary);
 }

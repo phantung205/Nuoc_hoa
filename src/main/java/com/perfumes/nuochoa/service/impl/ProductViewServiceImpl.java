@@ -35,7 +35,7 @@ public class ProductViewServiceImpl implements ProductViewService {
         this.productService = productService;
     }
 
-    // ===================== GHI NHẬN LƯỢT XEM =====================
+
 
     @Override
     @Transactional
@@ -58,14 +58,14 @@ public class ProductViewServiceImpl implements ProductViewService {
         productViewRepository.save(view);
     }
 
-    // ===================== ĐẾM LƯỢT XEM =====================
+
 
     @Override
     public long getViewCount(Long productId) {
         return productViewRepository.countByProductId(productId);
     }
 
-    // ===================== ADMIN: DANH SÁCH SẢN PHẨM + LƯỢT XEM =====================
+
 
     @Override
     public List<FeaturedProductDTO> getAllProductsWithViews() {
@@ -121,7 +121,6 @@ public class ProductViewServiceImpl implements ProductViewService {
         return result;
     }
 
-    // ===================== ADMIN: ĐÁNH DẤU NỔI BẬT =====================
 
     @Override
     @Transactional
@@ -132,7 +131,6 @@ public class ProductViewServiceImpl implements ProductViewService {
         productRepository.save(product);
     }
 
-    // ===================== TRANG CHỦ: LẤY TOP 8 SẢN PHẨM NỔI BẬT =====================
 
     @Override
     public List<ProductResponseDTO> getTop8FeaturedProducts() {
@@ -184,9 +182,6 @@ public class ProductViewServiceImpl implements ProductViewService {
         return result;
     }
 
-    // ===================== HELPER =====================
-
-    /** Tạo map productId → viewCount từ DB */
     private Map<Long, Long> buildViewCountMap() {
         List<Object[]> rows = productViewRepository.findProductViewCounts();
         Map<Long, Long> map = new HashMap<>();

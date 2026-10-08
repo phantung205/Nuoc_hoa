@@ -1,5 +1,5 @@
 .border-gold {
-    border-color: #D4AF37 !important;
+    border-color: var(--color-primary) !important;
 }
 
 .footer-links a {
@@ -9,7 +9,7 @@
 }
 
 .footer-links a:hover {
-    color: #D4AF37;
+    color: var(--color-primary);
     padding-left: 5px;
 }
 
@@ -18,5 +18,5 @@
 }
 
 .hover-gold:hover {
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
 }

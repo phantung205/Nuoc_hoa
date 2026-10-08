@@ -2,7 +2,7 @@ body {
     text-align: center;
     font-family: Arial, sans-serif;
     padding-top: 100px;
-    background-color: #f8f9fa;
+    background-color: var(--color-background);
 }
 
 .error-container {

@@ -341,9 +341,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    /**
-     * Kiểm tra và ẩn sản phẩm nếu TẤT CẢ variant đều hết hàng (stock=0).
-     */
+
     private void checkAndHideOutOfStockProducts(Long orderId) {
         List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
         for (OrderDetail detail : details) {

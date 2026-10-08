@@ -2,8 +2,8 @@
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: var(--color-background);
+    color: var(--color-secondary);
 }
 
 h1, h2, h3, h4, h5, h6, .elegant-title {
@@ -11,7 +11,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .gold-text {
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
 }
 
 /* ===== BREADCRUMB ===== */
@@ -20,13 +20,13 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .breadcrumb-item.active {
-    color: #666;
+    color: var(--color-accent);
 }
 
 .decorative-line {
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #D4AF37, transparent);
+    background: linear-gradient(90deg, var(--color-primary), transparent);
     margin-top: 8px;
 }
 
@@ -43,7 +43,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 .filter-group {
     margin-bottom: 20px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-accent);
 }
 
 .filter-group:last-of-type {
@@ -58,7 +58,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #333;
+    color: var(--color-secondary);
     margin-bottom: 12px;
 }
 
@@ -72,7 +72,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .filter-options::-webkit-scrollbar-thumb {
-    background: #D4AF37;
+    background: var(--color-primary);
     border-radius: 4px;
 }
 
@@ -83,28 +83,28 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     padding: 6px 0;
     cursor: pointer;
     font-size: 0.88rem;
-    color: #555;
+    color: var(--color-secondary);
     transition: color 0.2s;
 }
 
 .filter-checkbox:hover {
-    color: #D4AF37;
+    color: var(--color-primary);
 }
 
 .filter-checkbox input[type="radio"],
 .filter-checkbox input[type="checkbox"] {
-    accent-color: #D4AF37;
+    accent-color: var(--color-primary);
     cursor: pointer;
 }
 
 /* ===== SORT BAR ===== */
 .sort-bar {
-    border-left: 3px solid #D4AF37;
+    border-left: 3px solid var(--color-primary);
 }
 
 .sort-bar .form-select:focus {
-    border-color: #D4AF37;
-    box-shadow: 0 0 0 .2rem rgba(212, 175, 55, 0.15);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 .2rem rgba(var(--color-primary-rgb), 0.15);
 }
 
 /* ===== PRODUCT CARDS ===== */
@@ -183,7 +183,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 
 /* ===== BUTTONS ===== */
 .btn-gold {
-    background-color: #D4AF37;
+    background-color: var(--color-primary);
     color: #fff;
     border: none;
     font-weight: 500;
@@ -192,7 +192,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .btn-gold:hover {
-    background-color: #b5952f;
+    background-color: var(--color-primary);
     color: #fff;
     transform: translateY(-2px);
 }

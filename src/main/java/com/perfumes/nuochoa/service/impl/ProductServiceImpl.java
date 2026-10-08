@@ -316,7 +316,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    // ===================== HÀM BỔ TRỢ (HELPER METHODS) =====================
 
     private void deleteFile(String fileUrl) {
         try {

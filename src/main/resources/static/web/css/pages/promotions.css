@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #f8f9fa;
+    background-color: var(--color-background);
 }
 
 h1, h2, h3, h4, h5, h6, .elegant-title {
@@ -10,12 +10,12 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .gold-text {
-    color: #D4AF37 !important;
+    color: var(--color-primary) !important;
 }
 
 /* ===== PROMO HERO ===== */
 .promo-hero {
-    background: linear-gradient(135deg, #111 0%, #1a1a2e 50%, #0f0f23 100%);
+    background: linear-gradient(135deg, var(--color-secondary) 0%, #1a1a2e 50%, #0f0f23 100%);
     padding: 80px 0 60px;
     margin-top: 0;
     position: relative;
@@ -29,7 +29,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at 30% 50%, rgba(212,175,55,0.08) 0%, transparent 50%);
+    background: radial-gradient(circle at 30% 50%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 50%);
     animation: shimmer 8s ease-in-out infinite;
 }
 
@@ -40,8 +40,8 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 
 .promo-badge {
     display: inline-block;
-    background: linear-gradient(135deg, #D4AF37, #f5d75e);
-    color: #111;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary));
+    color: var(--color-secondary);
     padding: 8px 24px;
     border-radius: 30px;
     font-weight: 700;
@@ -54,7 +54,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     text-align: center;
     padding: 15px 25px;
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(212,175,55,0.2);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.2);
     border-radius: 12px;
     min-width: 160px;
 }
@@ -119,7 +119,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
     left: 0;
     right: 0;
     background: rgba(0,0,0,0.75);
-    color: #D4AF37;
+    color: var(--color-primary);
     text-align: center;
     padding: 6px;
     font-size: 0.75rem;
@@ -137,7 +137,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 
 .price-old {
     text-decoration: line-through;
-    color: #999;
+    color: var(--color-accent);
     font-size: 0.85rem;
 }
 
@@ -159,7 +159,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 
 /* ===== BUTTONS ===== */
 .btn-gold {
-    background-color: #D4AF37;
+    background-color: var(--color-primary);
     color: #fff;
     border: none;
     padding: 10px 25px;
@@ -169,7 +169,7 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .btn-gold:hover {
-    background-color: #b5952f;
+    background-color: var(--color-primary);
     color: #fff;
     transform: translateY(-2px);
 }

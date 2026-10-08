@@ -1,9 +1,6 @@
 package com.perfumes.nuochoa.dto;
 
-/**
- * DTO hiá»ƒn thá»‹ sáº£n pháº©m ná»•i báº­t trÃªn trang admin.
- * Chá»©a thÃ´ng tin sáº£n pháº©m kÃ¨m lÆ°á»£t xem vÃ  tráº¡ng thÃ¡i ná»•i báº­t.
- */
+
 public class FeaturedProductDTO {
 
     private Long id;
@@ -13,11 +10,11 @@ public class FeaturedProductDTO {
     private String brandName;
     private Double minPrice;
     private Double discount;
-    private long viewCount;       // Tá»•ng lÆ°á»£t xem (má»—i user tÃ­nh 1 láº§n)
+    private long viewCount;
     private boolean featured;
-    private boolean autoFeatured; // ÄÃ£ Ä‘Æ°á»£c admin Ä‘áº©y lÃªn ná»•i báº­t chÆ°a
+    private boolean autoFeatured;
 
-    // ===================== GETTERS & SETTERS =====================
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
