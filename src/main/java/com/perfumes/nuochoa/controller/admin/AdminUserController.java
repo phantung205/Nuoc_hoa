@@ -2,13 +2,15 @@ package com.perfumes.nuochoa.controller.admin;
 
 import com.perfumes.nuochoa.dto.UserAdminRequest;
 import com.perfumes.nuochoa.entity.User;
+import com.perfumes.nuochoa.entity.UserProfile;
 import com.perfumes.nuochoa.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -20,13 +22,11 @@ public class AdminUserController {
         this.userService = userService;
     }
 
-
     @GetMapping
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "admin/pages/user/list";
     }
-
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
@@ -40,7 +40,7 @@ public class AdminUserController {
     @PostMapping("/add")
     public String processAddUser(@Valid @ModelAttribute("userRequest") UserAdminRequest userRequest,
                                  BindingResult bindingResult,
-                                 @RequestParam(value = "avatarFile", required = false) org.springframework.web.multipart.MultipartFile avatarFile,
+                                 @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
                                  Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/pages/user/add";
@@ -53,7 +53,6 @@ public class AdminUserController {
             return "admin/pages/user/add";
         }
     }
-
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
@@ -70,7 +69,7 @@ public class AdminUserController {
         }
 
         // Lấy profile
-        com.perfumes.nuochoa.entity.UserProfile profile = userService.getUserProfileByUserId(id);
+        UserProfile profile = userService.getUserProfileByUserId(id);
         if (profile != null) {
             userRequest.setFullName(profile.getFullName());
             userRequest.setPhone(profile.getPhone());
@@ -88,7 +87,7 @@ public class AdminUserController {
     public String processEditUser(@PathVariable Long id,
                                   @Valid @ModelAttribute("userRequest") UserAdminRequest userRequest,
                                   BindingResult bindingResult,
-                                  @RequestParam(value = "avatarFile", required = false) org.springframework.web.multipart.MultipartFile avatarFile,
+                                  @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
                                   Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/pages/user/edit";
@@ -108,9 +107,8 @@ public class AdminUserController {
         return "redirect:/admin/users?success=updated";
     }
 
-
     @PostMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             userService.deleteUser(id);
             return "redirect:/admin/users?success=deleted";

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -25,7 +26,6 @@ public class AuthController {
         this.otpService = otpService;
         this.emailService = emailService;
     }
-
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
@@ -101,7 +101,7 @@ public class AuthController {
     }
 
     @PostMapping("/resend-otp")
-    public String resendOtp(HttpSession session, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String resendOtp(HttpSession session, RedirectAttributes redirectAttributes) {
         String email = (String) session.getAttribute("pendingEmail");
         if (email == null) {
             return "redirect:/auth/register";
@@ -113,7 +113,6 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
         return "redirect:/auth/verify-otp";
     }
-
 
     @GetMapping("/forgot-password")
     public String showForgotPasswordForm() {
@@ -140,7 +139,6 @@ public class AuthController {
         }
     }
 
-
     @GetMapping("/verify-reset-otp")
     public String showVerifyResetOtpForm(HttpSession session, Model model) {
         String email = (String) session.getAttribute("resetEmail");
@@ -152,7 +150,6 @@ public class AuthController {
         model.addAttribute("isResetPassword", true); // Flag để template hiển thị đúng nội dung
         return "auth/verify-otp";
     }
-
 
     @PostMapping("/verify-reset-otp")
     public String processVerifyResetOtp(@RequestParam("otp") String otp,
@@ -175,9 +172,8 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/resend-reset-otp")
-    public String resendResetOtp(HttpSession session, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String resendResetOtp(HttpSession session, RedirectAttributes redirectAttributes) {
         String email = (String) session.getAttribute("resetEmail");
         if (email == null) {
             return "redirect:/auth/forgot-password";
@@ -188,7 +184,6 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lại mã OTP mới về email của bạn!");
         return "redirect:/auth/verify-reset-otp";
     }
-
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(HttpSession session) {
