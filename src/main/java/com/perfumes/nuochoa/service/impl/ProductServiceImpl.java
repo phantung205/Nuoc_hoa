@@ -6,6 +6,7 @@ import com.perfumes.nuochoa.dto.ProductVariantDTO;
 import com.perfumes.nuochoa.entity.*;
 import com.perfumes.nuochoa.repository.*;
 import com.perfumes.nuochoa.service.ProductService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.nio.file.*;
+import java.text.Collator;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,25 +27,100 @@ public class ProductServiceImpl implements ProductService {
     private final ProductImageRepository imageRepository;
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
+    private final OrderDetailRepository orderDetailRepository;
+    private final CartItemRepository cartItemRepository;
+    private final WishlistRepository wishlistRepository;
+    private final ProductReviewRepository reviewRepository;
+    private final ProductViewRepository productViewRepository;
 
     public ProductServiceImpl(ProductRepository productRepository,
                               ProductVariantRepository variantRepository,
                               ProductImageRepository imageRepository,
                               BrandRepository brandRepository,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              OrderDetailRepository orderDetailRepository,
+                              CartItemRepository cartItemRepository,
+                              WishlistRepository wishlistRepository,
+                              ProductReviewRepository reviewRepository,
+                              ProductViewRepository productViewRepository) {
         this.productRepository = productRepository;
         this.variantRepository = variantRepository;
         this.imageRepository = imageRepository;
         this.brandRepository = brandRepository;
         this.categoryRepository = categoryRepository;
+        this.orderDetailRepository = orderDetailRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.wishlistRepository = wishlistRepository;
+        this.reviewRepository = reviewRepository;
+        this.productViewRepository = productViewRepository;
     }
 
     @Override
     public List<ProductResponseDTO> getAllProducts() {
-        return productRepository.findAll()
-                .stream()
-                .map(this::mapToResponseDTO)
+        return getAllProducts(null);
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAllProducts(String sort) {
+        List<Product> products = productRepository.findAll();
+
+        Map<Long, Long> wishlistCountMap = new HashMap<>();
+        for (Object[] row : wishlistRepository.countWishlistsGroupByProductId()) {
+            if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                wishlistCountMap.put(((Number) row[0]).longValue(), ((Number) row[1]).longValue());
+            }
+        }
+
+        Map<Long, Double> avgRatingMap = new HashMap<>();
+        for (Object[] row : reviewRepository.getAverageRatingsGroupByProductId()) {
+            if (row != null && row.length >= 2 && row[0] != null && row[1] != null) {
+                avgRatingMap.put(((Number) row[0]).longValue(), ((Number) row[1]).doubleValue());
+            }
+        }
+
+        List<ProductResponseDTO> dtos = products.stream()
+                .map(p -> mapToResponseDTO(p, wishlistCountMap, avgRatingMap))
                 .collect(Collectors.toList());
+
+        if (sort != null && !sort.trim().isEmpty()) {
+            Collator viCollator = Collator.getInstance(new Locale("vi", "VN"));
+            switch (sort.trim()) {
+                case "name_asc":
+                    dtos.sort((p1, p2) -> viCollator.compare(
+                            p1.getName() != null ? p1.getName() : "",
+                            p2.getName() != null ? p2.getName() : ""
+                    ));
+                    break;
+                case "name_desc":
+                    dtos.sort((p1, p2) -> viCollator.compare(
+                            p2.getName() != null ? p2.getName() : "",
+                            p1.getName() != null ? p1.getName() : ""
+                    ));
+                    break;
+                case "favorite":
+                    dtos.sort((p1, p2) -> {
+                        long c1 = p1.getWishlistCount() != null ? p1.getWishlistCount() : 0L;
+                        long c2 = p2.getWishlistCount() != null ? p2.getWishlistCount() : 0L;
+                        int cmp = Long.compare(c2, c1);
+                        if (cmp != 0) return cmp;
+                        return Long.compare(p1.getId(), p2.getId());
+                    });
+                    break;
+                case "rating":
+                    dtos.sort((p1, p2) -> {
+                        double r1 = p1.getAverageRating() != null ? p1.getAverageRating() : 0.0;
+                        double r2 = p2.getAverageRating() != null ? p2.getAverageRating() : 0.0;
+                        int cmp = Double.compare(r2, r1);
+                        if (cmp != 0) return cmp;
+                        return Long.compare(p1.getId(), p2.getId());
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return dtos;
     }
 
     @Override
@@ -58,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm có ID: " + id));
-        return mapToResponseDTO(product);
+        return mapToResponseDTO(product, null, null);
     }
 
     @Override
@@ -300,28 +377,59 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm để xóa"));
 
+        // 1. Kiểm tra nếu sản phẩm đã có trong bất kỳ đơn hàng nào -> không thể xóa
+        if (orderDetailRepository.existsByProductId(id)) {
+            throw new RuntimeException("Sản phẩm này đã có trong đơn hàng không thể xóa được, bạn hãy ẩn đi.");
+        }
+
         List<ProductImage> images = imageRepository.findByProductId(id);
         List<ProductVariant> variants = variantRepository.findByProductId(id);
 
         try {
+            // 2. Xóa các sản phẩm trong giỏ hàng chứa các biến thể của sản phẩm này (nếu có)
+            if (variants != null && !variants.isEmpty()) {
+                List<Long> variantIds = variants.stream().map(ProductVariant::getId).collect(Collectors.toList());
+                cartItemRepository.deleteByProductVariantIdIn(variantIds);
+            }
+
+            // 3. Xóa các dữ liệu phụ thuộc khác: danh sách yêu thích, đánh giá, lượt xem
+            wishlistRepository.deleteByProductId(id);
+            reviewRepository.deleteByProductId(id);
+            productViewRepository.deleteByProductId(id);
+
+            // 4. Xóa ảnh trong cơ sở dữ liệu
             imageRepository.deleteAll(images);
+
+            // 5. Xóa biến thể trong cơ sở dữ liệu
             variantRepository.deleteAll(variants);
+
+            // 6. Xóa sản phẩm trong cơ sở dữ liệu
             productRepository.delete(product);
 
+            // Ép flush để phát hiện ngay các ràng buộc khóa ngoại (nếu có) trong khối try-catch
+            productRepository.flush();
+
+            // 7. Xóa sạch file ảnh vật lý trên ổ đĩa
             for (ProductImage img : images) {
                 deleteFile(img.getImageUrl());
             }
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Sản phẩm này đã có trong đơn hàng không thể xóa được, bạn hãy ẩn đi.");
         } catch (Exception e) {
-            throw new RuntimeException("Không thể xóa sản phẩm vì nó đang nằm trong đơn hàng của khách.");
+            throw new RuntimeException("Lỗi khi xóa sản phẩm: " + e.getMessage());
         }
     }
 
 
     private void deleteFile(String fileUrl) {
         try {
-            if (fileUrl != null && fileUrl.startsWith("/")) {
-                Path path = Paths.get(fileUrl.substring(1));
-                Files.deleteIfExists(path);
+            if (fileUrl != null) {
+                String cleanPath = fileUrl.startsWith("/") ? fileUrl.substring(1) : fileUrl;
+                // Chỉ xóa các file nằm trong thư mục uploads để tránh xóa nhầm ảnh giao diện tĩnh
+                if (cleanPath.startsWith("uploads/")) {
+                    Path path = Paths.get(cleanPath);
+                    Files.deleteIfExists(path);
+                }
             }
         } catch (IOException e) {
             System.err.println("Không thể xóa file: " + fileUrl);
@@ -397,6 +505,26 @@ public class ProductServiceImpl implements ProductService {
                 .orElse(imageUrls.isEmpty() ? "/web/images/default-product.jpg" : imageUrls.get(0));
 
         dto.setMainImageUrl(mainImage);
+
+        return dto;
+    }
+
+    private ProductResponseDTO mapToResponseDTO(Product product, Map<Long, Long> wishlistCountMap, Map<Long, Double> avgRatingMap) {
+        ProductResponseDTO dto = mapToResponseDTO(product);
+
+        if (wishlistCountMap != null) {
+            dto.setWishlistCount(wishlistCountMap.getOrDefault(product.getId(), 0L));
+        } else {
+            dto.setWishlistCount(wishlistRepository.countByProductId(product.getId()));
+        }
+
+        if (avgRatingMap != null) {
+            Double avg = avgRatingMap.get(product.getId());
+            dto.setAverageRating(avg != null ? Math.round(avg * 10.0) / 10.0 : 0.0);
+        } else {
+            Double avg = reviewRepository.getAverageRatingByProductId(product.getId());
+            dto.setAverageRating(avg != null ? Math.round(avg * 10.0) / 10.0 : 0.0);
+        }
 
         return dto;
     }

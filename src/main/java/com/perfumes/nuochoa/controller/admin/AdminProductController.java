@@ -29,8 +29,9 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String listProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+    public String listProducts(@RequestParam(value = "sort", required = false) String sort, Model model) {
+        model.addAttribute("products", productService.getAllProducts(sort));
+        model.addAttribute("currentSort", sort);
         return "admin/pages/products/list";
     }
 
@@ -127,7 +128,7 @@ public class AdminProductController {
             productService.deleteProduct(id);
             redirectAttributes.addFlashAttribute("successMessage", "Đã xóa sản phẩm thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi xóa sản phẩm: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage() != null ? e.getMessage() : "Lỗi khi xóa sản phẩm!");
         }
         return "redirect:/admin/products";
     }

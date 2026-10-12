@@ -8,7 +8,7 @@
 <body>
 
 <div class="admin-content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
             <h2 class="fw-bold gold-accent mb-1">Quản Lý Sản Phẩm</h2>
             <p class="text-muted mb-0">
@@ -16,7 +16,21 @@
                 <span class="badge bg-gold text-dark ms-2 fw-medium" th:text="'Tổng cộng: ' + ${#lists.size(products)} + ' sản phẩm'">Tổng cộng: 0 sản phẩm</span>
             </p>
         </div>
-        <a href="/admin/products/add" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Thêm Sản Phẩm</a>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="d-flex align-items-center bg-white rounded-3 shadow-sm px-3 py-1 border">
+                <i class="bi bi-funnel text-warning me-2"></i>
+                <label for="sortSelect" class="text-muted small me-2 text-nowrap fw-semibold mb-0">Sắp xếp:</label>
+                <select id="sortSelect" class="form-select form-select-sm border-0 shadow-none ps-1" style="width: auto; min-width: 210px; cursor: pointer; font-weight: 500;"
+                        onchange="location.href='/admin/products?sort=' + this.value">
+                    <option value="" th:selected="${currentSort == null or currentSort == ''}">Mặc định (ID tăng dần)</option>
+                    <option value="name_asc" th:selected="${currentSort == 'name_asc'}">Tên sản phẩm (A &rarr; Z)</option>
+                    <option value="name_desc" th:selected="${currentSort == 'name_desc'}">Tên sản phẩm (Z &rarr; A)</option>
+                    <option value="favorite" th:selected="${currentSort == 'favorite'}">Được yêu thích nhiều nhất</option>
+                    <option value="rating" th:selected="${currentSort == 'rating'}">Được đánh giá cao nhất</option>
+                </select>
+            </div>
+            <a href="/admin/products/add" class="btn btn-dark text-nowrap"><i class="bi bi-plus-lg me-1"></i> Thêm Sản Phẩm</a>
+        </div>
     </div>
 
     <!-- Alert Messages -->
@@ -54,7 +68,17 @@
                         <img th:if="${p.mainImageUrl != null}" th:src="${p.mainImageUrl}" alt="Ảnh SP" class="img-thumbnail admin-product-thumb-table">
                         <span th:unless="${p.mainImageUrl != null}" class="text-muted fst-italic">Không có ảnh</span>
                     </td>
-                    <td class="fw-semibold" th:text="${p.name}">Product Name</td>
+                    <td class="fw-semibold">
+                        <div th:text="${p.name}">Product Name</div>
+                        <div class="small d-flex align-items-center gap-2 mt-1">
+                            <span class="badge bg-light text-danger border" title="Lượt yêu thích">
+                                <i class="bi bi-heart-fill me-1"></i><span th:text="${p.wishlistCount != null ? p.wishlistCount : 0}">0</span>
+                            </span>
+                            <span class="badge bg-light text-dark border" title="Điểm đánh giá">
+                                <i class="bi bi-star-fill text-warning me-1"></i><span th:text="${p.averageRating != null and p.averageRating > 0 ? #numbers.formatDecimal(p.averageRating, 1, 1) + ' / 5' : 'Chưa có'}">5.0 / 5</span>
+                            </span>
+                        </div>
+                    </td>
                     <td th:text="${p.categoryName}">Category</td>
                     <td th:text="${p.brandName}">Brand</td>
                     <td class="fw-bold text-success" th:text="${#numbers.formatDecimal(p.minPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">1,000,000 đ</td>
@@ -69,7 +93,7 @@
                         </a>
                         <form th:action="@{/admin/products/delete/{id}(id=${p.id})}" method="post" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này sẽ làm ẩn sản phẩm khỏi hệ thống.')">
+                                    onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
                                 <i class="bi bi-trash3"></i>
                             </button>
                         </form>

@@ -36,4 +36,9 @@ public interface ProductViewRepository extends JpaRepository<ProductView, Long> 
     @Modifying
     @Query("DELETE FROM ProductView e WHERE e.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ProductView e WHERE e.product.id = :productId")
+    void deleteByProductId(@Param("productId") Long productId);
 }

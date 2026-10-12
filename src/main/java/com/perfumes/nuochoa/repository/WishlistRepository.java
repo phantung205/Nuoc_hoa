@@ -28,4 +28,12 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     @Modifying
     @Query("DELETE FROM Wishlist e WHERE e.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Wishlist e WHERE e.product.id = :productId")
+    void deleteByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT w.product.id, COUNT(w) FROM Wishlist w GROUP BY w.product.id")
+    List<Object[]> countWishlistsGroupByProductId();
 }

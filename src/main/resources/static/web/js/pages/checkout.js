@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    /* ==============================================================
-       1. QR CODE PAYMENT POLLING LOGIC
-       ============================================================== */
     if (window.QR_ORDER_ID && window.QR_ORDER_ID !== 0) {
         let orderId = window.QR_ORDER_ID;
         let statusUrl = "/api/orders/status/" + orderId;
@@ -10,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let statusElement = document.getElementById('payment-status');
 
         if (statusElement) {
-            // Polling má»—i 5 giÃ¢y Ä‘á»ƒ kiá»ƒm tra tráº¡ng thÃ¡i thanh toÃ¡n
+
             let checkInterval = setInterval(function() {
                 fetch(statusUrl, { headers: { 'Accept': 'application/json' } })
                     .then(response => response.json())
@@ -18,33 +15,30 @@ document.addEventListener("DOMContentLoaded", function() {
                         if (data.status === 'PAID' || data.status === 'COMPLETED' || data.status === 'DELIVERED') {
                             clearInterval(checkInterval);
                             statusElement.className = 'alert alert-success fw-bold fs-5 border-success';
-                            statusElement.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Thanh toÃ¡n thÃ nh cÃ´ng! Äang chuyá»ƒn hÆ°á»›ng...';
+                            statusElement.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Thanh toán thành công! Đang chuyển hướng...';
                             setTimeout(() => window.location.href = successUrl, 2000);
                         }
                     })
-                    .catch(err => console.log('Äang kiá»ƒm tra thanh toÃ¡n...'));
+                    .catch(err => console.log('Đang kiểm tra thanh toán...'));
             }, 5000);
         }
     }
 
-    /* ==============================================================
-       2. CHECKOUT FORM LOGIC (ADDRESS & POINTS)
-       ============================================================== */
     const newAddressForm = document.getElementById('newAddressForm');
-    
-    if (newAddressForm) { // Chá»‰ cháº¡y náº¿u Ä‘ang á»Ÿ trang checkout
-        // Xá»­ lÃ½ áº©n/hiá»‡n form Ä‘á»‹a chá»‰
+
+    if (newAddressForm) { // Chỉ chạy nếu đang ở trang checkout
+        // Xử lý ẩn/hiện form địa chỉ
         const addressRadios = document.querySelectorAll('.address-radio');
         const requiredInputs = newAddressForm.querySelectorAll('input[required], textarea[required]');
 
         function toggleAddressForm() {
             const checkedRadio = document.querySelector('.address-radio:checked');
             if (checkedRadio && checkedRadio.value === '') {
-                // Chá»n Ä‘á»‹a chá»‰ khÃ¡c
+                // Chọn địa chỉ khác
                 newAddressForm.classList.remove('d-none');
                 requiredInputs.forEach(input => input.setAttribute('required', 'required'));
             } else {
-                // Chá»n Ä‘á»‹a chá»‰ cÃ³ sáºµn
+                // Chọn địa chỉ có sẵn
                 newAddressForm.classList.add('d-none');
                 requiredInputs.forEach(input => input.removeAttribute('required'));
             }
@@ -56,8 +50,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Initialize on load
         toggleAddressForm();
-        
-        // Xá»­ lÃ½ Ä‘iá»ƒm tÃ­ch lÅ©y
+
+        // Xử lý điểm tích lũy
         const pointsInput = document.getElementById('pointsToUse');
         const btnMaxPoints = document.getElementById('btnMaxPoints');
         const pointsError = document.getElementById('pointsError');
@@ -65,31 +59,31 @@ document.addEventListener("DOMContentLoaded", function() {
         const discountDisplay = document.getElementById('discountDisplay');
         const finalTotalDisplay = document.getElementById('finalTotalDisplay');
         const btnSubmitOrder = document.getElementById('btnSubmitOrder');
-        
+
         const baseTotalAmountEl = document.getElementById('baseTotalAmount');
         const maxPointsValueEl = document.getElementById('maxPointsValue');
-        
+
         if (pointsInput && baseTotalAmountEl && maxPointsValueEl) {
             const baseTotalAmount = parseFloat(baseTotalAmountEl.value) || 0;
             const maxPointsValue = parseInt(maxPointsValueEl.value) || 0;
-            
+
             function formatMoney(amount) {
                 return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ₫';
             }
-            
+
             function updatePointsLogic() {
                 let points = parseInt(pointsInput.value) || 0;
-                
+
                 // Validate points limit
                 if (points < 0) points = 0;
                 if (points > maxPointsValue) points = maxPointsValue;
-                
+
                 // Calculate max usable points that don't exceed order total
                 const maxPointsForThisOrder = Math.floor(baseTotalAmount / 10000) * 100;
                 if (points > maxPointsForThisOrder) {
                     points = maxPointsForThisOrder;
                 }
-                
+
                 // Check if multiple of 100
                 if (points % 100 !== 0 && points !== 0) {
                     pointsError.classList.remove('d-none');
@@ -97,30 +91,30 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     pointsError.classList.add('d-none');
                     if (btnSubmitOrder) btnSubmitOrder.disabled = false;
-                    
+
                     // Update displays
                     const discount = (points / 100) * 10000;
                     const finalTotal = baseTotalAmount - discount;
-                    
+
                     if (discount > 0) {
                         discountRow.classList.remove('d-none');
                         discountDisplay.textContent = '-' + formatMoney(discount);
                     } else {
                         discountRow.classList.add('d-none');
                     }
-                    
+
                     finalTotalDisplay.textContent = formatMoney(finalTotal);
                 }
             }
-            
+
             pointsInput.addEventListener('input', updatePointsLogic);
-            
+
             if (btnMaxPoints) {
                 btnMaxPoints.addEventListener('click', function() {
                     // Find max points (multiple of 100)
                     let maxUsable = Math.floor(maxPointsValue / 100) * 100;
                     let maxPointsForThisOrder = Math.floor(baseTotalAmount / 10000) * 100;
-                    
+
                     let targetPoints = Math.min(maxUsable, maxPointsForThisOrder);
                     pointsInput.value = targetPoints;
                     updatePointsLogic();
@@ -154,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentAddressInput = this;
             tempAddress = this.value;
             document.getElementById('selected-address-text').textContent = tempAddress || "Vui lòng click trên bản đồ để chọn vị trí...";
-            
+
             // Hiện modal map
             let mapModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('mapPickerModal'));
             mapModal.show();
@@ -167,21 +161,21 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!globalMap) {
                 globalMap = L.map('global-map', {zoomControl: false}).setView([21.0285, 105.8542], 13);
                 L.control.zoom({ position: 'bottomright' }).addTo(globalMap);
-                
+
                 L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
                     maxZoom: 20,
                     subdomains:['mt0','mt1','mt2','mt3'],
                     attribution: '&copy; Google Maps'
                 }).addTo(globalMap);
-    
+
                 globalMap.on('click', function(e) {
                     if (isFromSearch) return; // Bỏ qua click này vì nó bắt nguồn từ search
-    
+
                     if (globalMarker) globalMap.removeLayer(globalMarker);
                     globalMarker = L.marker(e.latlng).addTo(globalMap);
-                    
+
                     document.getElementById('selected-address-text').innerHTML = '<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span> Đang tải địa chỉ...';
-                    
+
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=vi-VN,vi`)
                         .then(res => {
                             if (!res.ok) throw new Error("Nominatim error");
@@ -228,14 +222,14 @@ document.addEventListener('DOMContentLoaded', function() {
         btnMapSearch.addEventListener('click', function() {
             let query = document.getElementById('mapSearchInput').value;
             if (!query) return;
-            
+
             this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
             let resultsList = document.getElementById('mapSearchResults');
-            
+
             function renderResults(items) {
                 btnMapSearch.innerHTML = '<i class="bi bi-search"></i>';
                 resultsList.innerHTML = '';
-                
+
                 if (items && items.length > 0) {
                     items.forEach(item => {
                         let li = document.createElement('li');
@@ -257,30 +251,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     resultsList.style.display = 'block';
                 }
             }
-            
+
             if (!resultsList.dataset.bound) {
                 resultsList.dataset.bound = "true";
                 resultsList.addEventListener('pointerdown', function(e) {
                     let li = e.target.closest('li.map-result-item');
                     if (!li) return;
-                    
+
                     e.preventDefault();
                     isFromSearch = true;
                     setTimeout(() => isFromSearch = false, 500);
-                    
+
                     try {
                         let lat = parseFloat(li.dataset.lat);
                         let lng = parseFloat(li.dataset.lon);
                         let name = li.dataset.name;
-                        
+
                         globalMap.setView([lat, lng], 16, { animate: false });
-                        
+
                         if (globalMarker) globalMap.removeLayer(globalMarker);
                         globalMarker = L.marker([lat, lng]).addTo(globalMap);
-                        
+
                         tempAddress = name;
                         document.getElementById('selected-address-text').textContent = tempAddress;
-                        
+
                         resultsList.style.display = 'none';
                     } catch (err) {
                         console.error(err);
@@ -288,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-            
+
             fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&limit=5&countrycodes=vn&accept-language=vi-VN,vi`)
                 .then(res => {
                     if(!res.ok) throw new Error("Nominatim failed");

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductResponseDTO> getAllProducts();
+    List<ProductResponseDTO> getAllProducts(String sort);
     List<ProductResponseDTO> getAllActiveProducts();
     ProductResponseDTO getProductById(Long id);
     ProductResponseDTO createProduct(ProductRequestDTO requestDTO);

@@ -35,4 +35,12 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, Lo
     @Modifying
     @Query("DELETE FROM ProductReview e WHERE e.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ProductReview e WHERE e.product.id = :productId")
+    void deleteByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT r.product.id, AVG(r.rating) FROM ProductReview r WHERE r.isApproved = true GROUP BY r.product.id")
+    List<Object[]> getAverageRatingsGroupByProductId();
 }

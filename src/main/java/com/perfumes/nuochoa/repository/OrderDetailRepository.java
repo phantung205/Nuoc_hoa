@@ -22,4 +22,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
             "AND od.productVariant.product.id = :productId " +
             "AND od.order.status = 'DELIVERED'")
     boolean existsByUserIdAndProductId(@Param("userId") Long userId, @Param("productId") Long productId);
+
+    @Query("SELECT COUNT(od) > 0 FROM OrderDetail od WHERE od.productVariant.product.id = :productId")
+    boolean existsByProductId(@Param("productId") Long productId);
 }
