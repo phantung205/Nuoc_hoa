@@ -1,69 +1,154 @@
 :root {
+    /* ========================================================
+       USER COLOR PALETTE:
+       - #006D77: Deep Pine Teal   (Chính / Đậm đà / Nhận diện thương hiệu)
+       - #83C5BE: Soft Aqua Mint   (Điểm nhấn / Tươi sáng / Highlight)
+       - #EDF6F9: Ice Mist White   (Nền không gian / Tinh tế / Thanh lịch)
+       ======================================================== */
+
     /* Primary Colors - Hex */
-    --color-primary: #EE6457;      /* Coral (for buttons, highlights, badges) */
-    --color-secondary: #034C5F;    /* Dark Teal (for text, headers, dark backgrounds) */
-    --color-accent: #97BEC6;       /* Light Blue (for borders, muted text, secondary elements) */
-    --color-background: #FDF5F4;   /* Off-white/Very Light Pink (for main body background) */
-    --color-peach: #F9C4BA;        /* Light Peach (for secondary backgrounds or soft highlights) */
+    --color-primary: #006D77;      /* Deep Teal: nút chính, tiêu đề, liên kết, giá tiền */
+    --color-secondary: #004D56;    /* Oceanic Deep Teal: thanh header/navbar, footer, sidebar */
+    --color-accent: #83C5BE;       /* Soft Aqua: viền, huy hiệu (badge), icon điểm nhấn, hover */
+    --color-background: #EDF6F9;   /* Ice Mist: nền toàn bộ trang web */
+    --color-peach: #83C5BE;        /* Đồng bộ màu phụ trợ sang Mint Aqua */
+    --color-surface: #ffffff;      /* Nền thẻ card / modal / input trắng sáng */
 
     /* Primary Colors - RGB for rgba() usage */
-    --color-primary-rgb: 238, 100, 87;
-    --color-secondary-rgb: 3, 76, 95;
-    --color-accent-rgb: 151, 190, 198;
-    --color-background-rgb: 253, 245, 244;
+    --color-primary-rgb: 0, 109, 119;
+    --color-secondary-rgb: 0, 77, 86;
+    --color-accent-rgb: 131, 197, 190;
+    --color-background-rgb: 237, 246, 249;
 
     /* Derived colors for hover states */
-    --color-primary-hover: #d6564a;
-    --color-secondary-hover: #023846;
+    --color-primary-hover: #00565e;
+    --color-secondary-hover: #00363d;
+    --color-accent-hover: #6db6ae;
     
     /* Text colors on different backgrounds */
     --color-text-on-primary: #ffffff;
-    --color-text-on-secondary: #ffffff; /* White text on Dark Teal background is very readable */
-    --color-text-on-background: #034C5F; /* Dark Teal text on Off-white background */
+    --color-text-on-secondary: #ffffff;
+    --color-text-on-accent: #004D56;
+    --color-text-on-background: #003840; /* Chữ đậm màu Teal trên nền sáng Ice Mist -> cực kỳ dễ đọc */
+    --color-text-muted: #5e8287;         /* Chữ phụ / muted đảm bảo độ tương phản chuẩn WCAG */
 }
 
 /* ====== GLOBAL BUTTON OVERRIDES ====== */
-.btn-primary, .btn-gold {
+.btn-primary {
     background-color: var(--color-primary) !important;
     border-color: var(--color-primary) !important;
     color: var(--color-text-on-primary) !important;
-    background-image: none !important; /* Remove ugly gradients */
-    box-shadow: 0 4px 6px rgba(var(--color-primary-rgb), 0.2) !important;
+    background-image: none !important;
+    box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.25) !important;
 }
 
-.btn-primary:hover, .btn-gold:hover {
+.btn-primary:hover {
     background-color: var(--color-primary-hover) !important;
     border-color: var(--color-primary-hover) !important;
     color: var(--color-text-on-primary) !important;
-    box-shadow: 0 6px 12px rgba(var(--color-primary-rgb), 0.3) !important;
+    box-shadow: 0 6px 14px rgba(var(--color-primary-rgb), 0.35) !important;
 }
 
-.btn-outline-primary, .btn-outline-gold {
+/* Nút điểm nhấn (Gold / Accent button) */
+.btn-gold {
+    background-color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
+    color: var(--color-text-on-accent) !important;
+    background-image: none !important;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(var(--color-accent-rgb), 0.3) !important;
+}
+
+.btn-gold:hover {
+    background-color: var(--color-accent-hover) !important;
+    border-color: var(--color-accent-hover) !important;
+    color: var(--color-secondary-hover) !important;
+    box-shadow: 0 6px 14px rgba(var(--color-accent-rgb), 0.4) !important;
+}
+
+.btn-outline-primary {
     color: var(--color-primary) !important;
     border-color: var(--color-primary) !important;
     background-color: transparent !important;
 }
 
-.btn-outline-primary:hover, .btn-outline-gold:hover {
+.btn-outline-primary:hover {
     background-color: var(--color-primary) !important;
     color: var(--color-text-on-primary) !important;
+}
+
+.btn-outline-gold {
+    color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-gold:hover {
+    background-color: var(--color-accent) !important;
+    color: var(--color-text-on-accent) !important;
+}
+
+/* Nút btn-dark đồng bộ với phong cách Deep Teal sang trọng */
+.btn-dark {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.btn-dark:hover {
+    background-color: var(--color-primary-hover) !important;
+    border-color: var(--color-primary-hover) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 16px rgba(var(--color-primary-rgb), 0.35);
 }
 
 /* Links */
 a {
     color: var(--color-primary);
     text-decoration: none;
+    transition: color 0.2s ease;
 }
 a:hover {
     color: var(--color-primary-hover);
 }
 
-/* Text overrides */
-.text-muted {
+/* ====== UTILITY & TEXT OVERRIDES ====== */
+.gold-text {
+    color: var(--color-primary) !important;
+}
+
+/* Khi nằm trên nền tối (navbar, footer, sidebar, hero tối), gold-text chuyển sang màu Mint #83C5BE để nổi bật */
+.bg-black .gold-text,
+.navbar .gold-text,
+footer .gold-text,
+.sidebar .gold-text,
+.promo-hero .gold-text,
+.voucher-header .gold-text,
+.brand-story-section .gold-text,
+.chat-header .gold-text {
     color: var(--color-accent) !important;
 }
 
-/* Base text color explicitly for body, to override the old #333 */
+.bg-gold {
+    background-color: var(--color-accent) !important;
+    color: var(--color-text-on-accent) !important;
+}
+
+.border-gold {
+    border-color: var(--color-accent) !important;
+}
+
+.bg-black {
+    background-color: var(--color-secondary) !important;
+}
+
+.text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+/* Base text color explicitly for body */
 body {
+    background-color: var(--color-background);
     color: var(--color-text-on-background);
 }

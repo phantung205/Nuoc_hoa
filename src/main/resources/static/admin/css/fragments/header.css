@@ -1,22 +1,206 @@
+/* ==========================================================================
+   ADMIN & STAFF HEADER STYLES
+   ========================================================================== */
+
 .admin-header {
     position: sticky;
-    top: 15px;
+    top: 16px;
     z-index: 1000;
-    background-color: #ffffff;
-    border-radius: 15px;
-    margin: 15px 25px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    margin: 16px 25px;
+    padding: 10px 22px;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.12);
+    box-shadow: 0 10px 30px rgba(var(--color-primary-rgb), 0.06), 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.header-right .btn {
+.admin-header:hover {
+    box-shadow: 0 12px 35px rgba(var(--color-primary-rgb), 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-color: rgba(var(--color-primary-rgb), 0.18);
+}
+
+/* Left Section: Branding & Status */
+.header-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-accent-rgb), 0.15) 100%);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.35);
+    color: var(--color-primary);
+    transition: transform 0.25s ease;
+}
+
+.admin-header:hover .header-icon-box {
+    transform: rotate(-6deg) scale(1.05);
+}
+
+.header-welcome-title {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+}
+
+.header-welcome-subtitle {
+    font-size: 0.76rem;
+    color: #64748b;
     font-weight: 500;
-    transition: all 0.3s ease;
 }
 
-.header-right .user-greeting {
+.badge-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10b981;
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    animation: statusPulse 2s infinite ease-in-out;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.35);
+    }
+}
+
+/* Vertical Divider */
+.header-divider {
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(226, 232, 240, 0.2), #cbd5e1, rgba(226, 232, 240, 0.2));
+}
+
+/* User Profile Pill */
+.header-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 14px 4px 5px;
+    background: rgba(248, 250, 252, 0.85);
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    transition: all 0.25s ease;
+    cursor: default;
+}
+
+.header-user-profile:hover {
+    background: #ffffff;
+    border-color: rgba(var(--color-primary-rgb), 0.25);
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.08);
+    transform: translateY(-1px);
+}
+
+.header-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    color: #ffffff;
+    font-weight: 800;
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.3);
+    text-transform: uppercase;
+}
+
+.user-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.user-role-wrap {
+    margin-top: 2px;
+}
+
+.role-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    line-height: 1.3;
+}
+
+.role-admin {
+    background: rgba(var(--color-primary-rgb), 0.12);
+    color: var(--color-primary);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.25);
+}
+
+.role-staff {
+    background: rgba(var(--color-accent-rgb), 0.2);
+    color: var(--color-secondary);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.4);
+}
+
+.role-user {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+/* Action Buttons */
+.btn-header-action {
+    background: #ffffff;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    padding: 7px 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.btn-header-action:hover {
+    background: var(--color-secondary);
+    color: #ffffff !important;
+    border-color: var(--color-secondary);
+    box-shadow: 0 6px 16px rgba(var(--color-secondary-rgb), 0.22);
+    transform: translateY(-2px);
+}
+
+.btn-header-action:hover i {
+    color: #ffffff !important;
+}
+
+.btn-header-logout {
+    background: rgba(238, 100, 87, 0.1);
+    color: #d6493d;
+    border: 1px solid rgba(238, 100, 87, 0.22);
+    border-radius: 30px;
+    padding: 7px 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(238, 100, 87, 0.05);
+}
+
+.btn-header-logout:hover {
+    background: #d6493d;
+    color: #ffffff;
+    border-color: #d6493d;
+    box-shadow: 0 6px 16px rgba(214, 73, 61, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-header-logout:hover i {
+    color: #ffffff;
 }
 
 body {
-    background-color: var(--color-background); /* Nền xám nhạt để header trắng nổi bật */
+    background-color: var(--color-background);
 }

@@ -29,19 +29,19 @@ public class SecurityConfig {
     }
 
 
-    /** Thuật toán mã hóa mật khẩu BCrypt – đây là chuẩn hiện tại cho Spring Security. */
+    // bộ mã hóa mật khẩu
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Provider xác thực: kết nối UserDetailsService (load user từ DB)
-     * với PasswordEncoder (so sánh mật khẩu).
-     */
+    // đây là cầu nối giữa quá trình kiểm duyện và databasse
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
+        // lấy thông tin user từ database
+        // khi đăng nhập provider sẽ gọi đến UserDetailsService tìm user thực hiện các hàm kiểm tra
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        // cung cấp công cụ đêr so bảo mật
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home", "/products/**", "/categories/**",
                                  "/brands/**", "/api/chat/**", "/api/webhook/**", "/webhook/**", "/api/orders/status/**", "/auth/**", "/api/wishlist/**", "/api/reviews/**").permitAll()
 
-                // Trang Admin: chỉ tài khoản có quyền ADMIN
+
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/staff/**").hasAnyRole("ADMIN", "STAFF")
 
@@ -82,10 +82,10 @@ public class SecurityConfig {
 
             // Cấu hình form đăng nhập
             .formLogin(form -> form
-                .loginPage("/auth/login")                   // Trang hiển thị form đăng nhập
-                .loginProcessingUrl("/auth/login-process")  // URL nhận dữ liệu submit từ form
-                .defaultSuccessUrl("/", true)               // Đăng nhập thành công → về trang chủ
-                .failureHandler(failureHandler)             // Handler xử lý lỗi đăng nhập tùy chỉnh
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/auth/login-process")
+                .defaultSuccessUrl("/", true)
+                .failureHandler(failureHandler)
                 .permitAll()
             )
             .exceptionHandling(e -> e.authenticationEntryPoint(new org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint("/auth/login")))
@@ -93,15 +93,15 @@ public class SecurityConfig {
             
             // cấu hình rememberme
             .rememberMe(remember -> remember
-                    .key("NuocHoaSecretKey_Dk93ns81")           // Khóa bí mật dùng để mã hóa token (bạn có thể đổi chuỗi này)
-                    .rememberMeParameter("remember-me")         // Tên của checkbox trong form HTML (phải khớp với tên thẻ input)
-                    .tokenValiditySeconds(7 * 24 * 60 * 60)     // Thời gian sống của cookie (7 ngày tính bằng giây)
-                    .userDetailsService(userDetailsService)     // Cần thiết để Spring load lại User sau khi tắt trình duyệt
+                    .key("NuocHoaSecretKey_Dk93ns81")           // Khóa bí mật dùng để mã hóa token
+                    .rememberMeParameter("remember-me")
+                    .tokenValiditySeconds(7 * 24 * 60 * 60)
+                    .userDetailsService(userDetailsService)     // spring load lại user
             )
 
             // Cấu hình đăng xuất
             .logout(logout -> logout
-                .logoutUrl("/auth/logout")                      // URL kích hoạt đăng xuất
+                .logoutUrl("/auth/logout")                      // url kích hoạt đăng xuất
                 .logoutSuccessUrl("/auth/login?logout=true")    // Sau khi đăng xuất → về trang login
                 .invalidateHttpSession(true)                    // Hủy session phía server
                 .deleteCookies("JSESSIONID", "remember-me") // Xóa cookie,remember-me phiên ở trình duyệt

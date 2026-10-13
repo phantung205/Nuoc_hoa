@@ -89,7 +89,7 @@ public class AuthController {
         }
 
         if (otpService.validateOtp(email, otp)) {
-            userService.enableUser(email); // Chuyển status UNVERIFIED → ACTIVE
+            userService.enableUser(email);
             session.removeAttribute("pendingEmail");
             return "redirect:/auth/login?registered=true";
         } else {

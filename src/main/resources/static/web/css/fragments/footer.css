@@ -1,15 +1,19 @@
 .border-gold {
-    border-color: var(--color-primary) !important;
+    border-color: var(--color-accent) !important;
+}
+
+footer.bg-black {
+    background-color: var(--color-secondary) !important;
 }
 
 .footer-links a {
-    color: #a3a3a3;
+    color: rgba(237, 246, 249, 0.75);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .footer-links a:hover {
-    color: var(--color-primary);
+    color: var(--color-accent) !important;
     padding-left: 5px;
 }
 
@@ -18,5 +22,5 @@
 }
 
 .hover-gold:hover {
-    color: var(--color-primary) !important;
+    color: var(--color-accent) !important;
 }

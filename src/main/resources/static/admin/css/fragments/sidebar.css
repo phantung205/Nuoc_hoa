@@ -7,26 +7,27 @@
 }
 
 .bg-gold {
-    background-color: var(--color-primary) !important;
+    background-color: var(--color-accent) !important;
+    color: var(--color-secondary) !important;
 }
 
 .gold-text {
-    color: var(--color-primary) !important;
+    color: var(--color-accent) !important;
 }
 
 .hover-bg-dark:hover {
-    background-color: rgba(255,255,255,0.05);
-    color: var(--color-primary) !important;
+    background-color: rgba(var(--color-accent-rgb), 0.12);
+    color: var(--color-accent) !important;
 }
 
 .btn-outline-gold {
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
     transition: all 0.3s ease;
 }
 
 .btn-outline-gold:hover {
-    background-color: var(--color-primary);
+    background-color: var(--color-accent);
     color: var(--color-secondary);
 }
 
@@ -38,21 +39,29 @@
     width: 280px;
     min-height: 100vh;
     position: fixed;
+    background-color: var(--color-secondary) !important;
+    border-right: 1px solid rgba(var(--color-accent-rgb), 0.15);
 }
 
 .sidebar-management-label {
     font-size: 11px;
     letter-spacing: 2px;
-    color: var(--color-primary);
-    opacity: 0.85;
-    font-weight: 500;
+    color: var(--color-accent);
+    opacity: 0.95;
+    font-weight: 600;
 }
 
 .sidebar-section-label {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.5px;
-    color: #adb5bd;
+    color: rgba(237, 246, 249, 0.75);
+}
+
+.sidebar .nav-link.active {
+    background-color: rgba(var(--color-accent-rgb), 0.15) !important;
+    color: var(--color-accent) !important;
+    border-left: 4px solid var(--color-accent);
 }
 
 /* Tùy chỉnh thanh cuộn cho sidebar */

@@ -21,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
-
+    // hàm này cấp quyền cho người dùng đăng nhập thêm tiền tố role là bắt buộc
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String roleName = "ROLE_" + user.getRole().getName();
@@ -38,22 +38,25 @@ public class CustomUserDetails implements UserDetails {
         return user.getUsername();
     }
 
-
+    // hàm này kiểm tra xem tài khoản hết hạn hay ko bạn để mặc định là true ko bh hết hạn
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    // trạng thái của tài khóa trả về false chặn dăng nhập
     @Override
     public boolean isAccountNonLocked() {
         return !"LOCKED".equalsIgnoreCase(user.getStatus());
     }
 
+    // kiểm tra mật khẩu có hết hạn hay ko bạn để true là ko bbao h hết
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    // kiểm tra xem tài khoản này đã được kích hoạt hay chưa nếu chưa trả về false ném ngoại lệ DisabledException chuyêbr sang failurehander đẻ sử lý lỗi
     @Override
     public boolean isEnabled() {
         return "ACTIVE".equalsIgnoreCase(user.getStatus());

@@ -26,8 +26,8 @@
     border: 1px solid #ced4da;
 }
 .dataTables_length select:focus {
-    border-color: #D4AF37;
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-primary-rgb), 0.25);
     outline: none;
 }
 
@@ -38,8 +38,8 @@
     margin-left: 10px;
 }
 .dataTables_filter input:focus {
-    border-color: #D4AF37;
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-primary-rgb), 0.25);
     outline: none;
 }
 
@@ -49,9 +49,9 @@
     justify-content: flex-end;
 }
 .dataTables_paginate .page-item.active .page-link {
-    background-color: #111;
-    border-color: #111;
-    color: #D4AF37;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
     font-weight: bold;
 }
 .dataTables_paginate .page-link {

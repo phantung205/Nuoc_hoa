@@ -35,13 +35,13 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
 
-        // Spring Security ném DisabledException khi isEnabled() = false (tức là status UNVERIFIED)
+        // chưa kích hoạt
         if (exception instanceof DisabledException) {
             handleUnverifiedAccount(request, response);
             return;
         }
 
-        // Các lỗi khác: sai username hoặc sai mật khẩu
+        // sai tài khoản mật khẩu
         getRedirectStrategy().sendRedirect(request, response, "/auth/login?error=true");
     }
 
@@ -51,13 +51,15 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         String username = request.getParameter("username");
         User user = userRepository.findByUsername(username).orElse(null);
 
-        // Chỉ xử lý nếu tìm thấy user và user đang UNVERIFIED
+        // nếu tìm thấy và trạng thái đang ko hoạt động
         if (user != null && "UNVERIFIED".equalsIgnoreCase(user.getStatus())) {
+            // tạo otp
             String newOtp = otpService.generateOtp(user.getEmail());
             emailService.sendOtpEmail(user.getEmail(), newOtp);
 
             // Lưu email vào session để trang verify-otp biết cần xác thực cho ai
             request.getSession().setAttribute("pendingEmail", user.getEmail());
+            // chuyển hướng người dùng sang trang otp
             getRedirectStrategy().sendRedirect(request, response, "/auth/verify-otp?unverified=true");
         } else {
             // Trường hợp bất thường: không tìm thấy user nhưng vẫn bị DisabledException

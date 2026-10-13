@@ -252,25 +252,25 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 .category-icon {
     width: 56px;
     height: 56px;
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--color-accent);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-primary);
+    color: var(--color-accent);
     font-size: 1.4rem;
     transition: all 0.4s ease;
 }
 
 .category-card-pro:hover .category-icon {
-    background-color: var(--color-primary);
+    background-color: var(--color-accent);
     color: var(--color-secondary);
     transform: scale(1.1);
 }
 
 .category-explore-btn {
     display: inline-block;
-    color: var(--color-primary);
+    color: var(--color-accent);
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -450,8 +450,8 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 
 /* ===== BUTTONS ===== */
 .btn-gold {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary));
-    color: var(--color-secondary);
+    background-color: var(--color-accent) !important;
+    color: var(--color-secondary) !important;
     border: none;
     padding: 12px 28px;
     font-weight: 600;
@@ -460,10 +460,10 @@ h1, h2, h3, h4, h5, h6, .elegant-title {
 }
 
 .btn-gold:hover {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary));
-    color: var(--color-secondary);
+    background-color: #ffffff !important;
+    color: var(--color-primary) !important;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.3);
+    box-shadow: 0 8px 20px rgba(var(--color-accent-rgb), 0.35);
 }
 
 .btn-outline-dark {
